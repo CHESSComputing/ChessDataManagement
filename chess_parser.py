@@ -23,6 +23,10 @@ import docx
 # sqlite3 module
 import sqlite3
 
+# local modules
+from chess_utils import check, execute
+
+
 class OptionParser():
     def __init__(self):
         "User based option parser"
@@ -39,16 +43,6 @@ def files(path):
     # python 3
 #     result = glob.glob(path + '/*', recursive=True)
     return result
-
-def execute(cur, stmt, bindings, verbose=None):
-    "Helper function to execute statement"
-    if verbose:
-        print(stmt)
-        print(bindings)
-    cur.execute(stmt, bindings)
-    rows = cur.fetchall()
-    for row in rows:
-        return row[0]
 
 def files_parser(filesdb, path, dataset, verbose=None):
     "filesdb parser, insert files from a given path to DB under given dataset"
@@ -99,13 +93,6 @@ def files_parser(filesdb, path, dataset, verbose=None):
     conn.close()
 
     return did
-
-def check(params):
-    "Check input parameters"
-    attrs = []
-    for attr in attrs:
-        if attr not in params:
-            raise Exception('key {} not in {}'.format(attr, json.dumps(params)))
 
 def parser(params, verbose=None):
     "Simple parser to insert CHESS document into MongoDB"
