@@ -50,7 +50,9 @@ rm files.db; sqlite3 files.db < doc/schema.sql
 
 # start MongoDB
 
-# prepare parameter file
+# prepare parameter file which will contain DB, experiment parameters
+# so far I choose JSON data-format, but it can be replaced with
+# YAML data-format which is much more simpler and intuitive for end-users
 cat doc/params.json
 {
     "fname": "doc/miller-774-1_beamtime_notes.docx",
