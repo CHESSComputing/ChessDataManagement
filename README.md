@@ -58,8 +58,8 @@ via provide free-text query:
 
 ### References
 
-[1] [MongoDB](https://www.mongodb.com)
-[2] [MySQL](https://www.mysql.com)
-[3] [MariaDB](https://mariadb.com)
-[4] [MongoDB free-text search](https://docs.mongodb.com/manual/text-search/)
+1. [MongoDB](https://www.mongodb.com)
+2. [MySQL](https://www.mysql.com)
+3. [MariaDB](https://mariadb.com)
+4. [MongoDB free-text search](https://docs.mongodb.com/manual/text-search/)
 
