@@ -1,0 +1,11 @@
+{
+    "fname": "doc/miller-774-1_beamtime_notes.docx",
+    "path": "files",
+    "dburi": "mongodb://localhost:8230",
+    "dbname": "chess",
+    "dbcoll": "meta",
+    "filesdb": "files.db",
+    "experiment": "Titanium",
+    "processing": "FirstPass",
+    "tier": "RAW"
+}
