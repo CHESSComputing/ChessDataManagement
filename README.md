@@ -46,13 +46,12 @@ extract and inject its content into MongoDB. Here is an example
 of such operation
 ```
 # prepare files.db (so far we use SqliteDB)
-rm files.db
-sqlite3 files.db < schema.sql
+rm files.db; sqlite3 files.db < doc/schema.sql
 
 # start MongoDB
 
 # prepare parameter file
-cat params.json
+cat doc/params.json
 {
     "fname": "doc/miller-774-1_beamtime_notes.docx",
     "path": "files",
@@ -66,7 +65,7 @@ cat params.json
 }
 
 # inject data into MongoDB (MetaDataDB) and Sqlite (FilesDB)
-./chess_parser.py --params=params.json --verbose
+./chess_parser.py --params=doc/params.json --verbose
 ```
 
 ### Find documents in MetaData DB
@@ -75,9 +74,9 @@ which should be able to find required meta-data in MongoDB
 via provide free-text query:
 ```
 # find meta-data information
-./chess_finder.py --params=params.json --query="scan 74-77"
+./chess_finder.py --params=doc/params.json --query="scan 74-77"
 # find corredponding files
-./chess_finder.py --params=params.json --query="scan 74-77" --list-files --verbose
+./chess_finder.py --params=doc/params.json --query="scan 74-77" --list-files --verbose
 ```
 
 ### References
