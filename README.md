@@ -75,9 +75,9 @@ which should be able to find required meta-data in MongoDB
 via provide free-text query:
 ```
 # find meta-data information
-./chess_finder.py --query="scan 74-77"
+./chess_finder.py --params=params.json --query="scan 74-77"
 # find corredponding files
-./chess_finder.py --query="scan 74-77" --list-files
+./chess_finder.py --params=params.json --query="scan 74-77" --list-files --verbose
 ```
 
 ### References
