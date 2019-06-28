@@ -41,19 +41,43 @@ provide uniform data representation for Meta Data Service.
 Finally, the data access can be organized via XrootD service.
 
 ### Insert data into MetaData DB:
-We provide a `doc_parser.py` script to parse input Microsoft Word documents,
+We provide a `chess_parser.py` script to parse input Microsoft Word documents,
 extract and inject its content into MongoDB. Here is an example
 of such operation
 ```
-./doc_parser.py --fin=doc/miller-774-1_beamtime_notes.docx --dburi=mongodb://localhost:8230 --dbname=chess --dbcoll=meta --path=$PWD
+# prepare files.db (so far we use SqliteDB)
+rm files.db
+sqlite3 files.db < schema.sql
+
+# start MongoDB
+
+# prepare parameter file
+cat params.json
+{
+    "fname": "doc/miller-774-1_beamtime_notes.docx",
+    "path": "files",
+    "dburi": "mongodb://localhost:8230",
+    "dbname": "chess",
+    "dbcoll": "meta",
+    "filesdb": "files.db",
+    "experiment": "Titanium",
+    "processing": "FirstPass",
+    "tier": "RAW"
+}
+
+# inject data into MongoDB (MetaDataDB) and Sqlite (FilesDB)
+./chess_parser.py --params=params.json --verbose
 ```
 
 ### Find documents in MetaData DB
-We provide basic implementation of finder script `doc_finder.py`
+We provide basic implementation of finder script `chess_finder.py`
 which should be able to find required meta-data in MongoDB
 via provide free-text query:
 ```
-./doc_finder.py --dburi=mongodb://localhost:8230 --dbname=chess --dbcoll=meta --query="scan 74-77"
+# find meta-data information
+./chess_finder.py --query="scan 74-77"
+# find corredponding files
+./chess_finder.py --query="scan 74-77" --list-files
 ```
 
 ### References
