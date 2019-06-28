@@ -24,7 +24,7 @@ CREATE TABLE datasets (
 );
 
 CREATE TABLE files (
- file_id INTEGER PRIMARY KEY,
+ file_id INTEGER PRIMARY KEY AUTOINCREMENT,
  dataset_id INTEGER REFERENCES datasets(dataset_id) ON UPDATE CASCADE,
  name TEXT NOT NULL
 );
