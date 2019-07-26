@@ -1,0 +1,234 @@
+<!-- web__cards.tmpl -->
+<style type="text/css" media="screen">
+#slide_container {
+    font-family: "Tahoma", "Lucida Sans", sans-serif;
+    width:900px;
+    height:220px;
+    overflow:hidden;
+    position:relative;
+}
+#slide_cards {
+    position:absolute;
+    left:0px;
+    width:8100px; /* should be N-times of width of slide_container, N=number of cards*/
+    -webkit-transition: opacity 1.0s ease-in-out;
+    -moz-transition: opacity 1.0s ease-in-out;
+    -o-transition: opacity 1.0s ease-in-out;
+    -ms-transition: opacity 1.0s ease-in-out;
+    -transition: opacity 1.0s ease-in-out; /*opacity, all*/
+}
+#slide_cards span {
+    padding:0;
+    margin:0;
+    float:left;
+    width:900px;
+    /*height:220px;*/ /* Seems like I don't need it */
+}
+</style>
+
+<div class="{{.CardClass}}" id="web_cards" name="web_cards">
+<table align="center">
+</tr>
+<tr><td>
+<a href="javascript:Transition(-900)" style="background-color:#fff">
+<img src="{{.Base}}/images/left.png" alt="left" style="border:0;">
+</a>
+</td>
+<td>
+<div id="slide_container">
+    <div id="slide_cards">
+
+        <!-- sliding cards -->
+<div style="position:absolute;left:0px;width:900px;">
+<h3 class="big">Help: web queries</h3>
+web queries are formed by
+<b>key=value</b> pairs, for example
+<ul>
+<li>dataset=/ZMM*/*/*</li>
+<li>release=CMSSW_2_0_*</li>
+<li>run=148126</li>
+</ul>
+
+The wild-card can be used to specify the pattern.
+The list of supported web 
+<b>keys</b> can be found in 
+<b><a href="{{.Base}}/services">Services</a></b> section.
+For more details please read web 
+<b><a href="{{.Base}}/faq">Frequently Asked Questions</a></b>.
+    
+<div style="text-align: right">
+<a href="javascript:HideTag('web_cards')">hide</a>
+</div>
+</div>
+<div style="position:absolute;left:900px;width:900px;">
+<h3 class="big">Help: web filters and conditions</h3>
+web supports the following condition operators in filters:
+&lt;, &gt;, != and =. Their usage is trivial:
+<pre>
+file dataset=/a/b/c | grep file.name, file.size>3000000, file.size<6000000
+</pre>
+The usage of wild-card
+is allowed for string patterns. For example, you can select record
+attribute and apply a wild-card condition at the same time:
+<pre>
+dataset=/ZMM*/*/* | grep dataset.name, dataset.name=*14TeV*
+</pre>
+    
+<div style="text-align: right">
+<a href="javascript:HideTag('web_cards')">hide</a>
+</div>
+</div>
+<div style="position:absolute;left:1800px;width:900px;">
+<h3 class="big">Help: web aggregators</h3>
+web supports variety of aggregator functions, such as:
+<b>min, max, sum, count, avg, median</b>. They can be applied in any
+order to any web record attribute. For example:
+<pre>
+file dataset=/a/b/c |  max(file.size), min(file.size),avg(file.size),median(file.size)
+</pre>
+Custom map-reduce function are also supported. Please contact web 
+<b><a href="https://svnweb.cern.ch/trac/CMSDMWM/newticket?component=web&summary=Request map reduce function&owner=valya">support</a></b> if you need one.
+    
+<div style="text-align: right">
+<a href="javascript:HideTag('web_cards')">hide</a>
+</div>
+</div>
+<div style="position:absolute;left:2700px;width:900px;">
+<h3 class="big">Help: web special keywords</h3>
+web has special <b>records</b> and <b>queries</b> keywords.
+The former can be used to look-up all records in web cache, while
+later shows most recent queries placed in web. The web filters
+can be used with them too. For example, if you want to see if there
+are any file records in web cache you can simply type:
+<pre>
+records | grep file.name
+</pre>
+    
+<div style="text-align: right">
+<a href="javascript:HideTag('web_cards')">hide</a>
+</div>
+</div>
+<div style="position:absolute;left:3600px;width:900px;">
+<h3 class="big">Help: Commonly used dataset queries</h3>
+Most physicists are interested to find their desired dataset. Here is an incomplete
+list of queries which cover this use-case:
+<pre>
+dataset=*Zee*
+dataset release=CMSSW_4*
+dataset release=CMSSW_4* datatype=mc
+dataset dataset=*Zee* datatype=mc release=CMSSW_4*
+dataset primary_dataset=ZJetToEE_Pt* tier=*GEN*
+dataset group=Top datatype=mc
+dataset run=148126
+dataset dataset=/Cosmics/Run2010B* site=T1_US_FNAL
+</pre>
+
+<div style="text-align: right">
+<a href="javascript:HideTag('web_cards')">hide</a>
+</div>
+</div>
+<div style="position:absolute;left:4500px;width:900px;">
+<h3 class="big">Help: web command line interface</h3>
+web CLI tools is available at <b><a href="{{.Base}}/cli">CLI</a></b>.
+You may download and save it on your disk, e.g. as <em>web_cli</em>,
+and use it in the following way:
+<pre>
+python web_cli --query="dataset=/ExpressPhysics*"
+</pre>
+Please use <b>--help</b> for more options.
+The default output format is JSON. But you can apply filter and use plain data format, e.g.:
+<pre>
+python web_cli --query="dataset=/ExpressPhysics* | grep dataset.name, dataset.nevents" --format=plain
+/ExpressPhysics/Run2011A-Express-v2/FEVT 13321290
+...
+</pre>
+    
+<div style="text-align: right">
+<a href="javascript:HideTag('web_cards')">hide</a>
+</div>
+</div>
+<div style="position:absolute;left:5400px;width:900px;">
+<h3 class="big">Help: web filters</h3>
+web supports <b>grep</b> and <b>unique</b> filters. You can use
+<b>grep</b> filter to select part of the web record. For example,
+<pre>
+dataset=/ZMM/Summer11-DESIGN42_V11_428_SLHC1-v1/GEN-SIM | grep dataset.nevents
+</pre>
+Multiple filters can be applied together, for instance
+<pre>
+dataset=/ZMM*/*/* | unique | grep dataset.name
+</pre>
+    
+<div style="text-align: right">
+<a href="javascript:HideTag('web_cards')">hide</a>
+</div>
+</div>
+<div style="position:absolute;left:6300px;width:900px;">
+<h3 class="big">Help: Free text based queries</h3>
+If you type free text based query, e.g.
+<pre>
+Zee CMSSW_3
+</pre>
+web will match provided keywords with
+appropriate web <b>key=value</b> pairs which will displayed in the input field,
+in this case 
+<pre>dataset=*Zee* release=CMSSW_3*</pre>
+<b>Please note:</b> web queries are case-sensitive due to underlying 
+restrictions from participated data-services, but in
+<b>autocompletion</b> mode web will apply case-insensitive searches for
+all valid datasets to find your match.
+
+<div style="text-align: right">
+<a href="javascript:HideTag('web_cards')">hide</a>
+</div>
+</div>
+<div style="position:absolute;left:7200px;width:900px;">
+<h3 class="big">Help: web date usage</h3>
+web has special <b>date</b> keyword. It accepts values either in
+YYYYMMDD format or via <b>last</b> operator. For example:
+<pre>
+run date=20110316
+run date last 24h
+jobsummary date last 60m
+</pre>
+Supported units for <b>last</b> operator are <b>d</b> (days),
+<b>h</b> (hours) and <b>m</b>(minutes).
+    
+<div style="text-align: right">
+<a href="javascript:HideTag('web_cards')">hide</a>
+</div>
+</div>
+        <!-- end of sliding cards -->
+
+    </div>
+</div>
+</td>
+<td>
+<a href="javascript:Transition(900)" style="background-color:#fff">
+<img src="{{.Base}}/images/right.png" alt="right" style="border:0;">
+</a>
+</td></tr>
+</table>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+function Transition(pos) {
+    var doc  = document.getElementById('slide_cards');
+    var left = doc.style.left; 
+    var val  = 0;
+    if  (left) {
+        val = parseInt(left.replace('px', ''));
+    }
+    var new_pos = val+pos;
+    if  (new_pos>0) {
+        new_pos = -8100+new_pos;
+    }
+    if  (new_pos==(-8100)) {
+        new_pos = 0;
+    }
+    doc.style.left = new_pos + 'px';
+    //doc.style.left = val + pos + 'px';
+}
+</script>
+
+<!-- end of web__cards.tmpl -->

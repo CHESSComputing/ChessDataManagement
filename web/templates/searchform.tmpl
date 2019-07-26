@@ -1,0 +1,31 @@
+<!-- searchform.tmpl -->
+
+<form action="/request" method="get" name="web_search" id="web_search" class="web_form">
+<table>
+<tr>
+<td class="right">
+results format:
+<select id="view" name="view">
+{{range $v := .Views }}
+<option class="sand" value="{{$v}}">{{$v}}</option>
+{{ end }}
+</select>,
+</td>
+<td class="left">
+&nbsp;
+<select id="limit" name="limit">
+<option class="sand" value="50">50</option>
+<option class="sand" value="100">100</option>
+<option class="sand" value="150">150</option>
+</select>
+results/page,
+</td>
+</form>
+<div class="right">
+<img src="/images/mongodb_logo.png" alt="Powered by MongoDB" width="5%" />
+</div>
+
+<!-- end of web_searchform.tmpl -->
+
+<div id="response" name="response" class="results"> <!-- we close this tag in web_bottom.tmpl -->
+

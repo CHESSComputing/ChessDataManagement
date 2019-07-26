@@ -1,0 +1,14 @@
+<h4>Server server status</h4>
+{{if eq .NQueries 0}}
+Server stack is empty
+{{else}}
+Processing queries:
+<div class="code">
+<pre>
+{{.Queries}}
+</pre>
+{{end}}
+</div>
+<div>
+    Number of go-routines: {{.NGo}}
+</div>
