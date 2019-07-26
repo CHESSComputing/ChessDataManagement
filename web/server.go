@@ -13,8 +13,12 @@ import (
 // global variables
 var _top, _bottom, _search, _cards, _hiddenCards string
 
+// Time0 represents initial time when we started the server
+var Time0 time.Time
+
 // Server code
 func Server(configFile string) {
+	Time0 = time.Now()
 	err := ParseConfig(configFile)
 	if Config.LogFormatter == "json" {
 		logs.SetFormatter(&logs.JSONFormatter{})
@@ -41,7 +45,7 @@ func Server(configFile string) {
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir(Config.Styles))))
 	http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir(Config.Jscripts))))
 	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir(Config.Images))))
-	http.HandleFunc("/", DataHandler)
+	http.HandleFunc("/", AuthHandler)
 
 	addr := fmt.Sprintf(":%d", Config.Port)
 	logs.WithFields(logs.Fields{"Addr": addr}).Info("Starting HTTP server")
