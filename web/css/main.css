@@ -21,10 +21,18 @@ h3 {
     color : #666666;
     clear: left;
 }
-.center_70 {
+.center-70 {
     width: 70%;
     margin-left: 15%;
     margin-right: 15%;
+}
+.form-container {
+    display: table;
+    width: 70%;
+}
+.form-content {
+    display: table-cell;
+    vertical-align: middle;
 }
 .page {
     margin: 0;
@@ -95,6 +103,22 @@ h3 {
     border: 1px solid rgb(215, 215, 215);
     width: 98%;
 }
+.msg-success {
+    margin: 1%;
+    padding: 10px;
+    background-color: rgb(213,251,202);
+}
+.msg-warning {
+    margin: 1%;
+    padding: 10px;
+    background-color: rgb(251,209,251);
+}
+.msg-error {
+    margin: 1%;
+    padding: 10px;
+    background-color: rgb(255,189,146);
+}
+
 .weberror {
     margin: 10px;
     padding: 2px;
@@ -156,6 +180,7 @@ div#banner
     margin-bottom: 10px;
     padding-left: 20px;
     padding-right: 20px;
+    height: 50px;
 } 
 div#banner h3
 {

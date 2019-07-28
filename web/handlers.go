@@ -93,23 +93,6 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(_top + page + _bottom))
 }
 
-func parseQuery(inputQuery []string) bson.M {
-	query := strings.Join(inputQuery, " ")
-	if strings.TrimSpace(query) == "" {
-		return nil
-	}
-	spec := make(bson.M)
-	for _, item := range strings.Split(query, " ") {
-		val := strings.Split(strings.TrimSpace(item), ":")
-		if len(val) == 2 {
-			spec[val[0]] = val[1]
-		} else {
-			spec["free"] = val
-		}
-	}
-	return spec
-}
-
 // SearchHandler handlers Search requests
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	var templates ServerTemplates
@@ -121,7 +104,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 		// r.PostForm provides url.Values which is map[string][]string type
 		// we convert it to MongoRecord
 		query := r.PostForm["query"]
-		spec := parseQuery(query)
+		spec := ParseQuery(query)
 		if spec != nil {
 			records = MongoGet(Config.DBName, Config.DBColl, spec, 0, -1)
 		}
@@ -153,6 +136,7 @@ func DataHandler(w http.ResponseWriter, r *http.Request) {
 	keysData["Annotation"] = "Experiment's annotation"
 	keysData["Run"] = "run number, e.g. 123"
 	keysData["Processing"] = "processing version, e.g. tag-123, gcc-700"
+	keysData["Path"] = "input directory of experiment's files"
 	tmplData := make(map[string]interface{})
 	tmplData["Keys"] = keysData
 	page := templates.Keys(Config.Templates, tmplData)
@@ -285,6 +269,8 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
+	var msg string
+	var class string
 	if err := r.ParseForm(); err == nil {
 		rec := make(MongoRecord)
 		// r.PostForm provides url.Values which is map[string][]string type
@@ -295,12 +281,31 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 		}
-		records := []MongoRecord{rec}
-		MongoInsert(Config.DBName, Config.DBColl, records)
+		path := rec["path"].(string)
+		files := FindFiles(path)
+		delete(rec, "path")
+		if len(files) > 0 {
+			logs.WithFields(logs.Fields{
+				"Record": rec,
+				"Files":  files,
+			}).Info("input data")
+			records := []MongoRecord{rec}
+			MongoInsert(Config.DBName, Config.DBColl, records)
+			msg = fmt.Sprintf("SUCCESS:\nMetaData:\n%v\n\nFound %d files", rec.ToString(), len(files))
+			class = "msg-success"
+		} else {
+			msg = fmt.Sprintf("WARNING:\nUnable to find any files in given path '%s'", path)
+			class = "msg-warning"
+		}
+	} else {
+		msg = fmt.Sprintf("ERROR:\nWeb processing error: %v", err)
+		class = "msg-error"
 	}
-	//     var templates ServerTemplates
-	//     tmplData := make(map[string]interface{})
-	page := "ok"
+	var templates ServerTemplates
+	tmplData := make(map[string]interface{})
+	tmplData["Message"] = msg
+	tmplData["Class"] = class
+	page := templates.Confirm(Config.Templates, tmplData)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(_top + page + _bottom))
 }

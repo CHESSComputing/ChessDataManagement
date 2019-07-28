@@ -11,7 +11,7 @@ import (
 )
 
 // global variables
-var _top, _bottom, _search, _cards, _hiddenCards string
+var _top, _bottom, _search string
 
 // Time0 represents initial time when we started the server
 var Time0 time.Time
@@ -37,9 +37,6 @@ func Server(configFile string) {
 	_top = templates.Top(Config.Templates, tmplData)
 	_bottom = templates.Bottom(Config.Templates, tmplData)
 	_search = templates.SearchForm(Config.Templates, tmplData)
-	_cards = templates.Cards(Config.Templates, tmplData)
-	tmplData["CardClass"] = "hide"
-	_hiddenCards = templates.Cards(Config.Templates, tmplData)
 
 	// assign handlers
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir(Config.Styles))))

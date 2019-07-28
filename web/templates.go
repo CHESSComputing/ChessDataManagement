@@ -77,16 +77,6 @@ func (q ServerTemplates) SearchForm(tdir string, tmplData map[string]interface{}
 	return q.searchForm
 }
 
-// Cards method for ServerTemplates structure
-func (q ServerTemplates) Cards(tdir string, tmplData map[string]interface{}) string {
-	tmplData["CardsClass"] = "hide"
-	if q.cards != "" {
-		return q.cards
-	}
-	q.cards = parseTmpl(Config.Templates, "cards.tmpl", tmplData)
-	return q.cards
-}
-
 // FAQ method for ServerTemplates structure
 func (q ServerTemplates) FAQ(tdir string, tmplData map[string]interface{}) string {
 	if q.top != "" {
@@ -114,12 +104,12 @@ func (q ServerTemplates) Keys(tdir string, tmplData map[string]interface{}) stri
 	return q.top
 }
 
-// Services method for ServerTemplates structure
-func (q ServerTemplates) Services(tdir string, tmplData map[string]interface{}) string {
+// Confirm method for ServerTemplates structure
+func (q ServerTemplates) Confirm(tdir string, tmplData map[string]interface{}) string {
 	if q.top != "" {
 		return q.top
 	}
-	q.top = parseTmpl(Config.Templates, "services.tmpl", tmplData)
+	q.top = parseTmpl(Config.Templates, "confirm.tmpl", tmplData)
 	return q.top
 }
 

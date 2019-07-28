@@ -1,23 +1,27 @@
 <!-- keys.tmpl -->
-<form method="post" action="process">
+<div class="form-container center-70">
+<form class="form-content" method="post" action="process">
     <fieldset>
         <legend>Experiment data</legend>
 {{range $k, $v := .Keys}}
         <div class="form-item">
             <label> {{$k}} </label>
-            <input name="{{$k}}" type="text" class="is-50" placeholder="{{$v}}">
+            <input name="{{$k}}" type="text" class="is-90" placeholder="{{$v}}">
         </div>
 {{end}}
         <div class="form-item">
-            <label>Additional infomration</label>
-            <textarea name="free" rows="6" class="is-50"></textarea>
+            <label>Additional information</label>
+            <textarea name="free" rows="3" class="is-90"></textarea>
         </div>
 
-        <div class="form-item is-buttons is-inline-offset">
-            <button class="button">Submit</button>
+        <div class="form-item">
+            <div class="is-append is-push-right is-right">
+                <div class="is-80">
+                </div>
+                <button class="button">Submit</button>
+            </div>
         </div>
     </fieldset>
 </form>
 </div>
 <!-- end of keys.tmpl -->
-

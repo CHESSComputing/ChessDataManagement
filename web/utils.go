@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
@@ -16,6 +17,25 @@ import (
 
 	logs "github.com/sirupsen/logrus"
 )
+
+// FindFiles find files in given path
+func FindFiles(root string) []string {
+	var files []string
+	if root == "" {
+		return files
+	}
+	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+		files = append(files, path)
+		return nil
+	})
+	if err != nil {
+		logs.WithFields(logs.Fields{
+			"root":  root,
+			"error": err,
+		}).Error("FindFiles")
+	}
+	return files
+}
 
 // Stack helper function to return Stack
 func Stack() string {
