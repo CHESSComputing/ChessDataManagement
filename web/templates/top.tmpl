@@ -15,6 +15,8 @@
     <meta name="Rating" content="General" />
 
     <link rel="stylesheet" type="text/css" href="/css/main.css"/>
+    <!-- Kube CSS -->
+    <link rel="stylesheet" href="/css/kube.min.css">
 
     <link rel="search" type="application/opensearchdescription+xml" href="/opensearch" title="Data Aggregation System" />
     <script type="text/javascript" src="/js/prototype.js"></script>
@@ -24,20 +26,30 @@
 </head>
 <body class="yui-skin-sam">
 
-<div id="banner">
-<table>
-<tr><td>
-<img src="/images/logo.jpg" alt="CHESS" width="30" style="border:none" />
-</td><td>
-<h3>CHESS Data Aggregation System:
-<a href="/">Home</a>
-| <a id="web_top_bug" href="https://github.com/dmwm/ChessDataManagement/issues">Bug report</a>
-| <a id="web_top_search" href="/search">Search</a>
-| <a id="web_top_status" href="/status">Status</a>
-| <a id="web_top_faq" href="/faq">FAQ</a>
-</h3>
-</td></tr>
-</table>
+<div id="banner" class="is-navbar-container">
+    <div class="is-brand">
+        <b class="is-logo">CHESS Data Management System</b>
+    </div>
+    <div class="is-navbar">
+        <!-- primary navigation -->
+        <nav>
+            <ul>
+                <li><a id="web_top_home" href="/">Home</a></li>
+                <li><a id="web_top_data" href="/data">Data</a></li>
+                <li><a id="web_top_search" href="/search">Search</a></li>
+                <li><a id="web_top_status" href="/status">Status</a></li>
+                <li><a id="web_top_faq" href="/faq">FAQ</a></li>
+                <li><a id="web_top_bug" href="https://github.com/dmwm/ChessDataManagement/issues">Bug report</a></li>
+            </ul>
+        </nav>
+        <!-- secondary navigation -->
+        <nav class="is-push-right">
+            <ul>
+                <li><a id="web_top_signin" href="/signin">SignIn</a></li>
+            </ul>
+        </nav>
+    </div>
 </div>
+
 <!--<hr class="line" /> -->
 <!-- end of web_top.tmpl -->

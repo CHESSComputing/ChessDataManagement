@@ -59,6 +59,15 @@ func (q ServerTemplates) Bottom(tdir string, tmplData map[string]interface{}) st
 	return q.bottom
 }
 
+// HomeForm method for ServerTemplates structure
+func (q ServerTemplates) HomeForm(tdir string, tmplData map[string]interface{}) string {
+	if q.searchForm != "" {
+		return q.searchForm
+	}
+	q.searchForm = parseTmpl(Config.Templates, "home.tmpl", tmplData)
+	return q.searchForm
+}
+
 // SearchForm method for ServerTemplates structure
 func (q ServerTemplates) SearchForm(tdir string, tmplData map[string]interface{}) string {
 	if q.searchForm != "" {
@@ -87,12 +96,12 @@ func (q ServerTemplates) FAQ(tdir string, tmplData map[string]interface{}) strin
 	return q.top
 }
 
-// ApiRecord method for ServerTemplates structure
-func (q ServerTemplates) ApiRecord(tdir string, tmplData map[string]interface{}) string {
+// Record method for ServerTemplates structure
+func (q ServerTemplates) Record(tdir string, tmplData map[string]interface{}) string {
 	if q.top != "" {
 		return q.top
 	}
-	q.top = parseTmpl(Config.Templates, "api_record.tmpl", tmplData)
+	q.top = parseTmpl(Config.Templates, "record.tmpl", tmplData)
 	return q.top
 }
 

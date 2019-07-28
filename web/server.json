@@ -1,5 +1,7 @@
 {
     "uri":"mongodb://localhost:8230",
+    "dbname": "chess",
+    "dbcoll": "meta",
     "port": 8212,
     "templates": "/Users/vk/Work/GIT/ChessDataManagement/web/templates",
     "jscripts": "/Users/vk/Work/GIT/ChessDataManagement/web/js",

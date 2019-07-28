@@ -1,10 +1,23 @@
 <!-- keys.tmpl -->
-<h3>List of known keys</h3>
-<div>
-{{range $_, $v := .Keys}}
-<b>{{$v}}</b>
-<br/>
+<form method="post" action="process">
+    <fieldset>
+        <legend>Experiment data</legend>
+{{range $k, $v := .Keys}}
+        <div class="form-item">
+            <label> {{$k}} </label>
+            <input name="{{$k}}" type="text" class="is-50" placeholder="{{$v}}">
+        </div>
 {{end}}
+        <div class="form-item">
+            <label>Additional infomration</label>
+            <textarea name="free" rows="6" class="is-50"></textarea>
+        </div>
+
+        <div class="form-item is-buttons is-inline-offset">
+            <button class="button">Submit</button>
+        </div>
+    </fieldset>
+</form>
 </div>
 <!-- end of keys.tmpl -->
 

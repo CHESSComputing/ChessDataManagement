@@ -12,6 +12,8 @@ import (
 type Configuration struct {
 	Port         int    `json:"port"`         // server port number
 	Uri          string `json:"uri"`          // server mongodb URI
+	DBName       string `json:"dbname"`       // mongo db name
+	DBColl       string `json:"dbcoll"`       // mongo db name
 	Templates    string `json:"templates"`    // location of server templates
 	Jscripts     string `json:"jscripts"`     // location of server JavaScript files
 	Images       string `json:"images"`       // location of server images
@@ -24,7 +26,7 @@ var Config Configuration
 
 // String returns string representation of server Config
 func (c *Configuration) String() string {
-	return fmt.Sprintf("<Config port=%d uri=%s templates=%s js=%s images=%s css=%s logFormatter=%s>", c.Port, c.Uri, c.Templates, c.Jscripts, c.Images, c.Styles, c.LogFormatter)
+	return fmt.Sprintf("<Config port=%d uri=%s dbname=%s dbcoll=%s templates=%s js=%s images=%s css=%s logFormatter=%s>", c.Port, c.Uri, c.DBName, c.DBColl, c.Templates, c.Jscripts, c.Images, c.Styles, c.LogFormatter)
 }
 
 // ParseConfig parse given config file

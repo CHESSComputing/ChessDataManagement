@@ -15,6 +15,7 @@ import (
 	"github.com/shirou/gopsutil/mem"
 	"github.com/shirou/gopsutil/process"
 	logs "github.com/sirupsen/logrus"
+	"gopkg.in/mgo.v2/bson"
 )
 
 // TotalGetRequests counts total number of GET requests received by the server
@@ -68,22 +69,74 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 		SettingsHandler(w, r)
 	case "search":
 		SearchHandler(w, r)
-	default:
+	case "data":
 		DataHandler(w, r)
+	case "process":
+		ProcessHandler(w, r)
+	default:
+		HomeHandler(w, r)
 	}
 }
 
 // GET Methods
 
-// SearchHandler handlers Search requests
-func SearchHandler(w http.ResponseWriter, r *http.Request) {
+// HomeHandler handlers Home requests
+func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 	var templates ServerTemplates
 	tmplData := make(map[string]interface{})
+	page := templates.HomeForm(Config.Templates, tmplData)
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(_top + page + _bottom))
+}
+
+func parseQuery(inputQuery []string) bson.M {
+	query := strings.Join(inputQuery, " ")
+	if strings.TrimSpace(query) == "" {
+		return nil
+	}
+	spec := make(bson.M)
+	for _, item := range strings.Split(query, " ") {
+		val := strings.Split(strings.TrimSpace(item), ":")
+		if len(val) == 2 {
+			spec[val[0]] = val[1]
+		} else {
+			spec["free"] = val
+		}
+	}
+	return spec
+}
+
+// SearchHandler handlers Search requests
+func SearchHandler(w http.ResponseWriter, r *http.Request) {
+	var templates ServerTemplates
+	tmplData := make(map[string]interface{})
 	page := templates.SearchForm(Config.Templates, tmplData)
+
+	var records []MongoRecord
+	if err := r.ParseForm(); err == nil {
+		// r.PostForm provides url.Values which is map[string][]string type
+		// we convert it to MongoRecord
+		query := r.PostForm["query"]
+		spec := parseQuery(query)
+		if spec != nil {
+			records = MongoGet(Config.DBName, Config.DBColl, spec, 0, -1)
+		}
+		logs.WithFields(logs.Fields{
+			"Spec":    spec,
+			"Records": records,
+		}).Info("results")
+	}
+	for _, rec := range records {
+		oid := rec["_id"].(bson.ObjectId)
+		tmplData["Id"] = oid.Hex()
+		tmplData["Record"] = rec.ToString()
+		prec := templates.Record(Config.Templates, tmplData)
+		page = fmt.Sprintf("%s</br>%s", page, prec)
+	}
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(_top + page + _bottom))
 }
@@ -95,8 +148,13 @@ func DataHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var templates ServerTemplates
+	keysData := make(map[string]string)
+	keysData["Experiment"] = "Name of the experiment"
+	keysData["Annotation"] = "Experiment's annotation"
+	keysData["Run"] = "run number, e.g. 123"
+	keysData["Processing"] = "processing version, e.g. tag-123, gcc-700"
 	tmplData := make(map[string]interface{})
-	tmplData["Keys"] = []string{"Experiment", "Annotations"}
+	tmplData["Keys"] = keysData
 	page := templates.Keys(Config.Templates, tmplData)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(_top + page + _bottom))
@@ -219,4 +277,30 @@ func SettingsHandler(w http.ResponseWriter, r *http.Request) {
 	}).Info("update server settings")
 	w.WriteHeader(http.StatusOK)
 	return
+}
+
+// ProcessHandler handlers Process requests
+func ProcessHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+	if err := r.ParseForm(); err == nil {
+		rec := make(MongoRecord)
+		// r.PostForm provides url.Values which is map[string][]string type
+		// we convert it to MongoRecord
+		for k, items := range r.PostForm {
+			for _, v := range items {
+				rec[strings.ToLower(k)] = v
+				break
+			}
+		}
+		records := []MongoRecord{rec}
+		MongoInsert(Config.DBName, Config.DBColl, records)
+	}
+	//     var templates ServerTemplates
+	//     tmplData := make(map[string]interface{})
+	page := "ok"
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(_top + page + _bottom))
 }
