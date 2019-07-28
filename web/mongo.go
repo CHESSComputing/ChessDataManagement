@@ -18,11 +18,11 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-// MongoRecord define Mongo record
-type MongoRecord map[string]interface{}
+// Record define Mongo record
+type Record map[string]interface{}
 
-// ToString provides string representation of MongoRecord
-func (r MongoRecord) ToString() string {
+// ToString provides string representation of Record
+func (r Record) ToString() string {
 	var out []string
 	for _, k := range MapKeys(r) {
 		if k == "_id" {
@@ -47,8 +47,8 @@ func (r MongoRecord) ToString() string {
 }
 
 // ErrorRecord provides error record
-func ErrorRecord(msg, etype string, ecode int) MongoRecord {
-	erec := make(MongoRecord)
+func ErrorRecord(msg, etype string, ecode int) Record {
+	erec := make(Record)
 	erec["error"] = html.EscapeString(msg)
 	erec["type"] = html.EscapeString(etype)
 	erec["code"] = ecode
@@ -56,8 +56,8 @@ func ErrorRecord(msg, etype string, ecode int) MongoRecord {
 }
 
 // GetValue function to get int value from record for given key
-func GetValue(rec MongoRecord, key string) interface{} {
-	var val MongoRecord
+func GetValue(rec Record, key string) interface{} {
+	var val Record
 	keys := strings.Split(key, ".")
 	if len(keys) > 1 {
 		value, ok := rec[keys[0]]
@@ -66,13 +66,13 @@ func GetValue(rec MongoRecord, key string) interface{} {
 				"Time":         time.Now(),
 				"Mongo record": rec,
 				"key":          key,
-			}).Warn("Unable to find key value in MongoRecord")
+			}).Warn("Unable to find key value in Record")
 			return ""
 		}
 		switch v := value.(type) {
-		case MongoRecord:
+		case Record:
 			val = v
-		case []MongoRecord:
+		case []Record:
 			if len(v) > 0 {
 				val = v[0]
 			} else {
@@ -81,7 +81,7 @@ func GetValue(rec MongoRecord, key string) interface{} {
 		case []interface{}:
 			vvv := v[0]
 			if vvv != nil {
-				val = vvv.(MongoRecord)
+				val = vvv.(Record)
 			} else {
 				return ""
 			}
@@ -116,21 +116,21 @@ func singleEntry(data interface{}) interface{} {
 }
 
 // GetStringValue function to get string value from record for given key
-func GetStringValue(rec MongoRecord, key string) (string, error) {
+func GetStringValue(rec Record, key string) (string, error) {
 	value := GetValue(rec, key)
 	val := fmt.Sprintf("%v", value)
 	return val, nil
 }
 
 // GetSingleStringValue function to get string value from record for given key
-func GetSingleStringValue(rec MongoRecord, key string) (string, error) {
+func GetSingleStringValue(rec Record, key string) (string, error) {
 	value := singleEntry(GetValue(rec, key))
 	val := fmt.Sprintf("%v", value)
 	return val, nil
 }
 
 // GetIntValue function to get int value from record for given key
-func GetIntValue(rec MongoRecord, key string) (int, error) {
+func GetIntValue(rec Record, key string) (int, error) {
 	value := GetValue(rec, key)
 	val, ok := value.(int)
 	if ok {
@@ -140,7 +140,7 @@ func GetIntValue(rec MongoRecord, key string) (int, error) {
 }
 
 // GetInt64Value function to get int value from record for given key
-func GetInt64Value(rec MongoRecord, key string) (int64, error) {
+func GetInt64Value(rec Record, key string) (int64, error) {
 	value := GetValue(rec, key)
 	out, ok := value.(int64)
 	if ok {
@@ -172,7 +172,7 @@ func (m *MongoConnection) Connect() *mgo.Session {
 var _Mongo MongoConnection
 
 // MongoInsert records into MongoDB
-func MongoInsert(dbname, collname string, records []MongoRecord) {
+func MongoInsert(dbname, collname string, records []Record) {
 	s := _Mongo.Connect()
 	defer s.Close()
 	c := s.DB(dbname).C(collname)
@@ -187,8 +187,8 @@ func MongoInsert(dbname, collname string, records []MongoRecord) {
 }
 
 // MongoGet records from MongoDB
-func MongoGet(dbname, collname string, spec bson.M, idx, limit int) []MongoRecord {
-	out := []MongoRecord{}
+func MongoGet(dbname, collname string, spec bson.M, idx, limit int) []Record {
+	out := []Record{}
 	s := _Mongo.Connect()
 	defer s.Close()
 	c := s.DB(dbname).C(collname)
@@ -207,8 +207,8 @@ func MongoGet(dbname, collname string, spec bson.M, idx, limit int) []MongoRecor
 }
 
 // MongoGetSorted records from MongoDB sorted by given key
-func MongoGetSorted(dbname, collname string, spec bson.M, skeys []string) []MongoRecord {
-	out := []MongoRecord{}
+func MongoGetSorted(dbname, collname string, spec bson.M, skeys []string) []Record {
+	out := []Record{}
 	s := _Mongo.Connect()
 	defer s.Close()
 	c := s.DB(dbname).C(collname)

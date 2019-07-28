@@ -99,10 +99,10 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	tmplData := make(map[string]interface{})
 	page := templates.SearchForm(Config.Templates, tmplData)
 
-	var records []MongoRecord
+	var records []Record
 	if err := r.ParseForm(); err == nil {
 		// r.PostForm provides url.Values which is map[string][]string type
-		// we convert it to MongoRecord
+		// we convert it to Record
 		query := r.PostForm["query"]
 		spec := ParseQuery(query)
 		if spec != nil {
@@ -133,9 +133,9 @@ func DataHandler(w http.ResponseWriter, r *http.Request) {
 	var templates ServerTemplates
 	keysData := make(map[string]string)
 	keysData["Experiment"] = "Name of the experiment"
-	keysData["Annotation"] = "Experiment's annotation"
-	keysData["Run"] = "run number, e.g. 123"
 	keysData["Processing"] = "processing version, e.g. tag-123, gcc-700"
+	keysData["Tier"] = "data-tier, e.g. RAW"
+	keysData["Run"] = "run number or annotation"
 	keysData["Path"] = "input directory of experiment's files"
 	tmplData := make(map[string]interface{})
 	tmplData["Keys"] = keysData
@@ -272,9 +272,9 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 	var msg string
 	var class string
 	if err := r.ParseForm(); err == nil {
-		rec := make(MongoRecord)
+		rec := make(Record)
 		// r.PostForm provides url.Values which is map[string][]string type
-		// we convert it to MongoRecord
+		// we convert it to Record
 		for k, items := range r.PostForm {
 			for _, v := range items {
 				rec[strings.ToLower(k)] = v
@@ -284,15 +284,27 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 		path := rec["path"].(string)
 		files := FindFiles(path)
 		delete(rec, "path")
+		experiment := rec["experiment"].(string)
+		processing := rec["processing"].(string)
+		tier := rec["tier"].(string)
+		dataset := fmt.Sprintf("/%s/%s/%s", experiment, processing, tier)
+		rec["dataset"] = dataset
 		if len(files) > 0 {
 			logs.WithFields(logs.Fields{
 				"Record": rec,
 				"Files":  files,
 			}).Info("input data")
-			records := []MongoRecord{rec}
-			MongoInsert(Config.DBName, Config.DBColl, records)
-			msg = fmt.Sprintf("SUCCESS:\nMetaData:\n%v\n\nFound %d files", rec.ToString(), len(files))
-			class = "msg-success"
+			did, err := InsertFiles(experiment, processing, tier, files)
+			rec["did"] = did
+			if err != nil {
+				msg = fmt.Sprintf("ERROR:\nWeb processing error: %v", err)
+				class = "msg-error"
+			} else {
+				records := []Record{rec}
+				MongoInsert(Config.DBName, Config.DBColl, records)
+				msg = fmt.Sprintf("SUCCESS:\nMetaData:\n%v\n\nFound %d files", rec.ToString(), len(files))
+				class = "msg-success"
+			}
 		} else {
 			msg = fmt.Sprintf("WARNING:\nUnable to find any files in given path '%s'", path)
 			class = "msg-warning"
