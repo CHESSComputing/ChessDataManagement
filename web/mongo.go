@@ -8,8 +8,6 @@ package main
 //              https://gist.github.com/border/3489566
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"html"
 	"strings"
@@ -42,28 +40,6 @@ func (r MongoRecord) ToString() string {
 			}
 		default:
 			s := fmt.Sprintf("%s:%#v", k, r[k])
-			out = append(out, strings.Replace(s, ", ", ",\n   ", -1))
-		}
-	}
-	return strings.Join(out, "\n")
-}
-
-// ToHtml provides string representation of MongoRecord
-func (r MongoRecord) ToHtml() string {
-	var out []string
-	for _, k := range MapKeys(r) {
-		switch v := r[k].(type) {
-		case int:
-			out = append(out, fmt.Sprintf("%s:%d\n", k, v))
-		case float64:
-			d := int(v)
-			if float64(d) == v {
-				out = append(out, fmt.Sprintf("%s:%d\n", k, d))
-			} else {
-				out = append(out, fmt.Sprintf("%s:%f\n", k, v))
-			}
-		default:
-			s := fmt.Sprintf("%s:%#v\n", k, r[k])
 			out = append(out, strings.Replace(s, ", ", ",\n   ", -1))
 		}
 	}
@@ -307,68 +283,4 @@ func MongoRemove(dbname, collname string, spec bson.M) {
 			"Spec":  spec,
 		}).Error("Unable to remove records")
 	}
-}
-
-// LoadJsonData stream from series of bytes
-func LoadJsonData(data []byte) MongoRecord {
-	r := make(MongoRecord)
-	err := json.Unmarshal(data, &r)
-	if err != nil {
-		logs.WithFields(logs.Fields{
-			"Time":  time.Now(),
-			"Error": err,
-			"Data":  string(data),
-		}).Error("Unable to unmarshal records")
-	}
-	return r
-}
-
-// MongoCreateIndexes creates cache indexes
-func MongoCreateIndexes(dbname, collname string, keys []string) {
-	s := _Mongo.Connect()
-	defer s.Close()
-	c := s.DB(dbname).C(collname)
-	for _, key := range keys {
-		index := mgo.Index{
-			Key:        []string{key},
-			Unique:     false,
-			Background: true,
-			//             Sparse:     true,
-		}
-		err := c.EnsureIndex(index)
-		if err != nil {
-			logs.WithFields(logs.Fields{
-				"Time":  time.Now(),
-				"Error": err,
-				"Index": index,
-			}).Error("Unable to ensure index")
-		}
-	}
-}
-
-// GetBytesFromMongoRecord converts MongoRecord map into bytes
-func GetBytesFromMongoRecord(data MongoRecord) ([]byte, error) {
-	var buf bytes.Buffer
-	enc := json.NewEncoder(&buf)
-	err := enc.Encode(data)
-	if err != nil {
-		return nil, err
-	}
-	return buf.Bytes(), nil
-}
-
-// Convert2MongoRecord converts given interface to Record data type
-func Convert2MongoRecord(item interface{}) MongoRecord {
-	switch r := item.(type) {
-	case MongoRecord:
-		return r
-	default:
-		data := item.(map[string]interface{})
-		rec := make(MongoRecord)
-		for kkk, vvv := range data {
-			rec[kkk] = vvv
-		}
-		return rec
-	}
-	return nil
 }
