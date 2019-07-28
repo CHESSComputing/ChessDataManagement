@@ -100,12 +100,14 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	page := templates.SearchForm(Config.Templates, tmplData)
 
 	var records []Record
+	var nrec int // we'll use it for pagination later
 	if err := r.ParseForm(); err == nil {
 		// r.PostForm provides url.Values which is map[string][]string type
 		// we convert it to Record
 		query := r.PostForm["query"]
 		spec := ParseQuery(query)
 		if spec != nil {
+			nrec = MongoCount(Config.DBName, Config.DBColl, spec)
 			records = MongoGet(Config.DBName, Config.DBColl, spec, 0, -1)
 		}
 		logs.WithFields(logs.Fields{
@@ -113,6 +115,8 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 			"Records": records,
 		}).Info("results")
 	}
+	// TODO: implement pagination
+	page = fmt.Sprintf("%s</br></br>Found %d results</br>", page, nrec)
 	for _, rec := range records {
 		oid := rec["_id"].(bson.ObjectId)
 		tmplData["Id"] = oid.Hex()
@@ -294,6 +298,7 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 				"Record": rec,
 				"Files":  files,
 			}).Info("input data")
+			rec["path"] = files[0]
 			did, err := InsertFiles(experiment, processing, tier, files)
 			rec["did"] = did
 			if err != nil {
@@ -302,7 +307,7 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 			} else {
 				records := []Record{rec}
 				MongoInsert(Config.DBName, Config.DBColl, records)
-				msg = fmt.Sprintf("SUCCESS:\nMetaData:\n%v\n\nFound %d files", rec.ToString(), len(files))
+				msg = fmt.Sprintf("SUCCESS:\n\nMETA-DATA:\n%v\n\nDATASET: %s contains %d files", rec.ToString(), dataset, len(files))
 				class = "msg-success"
 			}
 		} else {
