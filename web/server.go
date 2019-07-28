@@ -30,6 +30,14 @@ func Server(configFile string) {
 	if err != nil {
 		logs.WithFields(logs.Fields{"Time": time.Now(), "Config": configFile}).Error("Unable to parse")
 	}
+
+	// initialize FilesDB connection
+	FilesDB, err = InitFilesDB()
+	defer FilesDB.Close()
+	if err != nil {
+		logs.WithFields(logs.Fields{"Error": err}).Fatal("FilesDB")
+	}
+
 	var templates ServerTemplates
 	tmplData := make(map[string]interface{})
 	tmplData["Time"] = time.Now()

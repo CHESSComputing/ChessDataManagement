@@ -14,6 +14,7 @@ type Configuration struct {
 	Uri          string `json:"uri"`          // server mongodb URI
 	DBName       string `json:"dbname"`       // mongo db name
 	DBColl       string `json:"dbcoll"`       // mongo db name
+	FilesDBUri   string `json:"filesdburi"`   // server FilesDB URI
 	Templates    string `json:"templates"`    // location of server templates
 	Jscripts     string `json:"jscripts"`     // location of server JavaScript files
 	Images       string `json:"images"`       // location of server images

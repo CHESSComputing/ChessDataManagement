@@ -1,17 +1,50 @@
+// for Go database API: http://go-database-sql.org/overview.html
+// tutorial: https://golang-basic.blogspot.com/2014/06/golang-database-step-by-step-guide-on.html
+// Oracle drivers:
+//   _ "gopkg.in/rana/ora.v4"
+//   _ "github.com/mattn/go-oci8"
+// MySQL driver:
+//   _ "github.com/go-sql-driver/mysql"
+// SQLite driver:
+//  _ "github.com/mattn/go-sqlite3"
+//
+
 package main
 
 import (
 	"database/sql"
+	"errors"
 	"strings"
 	"time"
+
+	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/mattn/go-sqlite3"
 
 	logs "github.com/sirupsen/logrus"
 )
 
-// global variable to keep pointer to DB
-var DB *sql.DB
-var DBTYPE string
-var DBOWNER string
+// global variable to keep pointer to FilesDB
+var FilesDB *sql.DB
+
+// InitFilesDB sets pointer to FilesDB
+func InitFilesDB() (*sql.DB, error) {
+	dbAttrs := strings.Split(Config.FilesDBUri, "://")
+	if len(dbAttrs) != 2 {
+		return nil, errors.New("Please provide proper FilesDB uri")
+	}
+	logs.WithFields(logs.Fields{
+		"Driver":  dbAttrs[0],
+		"FilesDB": dbAttrs[1],
+	}).Info("FilesDB")
+	db, err := sql.Open(dbAttrs[0], dbAttrs[1])
+	if err != nil {
+		return nil, err
+	}
+	err = db.Ping()
+	db.SetMaxOpenConns(100)
+	db.SetMaxIdleConns(100)
+	return db, err
+}
 
 // generic API to execute given statement, ideas are taken from
 // http://stackoverflow.com/questions/17845619/how-to-call-the-scan-variadic-function-in-golang-using-reflection
@@ -99,8 +132,8 @@ func execute(tx *sql.Tx, stm string, args ...interface{}) ([]Record, error) {
 }
 
 // InsertFiles insert given files into FilesDB
-func InsertFiles(experiment, processing, tier string, files []string) (int, error) {
-	tx, err := DB.Begin()
+func InsertFiles(experiment, processing, tier string, files []string) (int64, error) {
+	tx, err := FilesDB.Begin()
 	if err != nil {
 		logs.WithFields(logs.Fields{
 			"Error": err,
@@ -136,7 +169,7 @@ func InsertFiles(experiment, processing, tier string, files []string) (int, erro
 		return -1, tx.Rollback()
 	}
 	rec = res[0]
-	eid := rec["experiment_id"].(int)
+	eid := rec["experiment_id"].(int64)
 
 	stmt = "SELECT processing_id FROM processing WHERE name=?"
 	res, err = execute(tx, stmt, processing)
@@ -144,7 +177,7 @@ func InsertFiles(experiment, processing, tier string, files []string) (int, erro
 		return -1, tx.Rollback()
 	}
 	rec = res[0]
-	pid := rec["processing_id"].(int)
+	pid := rec["processing_id"].(int64)
 
 	stmt = "SELECT tier_id FROM tiers WHERE name=?"
 	res, err = execute(tx, stmt, tier)
@@ -152,7 +185,7 @@ func InsertFiles(experiment, processing, tier string, files []string) (int, erro
 		return -1, tx.Rollback()
 	}
 	rec = res[0]
-	tid := rec["tier_id"].(int)
+	tid := rec["tier_id"].(int64)
 
 	// insert data into datasets table
 	tstamp := time.Now()
@@ -169,7 +202,7 @@ func InsertFiles(experiment, processing, tier string, files []string) (int, erro
 		return -1, tx.Rollback()
 	}
 	rec = res[0]
-	did := rec["dataset_id"].(int)
+	did := rec["dataset_id"].(int64)
 
 	// insert files info
 	for _, name := range files {
@@ -178,6 +211,11 @@ func InsertFiles(experiment, processing, tier string, files []string) (int, erro
 		if err != nil {
 			return -1, tx.Rollback()
 		}
+	}
+	// commit whole workflow
+	err = tx.Commit()
+	if err != nil {
+		return -1, tx.Rollback()
 	}
 	return did, nil
 }
