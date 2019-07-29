@@ -2,7 +2,7 @@
 <!-- web_top.tmpl -->
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head profile="http://www.w3.org/2005/11/profile">
-    <title>CHESS Data Aggregation Service</title>
+    <title>CHESS Data Management System</title>
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="Content-Language" content="en-us" />
@@ -18,7 +18,7 @@
     <!-- Kube CSS -->
     <link rel="stylesheet" href="/css/kube.min.css">
 
-    <link rel="search" type="application/opensearchdescription+xml" href="/opensearch" title="Data Aggregation System" />
+    <link rel="search" type="application/opensearchdescription+xml" href="/opensearch" title="CHESS Data Management System" />
     <script type="text/javascript" src="/js/prototype.js"></script>
     <script type="text/javascript" src="/js/utils.js"></script>
     <script type="text/javascript" src="/js/ajax_utils.js"></script>
@@ -35,16 +35,17 @@
         <nav>
             <ul>
                 <li><a id="web_top_home" href="/">Home</a></li>
-                <li><a id="web_top_data" href="/data">Data</a></li>
                 <li><a id="web_top_search" href="/search">Search</a></li>
                 <li><a id="web_top_status" href="/status">Status</a></li>
                 <li><a id="web_top_faq" href="/faq">FAQ</a></li>
-                <li><a id="web_top_bug" href="https://github.com/dmwm/ChessDataManagement/issues">Bug report</a></li>
+                <li><a id="web_top_bug" href="https://github.com/vkuznet/ChessDataManagement/issues">Bug report</a></li>
             </ul>
         </nav>
         <!-- secondary navigation -->
         <nav class="is-push-right">
             <ul>
+                <!-- auth-session is defined in code -->
+                <!-- once logout redirect to home page -->
                 <li><a href="javascript:deleteCookie('auth-session');load('/');">Logout</a></li>
             </ul>
         </nav>

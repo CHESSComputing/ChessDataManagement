@@ -1,6 +1,13 @@
 <h4>Server server status</h4>
-<div class="code">
-</div>
-<div>
-    Number of go-routines: {{.NGo}}
-</div>
+<pre>
+    Memory       : {{.Memory}}
+    Swap         : {{.Swap}}
+    CPU          : {{.CPU}}
+    Load1        : {{.Load1}}
+    Load5        : {{.Load5}}
+    Load15       : {{.Load15}}
+    Uptime       : {{.Uptime}}
+    # go-routines: {{.NGo}}
+    # GETs       : {{.GetRequests}}
+    # POSTs      : {{.PostRequest}}
+</pre>

@@ -332,10 +332,13 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	var templates ServerTemplates
 	tmplData := make(map[string]interface{})
 	tmplData["NGo"] = runtime.NumGoroutine()
-	virt := Memory{Total: m.Total, Free: m.Free, Used: m.Used, UsedPercent: m.UsedPercent}
-	swap := Memory{Total: s.Total, Free: s.Free, Used: s.Used, UsedPercent: s.UsedPercent}
-	tmplData["Memory"] = Mem{Virtual: virt, Swap: swap}
-	tmplData["Load"] = l
+	//     virt := Memory{Total: m.Total, Free: m.Free, Used: m.Used, UsedPercent: m.UsedPercent}
+	//     swap := Memory{Total: s.Total, Free: s.Free, Used: s.Used, UsedPercent: s.UsedPercent}
+	tmplData["Memory"] = m.UsedPercent
+	tmplData["Swap"] = s.UsedPercent
+	tmplData["Load1"] = l.Load1
+	tmplData["Load5"] = l.Load5
+	tmplData["Load15"] = l.Load15
 	tmplData["CPU"] = c
 	if perr == nil { // if we got process info
 		conn, err := process.Connections()
@@ -348,8 +351,8 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	tmplData["Uptime"] = time.Since(Time0).Seconds()
-	tmplData["getRequests"] = TotalGetRequests
-	tmplData["postRequests"] = TotalPostRequests
+	tmplData["GetRequests"] = TotalGetRequests
+	tmplData["PostRequests"] = TotalPostRequests
 	page := templates.Status(Config.Templates, tmplData)
 	if strings.Contains(accept, "json") || strings.Contains(content, "json") {
 		data, err := json.Marshal(tmplData)
