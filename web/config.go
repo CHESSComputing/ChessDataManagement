@@ -20,6 +20,10 @@ type Configuration struct {
 	Images       string `json:"images"`       // location of server images
 	Styles       string `json:"styles"`       // location of server CSS styles
 	LogFormatter string `json:"logFormatter"` // LogFormatter type
+	ClientID     string `json:"clientId"`     // clientID for OAuth
+	ClientSecret string `json:"clientSecret"` // clientSercret for OAuth
+	Redirect     string `json:"redirect"`     // redirect URI on Github app
+	StoreSecret  string `json:"storeSecret"`  // web server store secret string
 }
 
 // Config variable represents configuration object

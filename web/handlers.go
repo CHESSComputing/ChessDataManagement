@@ -1,7 +1,19 @@
 package main
 
+// handlers module
+//
+// Copyright (c) 2019 - Valentin Kuznetsov <vkuznet@gmail.com>
+//
+// OAuth tutorials:
+// https://github.com/sohamkamani/go-oauth-example
+// https://jacobmartins.com/2016/02/29/getting-started-with-oauth2-in-go/
+// https://www.sohamkamani.com/blog/golang/2018-06-24-oauth-with-golang/
+// https://auth0.com/docs/quickstart/webapp/golang/01-login
+// https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps
+
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -30,19 +42,34 @@ type ServerSettings struct {
 	LogFormatter string `json:"logFormatter"` // logrus formatter
 }
 
+// OAuthAccessResponse provides sturcture to hold access token
+type OAuthAccessResponse struct {
+	AccessToken string `json:"access_token"`
+}
+
+// helper function to get username from the session
+func username(r *http.Request) (string, error) {
+	session, err := Store.Get(r, "auth-session")
+	if err != nil {
+		return "", err
+	}
+	if user, status := session.Values["user"]; status {
+		logs.WithFields(logs.Fields{
+			"User": user,
+		}).Info("authenticated")
+		return user.(string), nil
+	}
+	return "", errors.New("User not found")
+}
+
+// authentication function
+func auth(r *http.Request) error {
+	_, err := username(r)
+	return err
+}
+
 // AuthHandler authenticate incoming requests and route them to appropriate handler
 func AuthHandler(w http.ResponseWriter, r *http.Request) {
-	/*
-		// check if server started with hkey file (auth is required)
-		if config.Config.Hkey != "" {
-			status := _cmsAuth.CheckAuthnAuthz(r.Header)
-			if !status {
-				msg := "You are not allowed to access this resource"
-				http.Error(w, msg, http.StatusForbidden)
-				return
-			}
-		}
-	*/
 	// increment GET/POST counters
 	if r.Method == "GET" {
 		atomic.AddUint64(&TotalGetRequests, 1)
@@ -52,12 +79,15 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// check if server started with hkey file (auth is required)
-	//     status := auth(r)
-	//     if !status {
-	//         msg := "You are not allowed to access this resource"
-	//         http.Error(w, msg, http.StatusForbidden)
-	//         return
-	//     }
+	err := auth(r)
+	if err != nil {
+		logs.WithFields(logs.Fields{
+			"Error": err,
+		}).Error("could not authenticate")
+		LoginHandler(w, r)
+		return
+	}
+	// define all methods which requires authentication
 	arr := strings.Split(r.URL.Path, "/")
 	path := arr[len(arr)-1]
 	switch path {
@@ -74,23 +104,122 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	case "process":
 		ProcessHandler(w, r)
 	default:
-		HomeHandler(w, r)
+		DataHandler(w, r)
 	}
 }
 
 // GET Methods
 
-// HomeHandler handlers Home requests
-func HomeHandler(w http.ResponseWriter, r *http.Request) {
+// LoginHandler handlers Login requests
+func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 	var templates ServerTemplates
 	tmplData := make(map[string]interface{})
-	page := templates.HomeForm(Config.Templates, tmplData)
+	tmplData["ClientID"] = Config.ClientID
+	tmplData["Redirect"] = Config.Redirect
+	page := templates.LoginForm(Config.Templates, tmplData)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(_top + page + _bottom))
+}
+
+// OAuthHandler provides OAuth authentication to our app
+func OAuthHandler(w http.ResponseWriter, r *http.Request) {
+	httpClient := http.Client{}
+
+	// First, we need to get the value of the `code` query param
+	err := r.ParseForm()
+	if err != nil {
+		logs.WithFields(logs.Fields{
+			"Error": err,
+		}).Error("could not parse the query")
+		w.WriteHeader(http.StatusBadRequest)
+	}
+	code := r.FormValue("code")
+
+	// Next, lets for the HTTP request to call the github oauth enpoint
+	// to get our access token
+	reqURL := fmt.Sprintf("https://github.com/login/oauth/access_token?client_id=%s&client_secret=%s&code=%s", Config.ClientID, Config.ClientSecret, code)
+	req, err := http.NewRequest(http.MethodPost, reqURL, nil)
+	if err != nil {
+		logs.WithFields(logs.Fields{
+			"Error": err,
+		}).Error("could not create HTTP request")
+		w.WriteHeader(http.StatusBadRequest)
+	}
+	// We set this header since we want the response
+	// as JSON
+	req.Header.Set("accept", "application/json")
+
+	// Send out the HTTP request
+	res, err := httpClient.Do(req)
+	if err != nil {
+		logs.WithFields(logs.Fields{
+			"Error": err,
+		}).Error("could not send HTTP request")
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+	defer res.Body.Close()
+
+	// Parse the request body into the `OAuthAccessResponse` struct
+	var t OAuthAccessResponse
+	if err := json.NewDecoder(res.Body).Decode(&t); err != nil {
+		logs.WithFields(logs.Fields{
+			"Error": err,
+		}).Error("could not parse JSON response")
+		w.WriteHeader(http.StatusBadRequest)
+	}
+
+	// get user info from github
+	reqURL = fmt.Sprintf("https://api.github.com/user")
+	req, err = http.NewRequest(http.MethodGet, reqURL, nil)
+	if err != nil {
+		logs.WithFields(logs.Fields{
+			"Error": err,
+		}).Error("could not create HTTP request")
+		w.WriteHeader(http.StatusBadRequest)
+	}
+	req.Header.Add("Authorization", fmt.Sprintf("token %s", t.AccessToken))
+	res, err = httpClient.Do(req)
+	if err != nil {
+		logs.WithFields(logs.Fields{
+			"Error": err,
+		}).Error("could not send HTTP request")
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+	defer res.Body.Close()
+	var userInfo map[string]interface{}
+	if err := json.NewDecoder(res.Body).Decode(&userInfo); err != nil {
+		logs.WithFields(logs.Fields{
+			"Error": err,
+		}).Error("could not parse JSON response")
+		w.WriteHeader(http.StatusBadRequest)
+	}
+
+	// add user credentials to store
+	session, err := Store.Get(r, "auth-session")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	session.Values["user"] = userInfo["login"].(string)
+	err = session.Save(r, w)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	logs.WithFields(logs.Fields{
+		"UserInfo": userInfo,
+		"Token":    t.AccessToken,
+	}).Debug("oauth")
+
+	// Finally, send a response to redirect the user to the "welcome" page
+	// with the access token
+	//w.Header().Set("Location", "/data?access_token="+t.AccessToken)
+	w.Header().Set("Location", "/data")
+	w.WriteHeader(http.StatusFound)
 }
 
 // SearchHandler handlers Search requests
@@ -134,6 +263,7 @@ func DataHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
+	user, _ := username(r)
 	var templates ServerTemplates
 	keysData := make(map[string]string)
 	keysData["Experiment"] = "Name of the experiment"
@@ -143,6 +273,7 @@ func DataHandler(w http.ResponseWriter, r *http.Request) {
 	keysData["Path"] = "input directory of experiment's files"
 	tmplData := make(map[string]interface{})
 	tmplData["Keys"] = keysData
+	tmplData["User"] = user
 	page := templates.Keys(Config.Templates, tmplData)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(_top + page + _bottom))

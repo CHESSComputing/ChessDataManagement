@@ -59,12 +59,21 @@ func (q ServerTemplates) Bottom(tdir string, tmplData map[string]interface{}) st
 	return q.bottom
 }
 
-// HomeForm method for ServerTemplates structure
-func (q ServerTemplates) HomeForm(tdir string, tmplData map[string]interface{}) string {
+// LoginForm method for ServerTemplates structure
+func (q ServerTemplates) LoginForm(tdir string, tmplData map[string]interface{}) string {
 	if q.searchForm != "" {
 		return q.searchForm
 	}
-	q.searchForm = parseTmpl(Config.Templates, "home.tmpl", tmplData)
+	q.searchForm = parseTmpl(Config.Templates, "login.tmpl", tmplData)
+	return q.searchForm
+}
+
+// LogoutForm method for ServerTemplates structure
+func (q ServerTemplates) LogoutForm(tdir string, tmplData map[string]interface{}) string {
+	if q.searchForm != "" {
+		return q.searchForm
+	}
+	q.searchForm = parseTmpl(Config.Templates, "logout.tmpl", tmplData)
 	return q.searchForm
 }
 

@@ -2,6 +2,9 @@
  * specific utilities
  * Author: Valentin Kuznetsov, 2019
  */
+function deleteCookie(name) {
+    document.cookie = name+'=; Max-Age=-99999999;';
+}
 function updateInput(myinput, dbs_global_inst) {
    if  (myinput) updateTag('input', myinput);
    else updateTag('input', '');

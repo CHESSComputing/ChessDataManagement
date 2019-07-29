@@ -1,13 +1,16 @@
 package main
 
 import (
-	_ "expvar" // to be used for monitoring, see https://github.com/divan/expvarmon
+	"encoding/gob"
 	"fmt"
 	"net/http"
-	_ "net/http/pprof" // profiler, see https://golang.org/pkg/net/http/pprof/
 	"time"
 
+	"github.com/gorilla/sessions"
 	logs "github.com/sirupsen/logrus"
+
+	_ "expvar"         // to be used for monitoring, see https://github.com/divan/expvarmon
+	_ "net/http/pprof" // profiler, see https://golang.org/pkg/net/http/pprof/
 )
 
 // global variables
@@ -15,6 +18,16 @@ var _top, _bottom, _search string
 
 // Time0 represents initial time when we started the server
 var Time0 time.Time
+
+// Store keeps all user info for our server
+var Store *sessions.FilesystemStore
+
+// initSessionStore initalize our session store
+func initSessionStore(secret string) error {
+	Store = sessions.NewFilesystemStore("", []byte(secret))
+	gob.Register(map[string]interface{}{})
+	return nil
+}
 
 // Server code
 func Server(configFile string) {
@@ -38,6 +51,8 @@ func Server(configFile string) {
 		logs.WithFields(logs.Fields{"Error": err}).Fatal("FilesDB")
 	}
 
+	initSessionStore(Config.StoreSecret)
+
 	var templates ServerTemplates
 	tmplData := make(map[string]interface{})
 	tmplData["Time"] = time.Now()
@@ -50,6 +65,8 @@ func Server(configFile string) {
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir(Config.Styles))))
 	http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir(Config.Jscripts))))
 	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir(Config.Images))))
+	http.HandleFunc("/oauth", OAuthHandler)
+	http.HandleFunc("/login", LoginHandler)
 	http.HandleFunc("/", AuthHandler)
 
 	addr := fmt.Sprintf(":%d", Config.Port)
