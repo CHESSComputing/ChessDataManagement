@@ -1,5 +1,10 @@
 package main
 
+// errors module
+//
+// Copyright (c) 2019 - Valentin Kuznetsov <vkuznet@gmail.com>
+//
+
 // ServerError and others are represent different types of errors
 const (
 	_ = iota

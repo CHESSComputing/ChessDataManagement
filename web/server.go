@@ -1,5 +1,10 @@
 package main
 
+// web server module
+//
+// Copyright (c) 2019 - Valentin Kuznetsov <vkuznet@gmail.com>
+//
+
 import (
 	"encoding/gob"
 	"fmt"

@@ -1,6 +1,6 @@
 package main
 
-// Go implementation of Data Aggregation System for CHESS
+// Go implementation of Data Management System for CHESS
 //
 // Copyright (c) 2019 - Valentin Kuznetsov <vkuznet@gmail.com>
 //

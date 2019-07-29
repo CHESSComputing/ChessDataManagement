@@ -1,3 +1,10 @@
+package main
+
+// FilesDB module
+//
+// Copyright (c) 2019 - Valentin Kuznetsov <vkuznet@gmail.com>
+//
+
 // for Go database API: http://go-database-sql.org/overview.html
 // tutorial: https://golang-basic.blogspot.com/2014/06/golang-database-step-by-step-guide-on.html
 // Oracle drivers:
@@ -8,8 +15,6 @@
 // SQLite driver:
 //  _ "github.com/mattn/go-sqlite3"
 //
-
-package main
 
 import (
 	"database/sql"

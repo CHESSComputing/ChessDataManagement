@@ -1,11 +1,18 @@
 package main
 
+// query module
+//
+// Copyright (c) 2019 - Valentin Kuznetsov <vkuznet@gmail.com>
+//
+
 import (
 	"strings"
 
 	"gopkg.in/mgo.v2/bson"
 )
 
+// ParseQuery function provides basic parser for user queries and return
+// results in bson dictionary
 func ParseQuery(inputQuery []string) bson.M {
 	query := strings.Join(inputQuery, " ")
 	if strings.TrimSpace(query) == "" {
