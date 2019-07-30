@@ -420,7 +420,8 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		path := rec["path"].(string)
-		files := FindFiles(path)
+		//         files := FindFiles(path)
+		files := []string{path}
 		delete(rec, "path")
 		experiment := rec["experiment"].(string)
 		processing := rec["processing"].(string)
