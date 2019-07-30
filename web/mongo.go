@@ -186,6 +186,29 @@ func MongoInsert(dbname, collname string, records []Record) {
 	}
 }
 
+// MongoUpsert records into MongoDB
+func MongoUpsert(dbname, collname string, records []Record) {
+	s := _Mongo.Connect()
+	defer s.Close()
+	c := s.DB(dbname).C(collname)
+	for _, rec := range records {
+		dataset := rec["dataset"].(string)
+		if dataset == "" {
+			logs.WithFields(logs.Fields{
+				"Record": rec,
+			}).Warn("no dataset")
+			continue
+		}
+		spec := bson.M{"dataset": dataset}
+		if _, err := c.Upsert(spec, &rec); err != nil {
+			logs.WithFields(logs.Fields{
+				"Error":  err,
+				"Record": rec,
+			}).Error("Fail to insert record")
+		}
+	}
+}
+
 // MongoGet records from MongoDB
 func MongoGet(dbname, collname string, spec bson.M, idx, limit int) []Record {
 	out := []Record{}
