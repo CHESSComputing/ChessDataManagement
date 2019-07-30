@@ -28,8 +28,8 @@ var Time0 time.Time
 var Store *sessions.FilesystemStore
 
 // initSessionStore initalize our session store
-func initSessionStore(secret string) error {
-	Store = sessions.NewFilesystemStore("", []byte(secret))
+func initSessionStore(path, secret string) error {
+	Store = sessions.NewFilesystemStore(path, []byte(secret))
 	gob.Register(map[string]interface{}{})
 	return nil
 }
@@ -56,7 +56,7 @@ func Server(configFile string) {
 		logs.WithFields(logs.Fields{"Error": err}).Fatal("FilesDB")
 	}
 
-	initSessionStore(Config.StoreSecret)
+	initSessionStore(Config.StorePath, Config.StoreSecret)
 
 	var templates ServerTemplates
 	tmplData := make(map[string]interface{})

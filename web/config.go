@@ -28,6 +28,7 @@ type Configuration struct {
 	ClientSecret string `json:"clientSecret"` // clientSercret for OAuth
 	Redirect     string `json:"redirect"`     // redirect URI on Github app
 	StoreSecret  string `json:"storeSecret"`  // web server store secret string
+	StorePath    string `json:"storePath"`    // web server store path
 }
 
 // Config variable represents configuration object
