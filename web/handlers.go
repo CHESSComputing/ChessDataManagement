@@ -56,7 +56,7 @@ func username(r *http.Request) (string, error) {
 	if user, status := session.Values["user"]; status {
 		logs.WithFields(logs.Fields{
 			"User": user,
-		}).Info("authenticated")
+		}).Debug("authenticated")
 		return user.(string), nil
 	}
 	return "", errors.New("User not found")
@@ -242,7 +242,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 		logs.WithFields(logs.Fields{
 			"Spec":    spec,
 			"Records": records,
-		}).Info("results")
+		}).Debug("results")
 	}
 	// TODO: implement pagination
 	page = fmt.Sprintf("%s</br></br>Found %d results</br>", page, nrec)
@@ -396,7 +396,7 @@ func SettingsHandler(w http.ResponseWriter, r *http.Request) {
 	logs.WithFields(logs.Fields{
 		"Verbose level": s.Level,
 		"Log formatter": s.LogFormatter,
-	}).Info("update server settings")
+	}).Debug("update server settings")
 	w.WriteHeader(http.StatusOK)
 	return
 }
@@ -431,7 +431,7 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 			logs.WithFields(logs.Fields{
 				"Record": rec,
 				"Files":  files,
-			}).Info("input data")
+			}).Debug("input data")
 			rec["path"] = files[0]
 			did, err := InsertFiles(experiment, processing, tier, files)
 			rec["did"] = did
@@ -440,7 +440,7 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 				class = "msg-error"
 			} else {
 				records := []Record{rec}
-				MongoInsert(Config.DBName, Config.DBColl, records)
+				MongoUpsert(Config.DBName, Config.DBColl, records)
 				msg = fmt.Sprintf("SUCCESS:\n\nMETA-DATA:\n%v\n\nDATASET: %s contains %d files", rec.ToString(), dataset, len(files))
 				class = "msg-success"
 			}
