@@ -20,17 +20,17 @@ func ParseQuery(inputQuery []string) bson.M {
 		return nil
 	}
 	spec := make(bson.M)
+	var description string
 	for _, item := range strings.Split(query, " ") {
 		val := strings.Split(strings.TrimSpace(item), ":")
 		if len(val) == 2 {
 			spec[val[0]] = val[1]
 		} else {
-			if v, ok := spec["free"]; ok {
-				spec["free"] = fmt.Sprintf("%s %s", v, val)
-			} else {
-				spec["free"] = val
-			}
+			description = fmt.Sprintf("%s %s", description, val)
 		}
+	}
+	if description != "" {
+		spec["$text"] = bson.M{"$search": description}
 	}
 	return spec
 }
