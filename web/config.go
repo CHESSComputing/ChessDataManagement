@@ -24,6 +24,7 @@ type Configuration struct {
 	Images       string `json:"images"`       // location of server images
 	Styles       string `json:"styles"`       // location of server CSS styles
 	LogFormatter string `json:"logFormatter"` // LogFormatter type
+	Verbose      int    `json:"verbose"`      // verbosity level
 	ClientID     string `json:"clientId"`     // clientID for OAuth
 	ClientSecret string `json:"clientSecret"` // clientSercret for OAuth
 	Redirect     string `json:"redirect"`     // redirect URI on Github app
@@ -36,7 +37,7 @@ var Config Configuration
 
 // String returns string representation of server Config
 func (c *Configuration) String() string {
-	return fmt.Sprintf("<Config port=%d uri=%s dbname=%s dbcoll=%s templates=%s js=%s images=%s css=%s logFormatter=%s>", c.Port, c.Uri, c.DBName, c.DBColl, c.Templates, c.Jscripts, c.Images, c.Styles, c.LogFormatter)
+	return fmt.Sprintf("<Config port=%d templates=%s js=%s images=%s css=%s logFormatter=%s>", c.Port, c.Templates, c.Jscripts, c.Images, c.Styles, c.LogFormatter, c.Verbose)
 }
 
 // ParseConfig parse given config file
