@@ -6,6 +6,7 @@ package main
 //
 
 import (
+	"fmt"
 	"strings"
 
 	"gopkg.in/mgo.v2/bson"
@@ -24,7 +25,11 @@ func ParseQuery(inputQuery []string) bson.M {
 		if len(val) == 2 {
 			spec[val[0]] = val[1]
 		} else {
-			spec["free"] = val
+			if v, ok := spec["free"]; ok {
+				spec["free"] = fmt.Sprintf("%s %s", v, val)
+			} else {
+				spec["free"] = val
+			}
 		}
 	}
 	return spec
