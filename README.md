@@ -81,6 +81,12 @@ via provide free-text query:
 ./chess_finder.py --params=doc/params.json --query="scan 74-77" --list-files --verbose
 ```
 
+Please note, to perform free text search queries we need to define
+text index, e.g.
+```
+db.meta.createIndex( { description: "text" } )
+```
+
 ### References
 
 1. [MongoDB](https://www.mongodb.com)
