@@ -45,6 +45,9 @@ func Server(configFile string) {
 	} else {
 		logs.SetFormatter(&logs.JSONFormatter{})
 	}
+	if Config.Verbose > 0 {
+		logs.SetLevel(logs.DebugLevel)
+	}
 	if err != nil {
 		logs.WithFields(logs.Fields{"Time": time.Now(), "Config": configFile}).Error("Unable to parse")
 	}
