@@ -136,8 +136,26 @@ func execute(tx *sql.Tx, stm string, args ...interface{}) ([]Record, error) {
 	return records, nil
 }
 
+// FindId finds dataset attributes
+func FindId(stmt string, args ...interface{}) (int64, error) {
+	var rid int64
+	err := FilesDB.QueryRow(stmt, args...).Scan(&rid)
+	if err == nil {
+		return rid, nil
+	}
+	return -1, errors.New("Unable to find id")
+}
+
 // InsertFiles insert given files into FilesDB
 func InsertFiles(experiment, processing, tier string, files []string) (int64, error) {
+	// check if we have already our dataset in DB
+	dstmt := "SELECT dataset_id FROM datasets JOIN tiers ON datasets.tier_id=tiers.tier_id JOIN processing ON datasets.processing_id=processing.processing_id JOIN experiments ON datasets.experiment_id=experiments.experiment_id WHERE experiments.name=? and processing.name=? and tiers.name=?"
+	datasetId, e := FindId(dstmt, experiment, processing, tier)
+	if e == nil && datasetId > 0 {
+		return datasetId, nil
+	}
+
+	// proceed with transaction operation
 	tx, err := FilesDB.Begin()
 	if err != nil {
 		logs.WithFields(logs.Fields{
