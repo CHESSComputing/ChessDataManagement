@@ -73,7 +73,7 @@ func kuser(user, password string) (*credentials.Credentials, error) {
 		}).Error(msg)
 		return nil, err
 	}
-	client := client.NewClientWithPassword(user, Config.Realm, password, cfg)
+	client := client.NewClientWithPassword(user, Config.Realm, password, cfg, client.DisablePAFXFAST(true))
 	err = client.Login()
 	if err != nil {
 		msg := "client login fails"
