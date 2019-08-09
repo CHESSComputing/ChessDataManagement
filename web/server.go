@@ -7,14 +7,12 @@ package main
 
 import (
 	"crypto/tls"
-	"encoding/gob"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"time"
 
-	"github.com/gorilla/sessions"
 	logs "github.com/sirupsen/logrus"
 	"gopkg.in/jcmturner/gokrb5.v7/keytab"
 	"gopkg.in/jcmturner/gokrb5.v7/service"
@@ -29,16 +27,6 @@ var _top, _bottom, _search string
 
 // Time0 represents initial time when we started the server
 var Time0 time.Time
-
-// Store keeps all user info for our server
-var Store *sessions.FilesystemStore
-
-// initSessionStore initalize our session store
-func initSessionStore(path, secret string) error {
-	Store = sessions.NewFilesystemStore(path, []byte(secret))
-	gob.Register(map[string]interface{}{})
-	return nil
-}
 
 // Server code
 func Server(configFile string) {
@@ -64,8 +52,6 @@ func Server(configFile string) {
 	if err != nil {
 		logs.WithFields(logs.Fields{"Error": err}).Fatal("FilesDB")
 	}
-
-	initSessionStore(Config.StorePath, Config.StoreSecret)
 
 	var templates ServerTemplates
 	tmplData := make(map[string]interface{})

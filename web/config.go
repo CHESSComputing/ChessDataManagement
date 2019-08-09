@@ -25,11 +25,6 @@ type Configuration struct {
 	Styles       string `json:"styles"`       // location of server CSS styles
 	LogFormatter string `json:"logFormatter"` // LogFormatter type
 	Verbose      int    `json:"verbose"`      // verbosity level
-	ClientID     string `json:"clientId"`     // clientID for OAuth
-	ClientSecret string `json:"clientSecret"` // clientSercret for OAuth
-	Redirect     string `json:"redirect"`     // redirect URI on Github app
-	StoreSecret  string `json:"storeSecret"`  // web server store secret string
-	StorePath    string `json:"storePath"`    // web server store path
 	Realm        string `json:"realm"`        // kerberos realm
 	Keytab       string `json:"keytab"`       // kerberos keytab
 	Krb5Conf     string `json:"krb5Conf"`     // kerberos krb5.conf

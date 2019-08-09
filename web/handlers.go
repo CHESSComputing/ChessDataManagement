@@ -4,12 +4,6 @@ package main
 //
 // Copyright (c) 2019 - Valentin Kuznetsov <vkuznet@gmail.com>
 //
-// OAuth tutorials:
-// https://github.com/sohamkamani/go-oauth-example
-// https://jacobmartins.com/2016/02/29/getting-started-with-oauth2-in-go/
-// https://www.sohamkamani.com/blog/golang/2018-06-24-oauth-with-golang/
-// https://auth0.com/docs/quickstart/webapp/golang/01-login
-// https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps
 
 import (
 	"encoding/json"
@@ -33,8 +27,6 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-// var store = sessions.NewCookieStore([]byte(Config.StoreSecret))
-
 // TotalGetRequests counts total number of GET requests received by the server
 var TotalGetRequests uint64
 
@@ -47,26 +39,7 @@ type ServerSettings struct {
 	LogFormatter string `json:"logFormatter"` // logrus formatter
 }
 
-// OAuthAccessResponse provides sturcture to hold access token
-type OAuthAccessResponse struct {
-	AccessToken string `json:"access_token"`
-}
-
-// helper function to get username from the session
-func username_orig(r *http.Request) (string, error) {
-	session, err := Store.Get(r, "auth-session")
-	if err != nil {
-		return "", err
-	}
-	if user, status := session.Values["user"]; status {
-		logs.WithFields(logs.Fields{
-			"User":    user,
-			"Session": session.Values,
-		}).Debug("authenticated")
-		return user.(string), nil
-	}
-	return "", errors.New("User not found")
-}
+// helper function to extract username from auth-session cookie
 func username(r *http.Request) (string, error) {
 	cookie, err := r.Cookie("auth-session")
 	if err != nil {
@@ -84,14 +57,13 @@ func username(r *http.Request) (string, error) {
 		return "", errors.New("Unable to decript auth-session")
 	}
 	user := arr[0]
-	authenticated := arr[1]
 	logs.WithFields(logs.Fields{
-		"User":          user,
-		"Authenticated": authenticated,
+		"User": user,
 	}).Info("")
 	return user, nil
 }
 
+// helper function to perform kerberos authentication
 func kuser(user, password string) (*credentials.Credentials, error) {
 	cfg, err := config.Load(Config.Krb5Conf)
 	if err != nil {
@@ -119,6 +91,7 @@ func auth(r *http.Request) error {
 	return err
 }
 
+// helper function to handle http server errors
 func handleError(w http.ResponseWriter, r *http.Request, msg string, err error) {
 	logs.WithFields(logs.Fields{
 		"Error": err,
@@ -182,8 +155,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	var templates ServerTemplates
 	tmplData := make(map[string]interface{})
-	tmplData["ClientID"] = Config.ClientID
-	tmplData["Redirect"] = Config.Redirect
 	page := templates.LoginForm(Config.Templates, tmplData)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(_top + page + _bottom))
@@ -227,101 +198,6 @@ func KAuthHandler(w http.ResponseWriter, r *http.Request) {
 	//     s := string(byteArray[:n])
 	cookie := http.Cookie{Name: "auth-session", Value: msg, Expires: expiration}
 	http.SetCookie(w, &cookie)
-	w.Header().Set("Location", "/data")
-	w.WriteHeader(http.StatusFound)
-}
-
-// OAuthHandler provides OAuth authentication to our app
-func OAuthHandler(w http.ResponseWriter, r *http.Request) {
-	httpClient := http.Client{}
-
-	// First, we need to get the value of the `code` query param
-	err := r.ParseForm()
-	if err != nil {
-		logs.WithFields(logs.Fields{
-			"Error": err,
-		}).Error("could not parse the query")
-		w.WriteHeader(http.StatusBadRequest)
-	}
-	code := r.FormValue("code")
-
-	// Next, lets for the HTTP request to call the github oauth enpoint
-	// to get our access token
-	reqURL := fmt.Sprintf("https://github.com/login/oauth/access_token?client_id=%s&client_secret=%s&code=%s", Config.ClientID, Config.ClientSecret, code)
-	req, err := http.NewRequest(http.MethodPost, reqURL, nil)
-	if err != nil {
-		logs.WithFields(logs.Fields{
-			"Error": err,
-		}).Error("could not create HTTP request")
-		w.WriteHeader(http.StatusBadRequest)
-	}
-	// We set this header since we want the response
-	// as JSON
-	req.Header.Set("accept", "application/json")
-
-	// Send out the HTTP request
-	res, err := httpClient.Do(req)
-	defer res.Body.Close()
-	if err != nil {
-		msg := "could not send HTTP request"
-		handleError(w, r, msg, err)
-		return
-	}
-
-	// Parse the request body into the `OAuthAccessResponse` struct
-	var t OAuthAccessResponse
-	if err := json.NewDecoder(res.Body).Decode(&t); err != nil {
-		logs.WithFields(logs.Fields{
-			"Error": err,
-		}).Error("could not parse JSON response")
-		w.WriteHeader(http.StatusBadRequest)
-	}
-
-	// get user info from github
-	reqURL = fmt.Sprintf("https://api.github.com/user")
-	req, err = http.NewRequest(http.MethodGet, reqURL, nil)
-	if err != nil {
-		logs.WithFields(logs.Fields{
-			"Error": err,
-		}).Error("could not create HTTP request")
-		w.WriteHeader(http.StatusBadRequest)
-	}
-	req.Header.Add("Authorization", fmt.Sprintf("token %s", t.AccessToken))
-	res, err = httpClient.Do(req)
-	defer res.Body.Close()
-	if err != nil {
-		msg := "could not send HTTP request"
-		handleError(w, r, msg, err)
-		return
-	}
-	var userInfo map[string]interface{}
-	if err := json.NewDecoder(res.Body).Decode(&userInfo); err != nil {
-		logs.WithFields(logs.Fields{
-			"Error": err,
-		}).Error("could not parse JSON response")
-		w.WriteHeader(http.StatusBadRequest)
-	}
-
-	// add user credentials to store
-	session, err := Store.Get(r, "auth-session")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	session.Values["user"] = userInfo["login"].(string)
-	err = session.Save(r, w)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	logs.WithFields(logs.Fields{
-		"UserInfo": userInfo,
-		"Token":    t.AccessToken,
-	}).Debug("oauth")
-
-	// Finally, send a response to redirect the user to the "welcome" page
-	// with the access token
-	//w.Header().Set("Location", "/data?access_token="+t.AccessToken)
 	w.Header().Set("Location", "/data")
 	w.WriteHeader(http.StatusFound)
 }
