@@ -18,10 +18,10 @@ const (
 
 // ServerErrorName and others provides human based definition of the error
 const (
-	ServerErrorName     = "DAS error"
+	ServerErrorName     = "Server error"
 	MongoDBErrorName    = "MongoDB error"
-	ProxyErrorName      = "DAS proxy error"
-	QueryErrorName      = "DAS query error"
-	ParserErrorName     = "DAS parser error"
-	ValidationErrorName = "DAS validation error"
+	ProxyErrorName      = "Server proxy error"
+	QueryErrorName      = "Server query error"
+	ParserErrorName     = "Server parser error"
+	ValidationErrorName = "Server validation error"
 )

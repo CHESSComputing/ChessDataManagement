@@ -50,7 +50,7 @@ func ErrPropagate(api string) {
 		logs.WithFields(logs.Fields{
 			"api":   api,
 			"error": Stack(),
-		}).Error("DAS ERROR")
+		}).Error("Server ERROR")
 		panic(fmt.Sprintf("%s:%s", api, err))
 	}
 }
@@ -66,7 +66,7 @@ func ErrPropagate2Channel(api string, ch chan interface{}) {
 		logs.WithFields(logs.Fields{
 			"api":   api,
 			"error": Stack(),
-		}).Error("DAS ERROR")
+		}).Error("Server ERROR")
 		ch <- fmt.Sprintf("%s:%s", api, err)
 	}
 }
@@ -390,14 +390,14 @@ func ColorUrl(rurl string) string {
 	return Color(BLUE, rurl)
 }
 
-// Error prints DAS error message with given arguments
+// Error prints Server error message with given arguments
 func Error(args ...interface{}) {
-	fmt.Println(Color(RED, "DAS ERROR"), args)
+	fmt.Println(Color(RED, "Server ERROR"), args)
 }
 
-// DASWarning prints DAS error message with given arguments
+// ServerWarning prints Server error message with given arguments
 func Warning(args ...interface{}) {
-	fmt.Println(Color(BROWN, "DAS WARNING"), args)
+	fmt.Println(Color(BROWN, "Server WARNING"), args)
 }
 
 // BLACK color
