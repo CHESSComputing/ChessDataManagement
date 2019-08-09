@@ -37,7 +37,7 @@ var Config Configuration
 
 // String returns string representation of server Config
 func (c *Configuration) String() string {
-	return fmt.Sprintf("<Config port=%d templates=%s js=%s images=%s css=%s logFormatter=%s>", c.Port, c.Templates, c.Jscripts, c.Images, c.Styles, c.LogFormatter, c.Verbose)
+	return fmt.Sprintf("<Config port=%d templates=%s js=%s images=%s css=%s logFormatter=%s>", c.Port, c.Templates, c.Jscripts, c.Images, c.Styles, c.LogFormatter)
 }
 
 // ParseConfig parse given config file

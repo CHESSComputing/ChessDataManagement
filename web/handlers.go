@@ -192,7 +192,7 @@ func KAuthHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	expiration := time.Now().Add(24 * time.Hour)
-	msg := fmt.Sprintf("%s-%s", creds.UserName(), creds.Authenticated())
+	msg := fmt.Sprintf("%s-%v", creds.UserName(), creds.Authenticated())
 	//     byteArray := encrypt([]byte(msg), Config.StoreSecret)
 	//     n := bytes.IndexByte(byteArray, 0)
 	//     s := string(byteArray[:n])
