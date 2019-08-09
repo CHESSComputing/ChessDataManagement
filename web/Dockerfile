@@ -4,9 +4,9 @@ MAINTAINER Valentin Kuznetsov vkuznet@gmail.com
 ENV WDIR=/data
 ENV USER=_web
 
-ADD install.sh $WDIR/install.sh
-
-RUN yum update -y && yum clean all
+RUN yum update -y
+RUN yum install -y git-core zip unzip which file gcc
+RUN yum clean all
 
 # create bashs link to bash
 RUN ln -s /bin/bash /usr/bin/bashs
@@ -32,15 +32,18 @@ RUN go get -d github.com/shirou/gopsutil/...
 RUN go get -d gopkg.in/jcmturner/gokrb5.v7/...
 RUN go get gopkg.in/mgo.v2/
 RUN go get gopkg.in/mgo.v2/bson
-RUN go get github.com/vkuznet/ChessDataManagement
 
-# build exporters
+# build chess
+RUN mkdir -p $GOPATH/src/github.com/vkuznet
+WORKDIR $GOPATH/src/github.com/vkuznet
+RUN git clone https://github.com/vkuznet/ChessDataManagement.git
 WORKDIR $GOPATH/src/github.com/vkuznet/ChessDataManagement/web
-RUN make
+RUN go build
+RUN cp web $GOPATH/bin
 
 # setup final environment
 ENV PATH="${WDIR}/bin:${GOPATH}/bin:${PATH}"
 
 USER $USER
 WORKDIR $WDIR
-CMD ["./web"]
+CMD ["./web -config /data/etc/server.json"]
