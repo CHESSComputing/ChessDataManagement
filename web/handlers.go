@@ -27,8 +27,13 @@ import (
 	"github.com/shirou/gopsutil/mem"
 	"github.com/shirou/gopsutil/process"
 	logs "github.com/sirupsen/logrus"
+	"gopkg.in/jcmturner/gokrb5.v7/client"
+	"gopkg.in/jcmturner/gokrb5.v7/config"
+	"gopkg.in/jcmturner/gokrb5.v7/credentials"
 	"gopkg.in/mgo.v2/bson"
 )
+
+// var store = sessions.NewCookieStore([]byte(Config.StoreSecret))
 
 // TotalGetRequests counts total number of GET requests received by the server
 var TotalGetRequests uint64
@@ -48,24 +53,83 @@ type OAuthAccessResponse struct {
 }
 
 // helper function to get username from the session
-func username(r *http.Request) (string, error) {
+func username_orig(r *http.Request) (string, error) {
 	session, err := Store.Get(r, "auth-session")
 	if err != nil {
 		return "", err
 	}
 	if user, status := session.Values["user"]; status {
 		logs.WithFields(logs.Fields{
-			"User": user,
+			"User":    user,
+			"Session": session.Values,
 		}).Debug("authenticated")
 		return user.(string), nil
 	}
 	return "", errors.New("User not found")
+}
+func username(r *http.Request) (string, error) {
+	cookie, err := r.Cookie("auth-session")
+	if err != nil {
+		return "", err
+	}
+
+	//     byteArray := decrypt([]byte(cookie.Value), Config.StoreSecret)
+	//     n := bytes.IndexByte(byteArray, 0)
+	//     s := string(byteArray[:n])
+
+	s := cookie.Value
+
+	arr := strings.Split(s, "-")
+	if len(arr) != 2 {
+		return "", errors.New("Unable to decript auth-session")
+	}
+	user := arr[0]
+	authenticated := arr[1]
+	logs.WithFields(logs.Fields{
+		"User":          user,
+		"Authenticated": authenticated,
+	}).Info("")
+	return user, nil
+}
+
+func kuser(user, password string) (*credentials.Credentials, error) {
+	cfg, err := config.Load(Config.Krb5Conf)
+	if err != nil {
+		msg := "reading krb5.conf fails"
+		logs.WithFields(logs.Fields{
+			"Error": err,
+		}).Error(msg)
+		return nil, err
+	}
+	client := client.NewClientWithPassword(user, Config.Realm, password, cfg)
+	err = client.Login()
+	if err != nil {
+		msg := "client login fails"
+		logs.WithFields(logs.Fields{
+			"Error": err,
+		}).Error(msg)
+		return nil, err
+	}
+	return client.Credentials, nil
 }
 
 // authentication function
 func auth(r *http.Request) error {
 	_, err := username(r)
 	return err
+}
+
+func handleError(w http.ResponseWriter, r *http.Request, msg string, err error) {
+	logs.WithFields(logs.Fields{
+		"Error": err,
+	}).Error(msg)
+	var templates ServerTemplates
+	tmplData := make(map[string]interface{})
+	tmplData["Message"] = msg
+	tmplData["Class"] = "alert is-error"
+	page := templates.Confirm(Config.Templates, tmplData)
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(_top + page + _bottom))
 }
 
 // AuthHandler authenticate incoming requests and route them to appropriate handler
@@ -125,6 +189,48 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(_top + page + _bottom))
 }
 
+// KAuthHandler provides KAuth authentication to our app
+func KAuthHandler(w http.ResponseWriter, r *http.Request) {
+	// First, we need to get the value of the `code` query param
+	err := r.ParseForm()
+	if err != nil {
+		logs.WithFields(logs.Fields{
+			"Error": err,
+		}).Error("could not parse http form")
+		w.WriteHeader(http.StatusBadRequest)
+	}
+	name := r.FormValue("name")
+	password := r.FormValue("password")
+	var creds *credentials.Credentials
+	if name != "" && password != "" {
+		creds, err = kuser(name, password)
+		if err != nil {
+			msg := "unable to get user credentials"
+			handleError(w, r, msg, err)
+			return
+		}
+	} else {
+		msg := "unable to get user/password"
+		handleError(w, r, msg, err)
+		return
+	}
+	if creds == nil {
+		msg := "unable to obtain credentials"
+		handleError(w, r, msg, err)
+		return
+	}
+
+	expiration := time.Now().Add(24 * time.Hour)
+	msg := fmt.Sprintf("%s-%s", creds.UserName(), creds.Authenticated())
+	//     byteArray := encrypt([]byte(msg), Config.StoreSecret)
+	//     n := bytes.IndexByte(byteArray, 0)
+	//     s := string(byteArray[:n])
+	cookie := http.Cookie{Name: "auth-session", Value: msg, Expires: expiration}
+	http.SetCookie(w, &cookie)
+	w.Header().Set("Location", "/data")
+	w.WriteHeader(http.StatusFound)
+}
+
 // OAuthHandler provides OAuth authentication to our app
 func OAuthHandler(w http.ResponseWriter, r *http.Request) {
 	httpClient := http.Client{}
@@ -155,13 +261,12 @@ func OAuthHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Send out the HTTP request
 	res, err := httpClient.Do(req)
-	if err != nil {
-		logs.WithFields(logs.Fields{
-			"Error": err,
-		}).Error("could not send HTTP request")
-		w.WriteHeader(http.StatusInternalServerError)
-	}
 	defer res.Body.Close()
+	if err != nil {
+		msg := "could not send HTTP request"
+		handleError(w, r, msg, err)
+		return
+	}
 
 	// Parse the request body into the `OAuthAccessResponse` struct
 	var t OAuthAccessResponse
@@ -183,13 +288,12 @@ func OAuthHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	req.Header.Add("Authorization", fmt.Sprintf("token %s", t.AccessToken))
 	res, err = httpClient.Do(req)
-	if err != nil {
-		logs.WithFields(logs.Fields{
-			"Error": err,
-		}).Error("could not send HTTP request")
-		w.WriteHeader(http.StatusInternalServerError)
-	}
 	defer res.Body.Close()
+	if err != nil {
+		msg := "could not send HTTP request"
+		handleError(w, r, msg, err)
+		return
+	}
 	var userInfo map[string]interface{}
 	if err := json.NewDecoder(res.Body).Decode(&userInfo); err != nil {
 		logs.WithFields(logs.Fields{
@@ -380,10 +484,8 @@ func SettingsHandler(w http.ResponseWriter, r *http.Request) {
 	var s = ServerSettings{}
 	err := json.NewDecoder(r.Body).Decode(&s)
 	if err != nil {
-		logs.WithFields(logs.Fields{
-			"Error": err,
-		}).Error("VerboseHandler unable to marshal", err)
-		w.WriteHeader(http.StatusInternalServerError)
+		msg := "unable to marshal server settings"
+		handleError(w, r, msg, err)
 		return
 	}
 	if s.LogFormatter == "json" {
@@ -438,20 +540,20 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 			rec["did"] = did
 			if err != nil {
 				msg = fmt.Sprintf("ERROR:\nWeb processing error: %v", err)
-				class = "msg-error"
+				class = "alert is-error"
 			} else {
 				records := []Record{rec}
 				MongoUpsert(Config.DBName, Config.DBColl, records)
 				msg = fmt.Sprintf("SUCCESS:\n\nMETA-DATA:\n%v\n\nDATASET: %s contains %d files", rec.ToString(), dataset, len(files))
-				class = "msg-success"
+				class = "alert is-success"
 			}
 		} else {
 			msg = fmt.Sprintf("WARNING:\nUnable to find any files in given path '%s'", path)
-			class = "msg-warning"
+			class = "alert is-warning"
 		}
 	} else {
 		msg = fmt.Sprintf("ERROR:\nWeb processing error: %v", err)
-		class = "msg-error"
+		class = "alert is-error"
 	}
 	var templates ServerTemplates
 	tmplData := make(map[string]interface{})

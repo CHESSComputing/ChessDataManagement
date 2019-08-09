@@ -30,6 +30,11 @@ type Configuration struct {
 	Redirect     string `json:"redirect"`     // redirect URI on Github app
 	StoreSecret  string `json:"storeSecret"`  // web server store secret string
 	StorePath    string `json:"storePath"`    // web server store path
+	Realm        string `json:"realm"`        // kerberos realm
+	Keytab       string `json:"keytab"`       // kerberos keytab
+	Krb5Conf     string `json:"krb5Conf"`     // kerberos krb5.conf
+	ServerKey    string `json:"ckey"`         // tls.key file
+	ServerCrt    string `json:"cert"`         // tls.cert file
 }
 
 // Config variable represents configuration object

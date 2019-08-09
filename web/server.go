@@ -6,13 +6,19 @@ package main
 //
 
 import (
+	"crypto/tls"
 	"encoding/gob"
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gorilla/sessions"
 	logs "github.com/sirupsen/logrus"
+	"gopkg.in/jcmturner/gokrb5.v7/keytab"
+	"gopkg.in/jcmturner/gokrb5.v7/service"
+	"gopkg.in/jcmturner/gokrb5.v7/spnego"
 
 	_ "expvar"         // to be used for monitoring, see https://github.com/divan/expvarmon
 	_ "net/http/pprof" // profiler, see https://golang.org/pkg/net/http/pprof/
@@ -69,17 +75,40 @@ func Server(configFile string) {
 	_bottom = templates.Bottom(Config.Templates, tmplData)
 	_search = templates.SearchForm(Config.Templates, tmplData)
 
+	// configure kerberos auth
+	kt, err := keytab.Load(Config.Keytab)
+	l := log.New(os.Stderr, "GOKRB5 Service: ", log.Ldate|log.Ltime|log.Lshortfile)
+	h := http.HandlerFunc(LoginHandler)
+	http.Handle("/login", spnego.SPNEGOKRB5Authenticate(h, kt, service.Logger(l)))
+
 	// assign handlers
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir(Config.Styles))))
 	http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir(Config.Jscripts))))
 	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir(Config.Images))))
-	http.HandleFunc("/oauth", OAuthHandler)
-	http.HandleFunc("/login", LoginHandler)
+	http.HandleFunc("/auth", KAuthHandler)
+	//     http.HandleFunc("/oauth", OAuthHandler)
+	//     http.HandleFunc("/login", LoginHandler)
 	http.HandleFunc("/", AuthHandler)
 
+	// Start server
 	addr := fmt.Sprintf(":%d", Config.Port)
-	logs.WithFields(logs.Fields{"Addr": addr}).Info("Starting HTTP server")
-	err = http.ListenAndServe(addr, nil)
+	_, e1 := os.Stat(Config.ServerCrt)
+	_, e2 := os.Stat(Config.ServerKey)
+	if e1 == nil && e2 == nil {
+		//start HTTPS server which require user certificates
+		server := &http.Server{
+			Addr: addr,
+			TLSConfig: &tls.Config{
+				ClientAuth: tls.RequestClientCert,
+			},
+		}
+		logs.WithFields(logs.Fields{"Addr": addr}).Info("Starting HTTPs server")
+		err = server.ListenAndServeTLS(Config.ServerCrt, Config.ServerKey)
+	} else {
+		// Start server without user certificates
+		logs.WithFields(logs.Fields{"Addr": addr}).Info("Starting HTTP server")
+		err = http.ListenAndServe(addr, nil)
+	}
 	if err != nil {
 		logs.WithFields(logs.Fields{
 			"Error": err,
