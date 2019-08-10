@@ -46,4 +46,4 @@ RUN cp -r {css,images,js,templates} $WDIR
 ENV PATH="${WDIR}/bin:${GOPATH}/bin:${PATH}"
 
 WORKDIR $WDIR
-CMD ["./web -config /data/etc/server.json"]
+CMD ["web", "-config", "/etc/web/server.json"]
