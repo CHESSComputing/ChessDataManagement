@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"runtime"
+	"strconv"
 	"strings"
 	"sync/atomic"
 	"time"
@@ -199,34 +200,40 @@ func KAuthHandler(w http.ResponseWriter, r *http.Request) {
 
 // SearchHandler handlers Search requests
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
+	// get form parameters
+	limit, err := strconv.Atoi(r.FormValue("limit"))
+	if err != nil {
+		limit = 50
+	}
+	idx, err := strconv.Atoi(r.FormValue("idx"))
+	if err != nil {
+		idx = 0
+	}
+	query := r.FormValue("query")
+
+	// create search template form
 	var templates ServerTemplates
 	tmplData := make(map[string]interface{})
+	tmplData["Query"] = query
 	page := templates.SearchForm(Config.Templates, tmplData)
 
-	var records []Record
-	var nrec int // we'll use it for pagination later
-	if err := r.ParseForm(); err == nil {
-		// r.PostForm provides url.Values which is map[string][]string type
-		// we convert it to Record
-		query := r.PostForm["query"]
-		spec := ParseQuery(query)
-		if spec != nil {
-			nrec = MongoCount(Config.DBName, Config.DBColl, spec)
-			records = MongoGet(Config.DBName, Config.DBColl, spec, 0, -1)
+	// process the query
+	spec := ParseQuery(query)
+	if spec != nil {
+		nrec := MongoCount(Config.DBName, Config.DBColl, spec)
+		records := MongoGet(Config.DBName, Config.DBColl, spec, 0, -1)
+		if nrec > 0 {
+			page = fmt.Sprintf("%s</br></br>%s", page, pagination(query, nrec, idx, limit))
+		} else {
+			page = fmt.Sprintf("%s</br></br>No results found</br>", page)
 		}
-		logs.WithFields(logs.Fields{
-			"Spec":    spec,
-			"Records": records,
-		}).Debug("results")
-	}
-	// TODO: implement pagination
-	page = fmt.Sprintf("%s</br></br>Found %d results</br>", page, nrec)
-	for _, rec := range records {
-		oid := rec["_id"].(bson.ObjectId)
-		tmplData["Id"] = oid.Hex()
-		tmplData["Record"] = rec.ToString()
-		prec := templates.Record(Config.Templates, tmplData)
-		page = fmt.Sprintf("%s</br>%s", page, prec)
+		for _, rec := range records {
+			oid := rec["_id"].(bson.ObjectId)
+			tmplData["Id"] = oid.Hex()
+			tmplData["Record"] = rec.ToString()
+			prec := templates.Record(Config.Templates, tmplData)
+			page = fmt.Sprintf("%s</br>%s", page, prec)
+		}
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(_top + page + _bottom))

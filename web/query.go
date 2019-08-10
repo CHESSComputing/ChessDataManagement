@@ -14,8 +14,7 @@ import (
 
 // ParseQuery function provides basic parser for user queries and return
 // results in bson dictionary
-func ParseQuery(inputQuery []string) bson.M {
-	query := strings.Join(inputQuery, " ")
+func ParseQuery(query string) bson.M {
 	if strings.TrimSpace(query) == "" {
 		return nil
 	}

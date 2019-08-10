@@ -3,7 +3,11 @@
 <form action="/search" method="post" name="web_search" id="web_search" class="web_form">
     <div class="form-item">
         <div class="is-append is-80">
+            {{if .Query}}
+            <input type="text" name="query" value="{{.Query}}">
+            {{else}}
             <input type="text" name="query" placeholder="text search keywords">
+            {{end}}
             <button class="button">Search</button>
         </div>
     </div>

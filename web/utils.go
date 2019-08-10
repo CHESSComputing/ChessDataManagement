@@ -11,6 +11,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -115,6 +116,7 @@ func MapKeys(rec map[string]interface{}) []string {
 	for k := range rec {
 		keys = append(keys, k)
 	}
+	sort.Sort(StringList(keys))
 	return keys
 }
 
@@ -432,3 +434,55 @@ const BOLD = "\x1b[1m"
 
 // PLAIN type
 const PLAIN = "\x1b[0m"
+
+// helper function to provide pagination
+func pagination(query string, nres, startIdx, limit int) string {
+	var templates ServerTemplates
+	url := fmt.Sprintf("/search?query=%s", query)
+	tmplData := make(map[string]interface{})
+	if nres > 0 {
+		tmplData["StartIndex"] = fmt.Sprintf("%d", startIdx+1)
+	} else {
+		tmplData["StartIndex"] = fmt.Sprintf("%d", startIdx)
+	}
+	if nres > startIdx+limit {
+		tmplData["EndIndex"] = fmt.Sprintf("%d", startIdx+limit)
+	} else {
+		tmplData["EndIndex"] = fmt.Sprintf("%d", nres)
+	}
+	tmplData["Total"] = fmt.Sprintf("%d", nres)
+	tmplData["FirstUrl"] = makeUrl(url, "first", startIdx, limit, nres)
+	tmplData["PrevUrl"] = makeUrl(url, "prev", startIdx, limit, nres)
+	tmplData["NextUrl"] = makeUrl(url, "next", startIdx, limit, nres)
+	tmplData["LastUrl"] = makeUrl(url, "last", startIdx, limit, nres)
+	page := templates.Pagination(Config.Templates, tmplData)
+	line := "<hr class=\"line\" />"
+	return fmt.Sprintf("%s%s<br/>", page, line)
+}
+
+func makeUrl(url, urlType string, startIdx, limit, nres int) string {
+	var out string
+	var idx int
+	if urlType == "first" {
+		idx = 0
+	} else if urlType == "prev" {
+		if startIdx != 0 {
+			idx = startIdx - limit
+		} else {
+			idx = 0
+		}
+	} else if urlType == "next" {
+		idx = startIdx + limit
+	} else if urlType == "last" {
+		j := 0
+		for i := 0; i < nres; i = i + limit {
+			if i > nres {
+				break
+			}
+			j = i
+		}
+		idx = j
+	}
+	out = fmt.Sprintf("%s&amp;idx=%d&&amp;limit=%d", url, idx, limit)
+	return out
+}
