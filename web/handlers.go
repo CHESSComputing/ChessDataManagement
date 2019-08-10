@@ -222,17 +222,22 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	if spec != nil {
 		nrec := MongoCount(Config.DBName, Config.DBColl, spec)
 		records := MongoGet(Config.DBName, Config.DBColl, spec, 0, -1)
+		var pager string
 		if nrec > 0 {
-			page = fmt.Sprintf("%s</br></br>%s", page, pagination(query, nrec, idx, limit))
+			pager = pagination(query, nrec, idx, limit)
+			page = fmt.Sprintf("%s<br><br>%s", page, pager)
 		} else {
-			page = fmt.Sprintf("%s</br></br>No results found</br>", page)
+			page = fmt.Sprintf("%s<br><br>No results found</br>", page)
 		}
 		for _, rec := range records {
 			oid := rec["_id"].(bson.ObjectId)
 			tmplData["Id"] = oid.Hex()
 			tmplData["Record"] = rec.ToString()
 			prec := templates.Record(Config.Templates, tmplData)
-			page = fmt.Sprintf("%s</br>%s", page, prec)
+			page = fmt.Sprintf("%s<br>%s", page, prec)
+		}
+		if nrec > 5 {
+			page = fmt.Sprintf("%s<br><br>%s", page, pager)
 		}
 	}
 	w.WriteHeader(http.StatusOK)
