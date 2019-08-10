@@ -98,8 +98,8 @@ func handleError(w http.ResponseWriter, r *http.Request, msg string, err error) 
 	}).Error(msg)
 	var templates ServerTemplates
 	tmplData := make(map[string]interface{})
-	tmplData["Message"] = msg
-	tmplData["Class"] = "alert is-error"
+	tmplData["Message"] = strings.ToTitle(msg)
+	tmplData["Class"] = "alert is-error is-large is-text-center"
 	page := templates.Confirm(Config.Templates, tmplData)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(_top + page + _bottom))
@@ -176,17 +176,17 @@ func KAuthHandler(w http.ResponseWriter, r *http.Request) {
 	if name != "" && password != "" {
 		creds, err = kuser(name, password)
 		if err != nil {
-			msg := "unable to get user credentials"
+			msg := "wrong user credentials"
 			handleError(w, r, msg, err)
 			return
 		}
 	} else {
-		msg := "unable to get user/password"
+		msg := "user/password is empty"
 		handleError(w, r, msg, err)
 		return
 	}
 	if creds == nil {
-		msg := "unable to obtain credentials"
+		msg := "unable to obtain user credentials"
 		handleError(w, r, msg, err)
 		return
 	}
