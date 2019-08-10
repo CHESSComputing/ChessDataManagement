@@ -2,7 +2,6 @@ FROM cern/cc7-base:20181210
 MAINTAINER Valentin Kuznetsov vkuznet@gmail.com
 
 ENV WDIR=/data
-ENV USER=_web
 
 RUN yum update -y
 RUN yum install -y git-core zip unzip which file gcc
@@ -39,11 +38,12 @@ WORKDIR $GOPATH/src/github.com/vkuznet
 RUN git clone https://github.com/vkuznet/ChessDataManagement.git
 WORKDIR $GOPATH/src/github.com/vkuznet/ChessDataManagement/web
 RUN go build
-RUN cp web $GOPATH/bin
+RUN mkdir -p $GOPATH/bin
+RUN cp web $GOPATH/bin/
+RUN cp -r {css,images,js,templates} $WDIR
 
 # setup final environment
 ENV PATH="${WDIR}/bin:${GOPATH}/bin:${PATH}"
 
-USER $USER
 WORKDIR $WDIR
-CMD ["./web -config /data/etc/server.json"]
+CMD ["web", "-config", "/etc/web/server.json"]
