@@ -57,9 +57,6 @@ func username(r *http.Request) (string, error) {
 		return "", errors.New("Unable to decript auth-session")
 	}
 	user := arr[0]
-	logs.WithFields(logs.Fields{
-		"User": user,
-	}).Info("")
 	return user, nil
 }
 
@@ -116,14 +113,12 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// check if server started with hkey file (auth is required)
-	err := auth(r)
+	user, err := username(r)
 	if err != nil {
-		logs.WithFields(logs.Fields{
-			"Error": err,
-		}).Error("could not authenticate")
 		LoginHandler(w, r)
 		return
 	}
+	logs.WithFields(logs.Fields{"User": user, "Path": r.URL.Path}).Info("")
 	// define all methods which requires authentication
 	arr := strings.Split(r.URL.Path, "/")
 	path := arr[len(arr)-1]
