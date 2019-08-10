@@ -43,13 +43,13 @@ where `server.json` has the following form:
     "dbname": "chess",
     "dbcoll": "meta",
     "filesdburi": "sqlite3:///path/files.db",
-    "port": 8212,
-    "templates": "/path/templates",
-    "jscripts": "/path/js",
-    "styles": "/path/css",
-    "images": "/path/images",
-    "keytab": "/path/krb5.keytab",
-    "krb5Conf": "/path/krb5.conf",
+    "port": 8243,
+    "templates": "/etc/web/templates",
+    "jscripts": "/etc/web/js",
+    "styles": "/etc/web/css",
+    "images": "/etc/web/images",
+    "keytab": "/etc/web/krb5.keytab",
+    "krb5Conf": "/etc/web/krb5.conf",
     "realm": "YOUR_KERBEROS_REALM",
     "verbose": 0
 }
@@ -57,5 +57,9 @@ where `server.json` has the following form:
 
 If you prefer, you may run the service via docker:
 ```
-docker run --rm -h `hostname -f` -v /tmp/etc:/data/etc -i -t veknet/chess /bin/bash
+# create /tmp/etc area with your files:
+# krb5.keytab, krb5.conf, tls.crt, tls.key, server.json
+# run docker container and mount this area to /etc/web
+# the default port is 8243
+docker run --rm -h `hostname -f` -v /tmp/etc:/etc/web -i -t veknet/chess
 ```
