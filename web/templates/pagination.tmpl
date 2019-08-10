@@ -1,16 +1,35 @@
-<div class="left">
-<table width="100%" class="normal">
+<!--
+<table width="100%">
 <tr>
 <td align="left">
 Showing {{.StartIndex}}&#8212;{{.EndIndex}} records out of {{.Total}}.
 </td>
 <td align="right">
-<div id="paginator">
-&lt;<a href="{{.FirstUrl}}">first</a> |
-<a href="{{.PrevUrl}}">prev</a> |
-<a href="{{.NextUrl}}">next</a> |
-<a href="{{.LastUrl}}">last</a>&gt;
-</div>
+<a href="{{.FirstUrl}}" class="button is-secondary is-small">first</a>
+<a href="{{.PrevUrl}}"  class="button is-secondary is-small">prev</a>
+<a href="{{.NextUrl}}"  class="button is-secondary is-small">next</a>
+<a href="{{.LastUrl}}"  class="button is-secondary is-small">last</a>
 </td>
 </tr>
 </table>
+-->
+
+<div class="is-navbar-container">
+    <div class="is-brand">
+		<b class="is-logo">
+		Showing {{.StartIndex}}&#8212;{{.EndIndex}} records out of {{.Total}}.
+		</b>
+    </div>
+    <div class="is-navbar">
+        <nav class="is-push-right">
+            <ul>
+			<li>
+                <a href="{{.FirstUrl}}" class="button is-secondary is-small">first</a>
+                <a href="{{.PrevUrl}}"  class="button is-secondary is-small">prev</a>
+                <a href="{{.NextUrl}}"  class="button is-secondary is-small">next</a>
+                <a href="{{.LastUrl}}"  class="button is-secondary is-small">last</a>
+            </li>
+            </ul>
+        </nav>
+    </div>
+</div>

@@ -456,8 +456,7 @@ func pagination(query string, nres, startIdx, limit int) string {
 	tmplData["NextUrl"] = makeUrl(url, "next", startIdx, limit, nres)
 	tmplData["LastUrl"] = makeUrl(url, "last", startIdx, limit, nres)
 	page := templates.Pagination(Config.Templates, tmplData)
-	line := "<hr class=\"line\" />"
-	return fmt.Sprintf("%s%s<br/>", page, line)
+	return fmt.Sprintf("%s<br/>", page)
 }
 
 func makeUrl(url, urlType string, startIdx, limit, nres int) string {
