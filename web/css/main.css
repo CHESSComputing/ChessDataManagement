@@ -550,3 +550,103 @@ http://www.sebastiansulinski.co.uk/tutorials/show_item/49/two_column_layout_usin
     font-size: 0.9em;
     list-style-type: none;
 }
+/* auto-generated css from scss */
+.button.is-red {
+  color: #fff;
+  background-color: #ea6474;
+}
+.button.is-red:hover {
+  color: #fff;
+  background-color: #f0919c;
+}
+.button.is-red:disabled, .button.is-red.is-disabled {
+  color: #fff;
+  background-color: rgba(17, 17, 19, 0.5);
+}
+.button.is-red.is-secondary {
+  background: none;
+  border: 2px solid #ea6474;
+  color: #ea6474;
+}
+.button.is-red.is-secondary:hover {
+  color: rgba(255, 255, 255, 0.95);
+  background-color: #ea6474;
+  border-color: #ea6474;
+}
+.button.is-red.is-secondary:disabled, .button.is-red.is-secondary.is-disabled {
+  color: rgba(17, 17, 19, 0.5);
+  border-color: rgba(17, 17, 19, 0.3);
+}
+.button.is-red.is-secondary:disabled:hover, .button.is-red.is-secondary.is-disabled:hover {
+  background-color: transparent;
+}
+.button.is-red.is-secondary.is-loading:hover:before {
+  border-color: rgba(255, 255, 255, 0.25);
+  border-bottom-color: #fff;
+}
+.button.is-red.is-tertiary {
+  background: none;
+  color: #ea6474;
+}
+.button.is-red.is-tertiary:hover {
+  color: #ea6474;
+}
+.button.is-red.is-tertiary:disabled, .button.is-red.is-tertiary.is-disabled {
+  text-decoration: none;
+  color: rgba(17, 17, 19, 0.5);
+}
+.button.is-red.is-secondary.is-loading:before, .button.is-red.is-tertiary.is-loading:before {
+  border-color: rgba(234, 100, 116, 0.25);
+  border-bottom-color: #ea6474;
+}
+
+.button.is-gray {
+  color: #fff;
+  background-color: #a9a9a9;
+}
+.button.is-gray:hover {
+  color: #fff;
+  background-color: #c3c3c3;
+}
+.button.is-gray:disabled, .button.is-gray.is-disabled {
+  color: #fff;
+  background-color: rgba(17, 17, 19, 0.5);
+}
+.button.is-gray.is-secondary {
+  background: none;
+  border: 2px solid #a9a9a9;
+  color: #a9a9a9;
+}
+.button.is-gray.is-secondary:hover {
+  color: rgba(255, 255, 255, 0.95);
+  background-color: #a9a9a9;
+  border-color: #a9a9a9;
+}
+.button.is-gray.is-secondary:disabled, .button.is-gray.is-secondary.is-disabled {
+  color: rgba(17, 17, 19, 0.5);
+  border-color: rgba(17, 17, 19, 0.3);
+}
+.button.is-gray.is-secondary:disabled:hover, .button.is-gray.is-secondary.is-disabled:hover {
+  background-color: transparent;
+}
+.button.is-gray.is-secondary.is-loading:hover:before {
+  border-color: rgba(255, 255, 255, 0.25);
+  border-bottom-color: #fff;
+}
+.button.is-gray.is-tertiary {
+  background: none;
+  color: #a9a9a9;
+}
+.button.is-gray.is-tertiary:hover {
+  color: #a9a9a9;
+}
+.button.is-gray.is-tertiary:disabled, .button.is-gray.is-tertiary.is-disabled {
+  text-decoration: none;
+  color: rgba(17, 17, 19, 0.5);
+}
+.button.is-gray.is-secondary.is-loading:before, .button.is-gray.is-tertiary.is-loading:before {
+  border-color: rgba(169, 169, 169, 0.25);
+  border-bottom-color: #a9a9a9;
+}
+
+/*# sourceMappingURL=master.css.map */
