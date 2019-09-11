@@ -73,6 +73,7 @@ func Server(configFile string) {
 	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir(Config.Images))))
 	http.HandleFunc("/auth", KAuthHandler)
 	http.HandleFunc("/api", ApiHandler)
+	http.HandleFunc("/search", SearchHandler)
 	http.HandleFunc("/", AuthHandler)
 
 	// Start server
