@@ -5,21 +5,18 @@
 <form class="form-content" method="post" action="api" enctype="multipart/form-data">
     <h3>Upload via configuration file</h3>
     <br/>
-    <fieldset>
-        <legend>Experiment data ({{.User}})</legend>
-        <div class="form-item">
-            <label> Configuration file </label>
-            <input name="file" type="file">
-        </div>
-        <div class="form-item">
-            <div class="is-append is-push-right is-right">
-                <div class="is-80">
-                    <input type="hidden" name="user" value="{{.User}}"/>
-                </div>
-                <button class="button">Submit</button>
+    <div class="form-item">
+        <label> Configuration file </label>
+        <input name="file" type="file">
+    </div>
+    <div class="form-item">
+        <div class="is-append is-push-right is-right">
+            <div class="is-80">
+                <input type="hidden" name="user" value="{{.User}}"/>
             </div>
+            <button class="button is-secondary">Submit</button>
         </div>
-    </fieldset>
+    </div>
 </form>
 </div>
 
