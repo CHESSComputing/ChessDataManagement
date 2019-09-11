@@ -72,6 +72,7 @@ func Server(configFile string) {
 	http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir(Config.Jscripts))))
 	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir(Config.Images))))
 	http.HandleFunc("/auth", KAuthHandler)
+	http.HandleFunc("/api", ApiHandler)
 	http.HandleFunc("/", AuthHandler)
 
 	// Start server
