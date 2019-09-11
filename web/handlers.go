@@ -9,6 +9,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"runtime"
@@ -59,6 +61,19 @@ func username(r *http.Request) (string, error) {
 	}
 	user := arr[0]
 	return user, nil
+}
+
+// https://github.com/jcmturner/gokrb5/issues/7
+func kuserFromCache(cacheFile string) (*credentials.Credentials, error) {
+	cfg, err := config.Load(Config.Krb5Conf)
+	ccache, err := credentials.LoadCCache(cacheFile)
+	client, err := client.NewClientFromCCache(ccache, cfg)
+	err = client.Login()
+	if err != nil {
+		return nil, err
+	}
+	return client.Credentials, nil
+
 }
 
 // helper function to perform kerberos authentication
@@ -437,6 +452,96 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		msg = fmt.Sprintf("ERROR:\nWeb processing error: %v", err)
 		class = "alert is-error"
+	}
+	var templates ServerTemplates
+	tmplData := make(map[string]interface{})
+	tmplData["Message"] = msg
+	tmplData["Class"] = class
+	page := templates.Confirm(Config.Templates, tmplData)
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(_top + page + _bottom))
+}
+
+// ApiHandler handlers Api requests
+func ApiHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+	user, err := username(r)
+	if err != nil {
+		var msg string
+		// user didn't use web interface, we switch to POST form
+		name := r.FormValue("name")
+		ticket := r.FormValue("ticket")
+		tmpFile, err := ioutil.TempFile("/tmp", name)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer os.Remove(tmpFile.Name())
+		_, err = tmpFile.Write([]byte(ticket))
+		if err != nil {
+			msg = "unable to write kerberos ticket"
+			handleError(w, r, msg, err)
+			return
+		}
+		err = tmpFile.Close()
+		creds, err := kuserFromCache(tmpFile.Name())
+		if err != nil {
+			msg = "wrong user credentials"
+			handleError(w, r, msg, err)
+			return
+		}
+		if creds == nil {
+			msg = "unable to obtain user credentials"
+			handleError(w, r, msg, err)
+			return
+		}
+		user = creds.UserName()
+		config := r.FormValue("config")
+		fmt.Println("### config", config)
+		var data = ChessMetaData{}
+		data.User = user
+		err = json.Unmarshal([]byte(config), &data)
+		if err != nil {
+			msg := "unable to unmarshal configuration data"
+			handleError(w, r, msg, err)
+			return
+		}
+		msg = fmt.Sprintf("Successfully read:\n%v", data)
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(msg))
+		return
+	}
+
+	// process web form
+	file, header, err := r.FormFile("file")
+	if err != nil {
+		msg := "unable to read file form"
+		handleError(w, r, msg, err)
+		return
+	}
+	defer file.Close()
+
+	var msg, class string
+	defer r.Body.Close()
+	//     body, err := ioutil.ReadAll(r.Body)
+	body, err := ioutil.ReadAll(file)
+	if err != nil {
+		msg = fmt.Sprintf("error: %v, unable to read request data", err)
+		class = "alert is-error"
+	} else {
+		var data = ChessMetaData{}
+		data.User = user
+		fmt.Println("body", string(body))
+		err := json.Unmarshal(body, &data)
+		if err != nil {
+			msg = fmt.Sprintf("error: %v, unable to parse request data", err)
+			class = "alert is-error"
+		} else {
+			msg = fmt.Sprintf("Successfully read:\n%v", data.String())
+			class = "alert is-success"
+		}
 	}
 	var templates ServerTemplates
 	tmplData := make(map[string]interface{})
