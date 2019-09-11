@@ -88,17 +88,23 @@ func findRecords(uri, query, krbFile string) {
 }
 
 func main() {
+	var query string
+	flag.StringVar(&query, "query", "", "query string to look-up your data")
 	var jsonConfig string
 	flag.StringVar(&jsonConfig, "json", "", "json configuration file to inject")
 	var krbFile string
 	flag.StringVar(&krbFile, "krbFile", "", "kerberos file")
 	var uri string
-	flag.StringVar(&uri, "uri", "https://chessdata.lns.cornell.edu:8243", "server URI")
-	var query string
-	flag.StringVar(&query, "query", "", "query string to look-up your data")
+	flag.StringVar(&uri, "uri", "https://chessdata.lns.cornell.edu:8243", "CHESS Data Management System URI")
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
+		client := "chess_client"
+		msg := fmt.Sprintf("\nCommand line interface to CHESS Data Management System\nOptions:\n")
+		fmt.Fprintf(os.Stderr, msg)
 		flag.PrintDefaults()
+		fmt.Fprintf(os.Stderr, "\nExamples:\n\n# inject new configuration into the system")
+		fmt.Fprintf(os.Stderr, "\n%s -krbFile /tmp/krb5cc_%d -json config.json", client, os.Getuid())
+		fmt.Fprintf(os.Stderr, "\n\n# look-up some data from the system")
+		fmt.Fprintf(os.Stderr, "\n%s -krbFile /tmp/krb5cc_%d -query \"search words\"\n", client, os.Getuid())
 	}
 	flag.Parse()
 	if query != "" {
