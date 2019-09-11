@@ -1,6 +1,34 @@
 <!-- keys.tmpl -->
+<div class="is-row">
+    <div class="is-col is-30">
+<div class="form-container center-70">
+<form class="form-content" method="post" action="api" enctype="multipart/form-data">
+    <h3>Upload via configuration file</h3>
+    <br/>
+    <fieldset>
+        <legend>Experiment data ({{.User}})</legend>
+        <div class="form-item">
+            <label> Configuration file </label>
+            <input name="file" type="file">
+        </div>
+        <div class="form-item">
+            <div class="is-append is-push-right is-right">
+                <div class="is-80">
+                    <input type="hidden" name="user" value="{{.User}}"/>
+                </div>
+                <button class="button">Submit</button>
+            </div>
+        </div>
+    </fieldset>
+</form>
+</div>
+
+    </div>
+    <div class="is-col is-70">
+
 <div class="form-container center-70">
 <form class="form-content" method="post" action="process">
+    <h3>Upload via form submission</h3>
     <br/>
     <fieldset>
         <legend>Experiment data ({{.User}})</legend>
@@ -25,5 +53,8 @@
         </div>
     </fieldset>
 </form>
+</div>
+
+    </div>
 </div>
 <!-- end of keys.tmpl -->
