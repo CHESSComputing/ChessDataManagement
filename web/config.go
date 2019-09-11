@@ -54,3 +54,15 @@ func ParseConfig(configFile string) error {
 	}
 	return nil
 }
+
+// ChessMetaData represents input CHESS meta-data
+type ChessMetaData struct {
+	User       string `json:"user"`
+	Name       string `json:"name"`
+	Experiment string `json:"experiment"`
+}
+
+// String returns string representation of server Config
+func (c *ChessMetaData) String() string {
+	return fmt.Sprintf("user=%s name=%s experiment=%s", c.User, c.Name, c.Experiment)
+}
