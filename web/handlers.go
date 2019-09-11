@@ -515,7 +515,7 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// process web form
-	file, header, err := r.FormFile("file")
+	file, _, err := r.FormFile("file")
 	if err != nil {
 		msg := "unable to read file form"
 		handleError(w, r, msg, err)
