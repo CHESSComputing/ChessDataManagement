@@ -10,7 +10,6 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"runtime"
@@ -118,6 +117,40 @@ func handleError(w http.ResponseWriter, r *http.Request, msg string, err error) 
 	w.Write([]byte(_top + page + _bottom))
 }
 
+// helper function to check user credentials for POST requests
+func getUserCredentials(r *http.Request) (*credentials.Credentials, error) {
+	var msg string
+	// user didn't use web interface, we switch to POST form
+	name := r.FormValue("name")
+	ticket := r.FormValue("ticket")
+	tmpFile, err := ioutil.TempFile("/tmp", name)
+	if err != nil {
+		msg = fmt.Sprintf("Unable to create tempfile: %v", err)
+		return nil, errors.New(msg)
+	}
+	defer os.Remove(tmpFile.Name())
+	_, err = tmpFile.Write([]byte(ticket))
+	if err != nil {
+		msg = "unable to write kerberos ticket"
+		return nil, errors.New(msg)
+	}
+	err = tmpFile.Close()
+	creds, err := kuserFromCache(tmpFile.Name())
+	if err != nil {
+		msg = "wrong user credentials"
+		return nil, errors.New(msg)
+	}
+	if creds == nil {
+		msg = "unable to obtain user credentials"
+		return nil, errors.New(msg)
+	}
+	return creds, nil
+}
+
+//
+// ### HTTP METHODS
+//
+
 // AuthHandler authenticate incoming requests and route them to appropriate handler
 func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	// increment GET/POST counters
@@ -215,6 +248,31 @@ func KAuthHandler(w http.ResponseWriter, r *http.Request) {
 
 // SearchHandler handlers Search requests
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
+	_, err := username(r)
+	if err != nil {
+		_, err := getUserCredentials(r)
+		if err != nil {
+			msg := "unable to get user credentials"
+			handleError(w, r, msg, err)
+			return
+		}
+		query := r.FormValue("query")
+
+		// process the query
+		spec := ParseQuery(query)
+		var records []Record
+		if spec != nil {
+			records = MongoGet(Config.DBName, Config.DBColl, spec, 0, -1)
+		}
+		data, err := json.Marshal(records)
+		if err != nil {
+			w.Write([]byte(fmt.Sprintf("unable to marshal data, error=%v", err)))
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write(data)
+		return
+	}
 	// get form parameters
 	limit, err := strconv.Atoi(r.FormValue("limit"))
 	if err != nil {
@@ -470,30 +528,9 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	user, err := username(r)
 	if err != nil {
-		var msg string
-		// user didn't use web interface, we switch to POST form
-		name := r.FormValue("name")
-		ticket := r.FormValue("ticket")
-		tmpFile, err := ioutil.TempFile("/tmp", name)
+		creds, err := getUserCredentials(r)
 		if err != nil {
-			log.Fatal(err)
-		}
-		defer os.Remove(tmpFile.Name())
-		_, err = tmpFile.Write([]byte(ticket))
-		if err != nil {
-			msg = "unable to write kerberos ticket"
-			handleError(w, r, msg, err)
-			return
-		}
-		err = tmpFile.Close()
-		creds, err := kuserFromCache(tmpFile.Name())
-		if err != nil {
-			msg = "wrong user credentials"
-			handleError(w, r, msg, err)
-			return
-		}
-		if creds == nil {
-			msg = "unable to obtain user credentials"
+			msg := "unable to get user credentials"
 			handleError(w, r, msg, err)
 			return
 		}
@@ -508,7 +545,7 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 			handleError(w, r, msg, err)
 			return
 		}
-		msg = fmt.Sprintf("Successfully read:\n%v", data)
+		msg := fmt.Sprintf("Successfully read:\n%v", data)
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(msg))
 		return
