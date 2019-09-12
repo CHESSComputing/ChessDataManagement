@@ -3,7 +3,7 @@
 <form method="post" action="updateRecord" enctype="multipart/form-data">
     <div class="form-item">
         <input name="_id" type="hidden" value="{{.Id}}">
-        <textarea rows="6">{{.Record}}</textarea>
+        <textarea name="record" rows="20">{{.Record}}</textarea>
     </div>
 
     <div class="form-item is-buttons">
