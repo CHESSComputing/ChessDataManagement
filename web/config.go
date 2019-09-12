@@ -57,12 +57,25 @@ func ParseConfig(configFile string) error {
 
 // ChessMetaData represents input CHESS meta-data
 type ChessMetaData struct {
-	User       string `json:"user"`
-	Name       string `json:"name"`
-	Experiment string `json:"experiment"`
+	User        string `json:"user"`
+	Name        string `json:"name"`
+	Experiment  string `json:"experiment"`
+	Path        string `json:"path"`
+	Processing  string `json:"processing"`
+	Tier        string `json:"tier"`
+	Description string `json:"description"`
 }
 
 // String returns string representation of server Config
 func (c *ChessMetaData) String() string {
-	return fmt.Sprintf("user=%s name=%s experiment=%s", c.User, c.Name, c.Experiment)
+	data, _ := json.Marshal(c)
+	return fmt.Sprintf(string(data))
+}
+
+// ToRecord convert ChessMetaData structure into json record
+func (c *ChessMetaData) ToRecord() Record {
+	rec := make(Record)
+	data, _ := json.Marshal(c)
+	json.Unmarshal(data, &rec)
+	return rec
 }
