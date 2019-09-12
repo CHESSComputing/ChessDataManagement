@@ -1,23 +1,64 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
+	"os/exec"
 	"strings"
+	"time"
 )
+
+// helper function to exit
+func exit(msg string, err error) {
+	log.Fatal(fmt.Sprintf("%s, error: %v", msg, err))
+	os.Exit(1)
+}
 
 // helper function to get kerberos ticket
 func getKerberosTicket(krbFile string) []byte {
-	ticket, err := ioutil.ReadFile(krbFile)
+	//     fmt.Printf("krbFile: '%s'\n", krbFile)
+	if krbFile != "" {
+		ticket, err := ioutil.ReadFile(krbFile)
+		if err != nil {
+			exit("unable to read kerberos credentials", err)
+		}
+		return ticket
+	}
+	fname := fmt.Sprintf("krb5_%d_%v", os.Getuid(), time.Now().Unix())
+	tmpFile, err := ioutil.TempFile("/tmp", fname)
 	if err != nil {
-		msg := fmt.Sprintf("unable to read kerberos credentials, error: %v", err)
-		log.Fatal(msg)
-		os.Exit(1)
+		exit("Unabel to get tmp file", err)
+	}
+	//     defer os.Remove(tmpFile.Name())
+
+	// get user password
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("Enter your kerberos password: ")
+	password, _ := reader.ReadString('\n')
+
+	cname := fmt.Sprintf("KRB5CCNAME=%s", tmpFile.Name())
+	cmd := exec.Command("kinit", "-c", cname)
+	stdin, err := cmd.StdinPipe()
+	if err != nil {
+		exit("prompt", err)
+	}
+	defer stdin.Close()
+	err = cmd.Start()
+	if err != nil {
+		exit("unable to run kinit", err)
+	}
+	io.WriteString(stdin, password)
+	cmd.Wait()
+	ticket, err := ioutil.ReadFile(tmpFile.Name())
+	if err != nil {
+		exit("unable to read kerberos credentials", err)
 	}
 	return ticket
 }
@@ -41,7 +82,7 @@ func placeRequest(uri, configFile, krbFile string) error {
 	// json.Unmarshal and use appropriate type structure from server
 	config, err := ioutil.ReadFile(configFile)
 	if err != nil {
-		log.Fatal(err)
+		exit("unable to read config file", err)
 	}
 	form := getForm(krbFile)
 	form.Add("config", string(config))
@@ -50,11 +91,12 @@ func placeRequest(uri, configFile, krbFile string) error {
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	client := http.Client{}
 	resp, err := client.Do(req)
+	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		msg := fmt.Sprintf("requset fails with status: %v", resp.Status)
-		log.Fatal(msg)
-		os.Exit(1)
+		exit(fmt.Sprintf("requset fails with status: %v", resp.Status), nil)
 	}
+	response, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println(string(response))
 	return err
 }
 
@@ -66,23 +108,17 @@ func findRecords(uri, query, krbFile string) {
 	req, err := http.NewRequest("POST", url, strings.NewReader(form.Encode()))
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	if err != nil {
-		msg := fmt.Sprintf("find records method fails with error: %v", err)
-		log.Fatal(msg)
-		os.Exit(1)
+		exit("find records method fails", err)
 	}
 	client := http.Client{}
 	resp, err := client.Do(req)
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
-		msg := fmt.Sprintf("requset fails with status: %v", resp.Status)
-		log.Fatal(msg)
-		os.Exit(1)
+		exit(fmt.Sprintf("requset fails with status: %v", resp.Status), nil)
 	}
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		msg := fmt.Sprintf("read response body failure, error: %v", resp.Status)
-		log.Fatal(msg)
-		os.Exit(1)
+		exit(fmt.Sprintf("read response body failure, error: %v", resp.Status), nil)
 	}
 	fmt.Println(string(data))
 }
