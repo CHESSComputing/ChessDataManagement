@@ -308,8 +308,10 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		for _, rec := range records {
 			oid := rec["_id"].(bson.ObjectId)
+			rec["_id"] = oid
 			tmplData["Id"] = oid.Hex()
-			tmplData["Record"] = rec.ToString()
+			tmplData["RecordString"] = rec.ToString()
+			tmplData["Record"] = rec.ToJson()
 			prec := templates.Record(Config.Templates, tmplData)
 			page = fmt.Sprintf("%s<br>%s", page, prec)
 		}
@@ -655,7 +657,8 @@ func UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	var templates ServerTemplates
 	tmplData := make(map[string]interface{})
-	tmplData["Record"] = r.FormValue("record")
+	record := r.FormValue("record")
+	tmplData["Record"] = record
 	tmplData["Id"] = r.FormValue("_id")
 	page := templates.Update(Config.Templates, tmplData)
 	w.WriteHeader(http.StatusOK)
@@ -676,6 +679,8 @@ func UpdateRecordHandler(w http.ResponseWriter, r *http.Request) {
 		cls = "is-error"
 	} else {
 		rid := r.FormValue("_id")
+		// delete record id before the update
+		delete(rec, "_id")
 		msg = fmt.Sprintf("record %v is successfully updated", rid)
 		records := []Record{rec}
 		err = MongoUpsert(Config.DBName, Config.DBColl, records)
