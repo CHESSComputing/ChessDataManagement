@@ -187,7 +187,7 @@ func MongoInsert(dbname, collname string, records []Record) {
 }
 
 // MongoUpsert records into MongoDB
-func MongoUpsert(dbname, collname string, records []Record) {
+func MongoUpsert(dbname, collname string, records []Record) error {
 	s := _Mongo.Connect()
 	defer s.Close()
 	c := s.DB(dbname).C(collname)
@@ -205,8 +205,10 @@ func MongoUpsert(dbname, collname string, records []Record) {
 				"Error":  err,
 				"Record": rec,
 			}).Error("Fail to insert record")
+			return err
 		}
 	}
+	return nil
 }
 
 // MongoGet records from MongoDB
