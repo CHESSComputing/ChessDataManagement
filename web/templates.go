@@ -43,7 +43,7 @@ func parseTmpl(tdir, tmpl string, data interface{}) string {
 
 // ServerTemplates structure
 type ServerTemplates struct {
-	top, bottom, searchForm, cards, dasError, dasKeys, dasZero string
+	top, bottom, searchForm, cards, serverError, keys, zero, record, status string
 }
 
 // Top method for ServerTemplates structure
@@ -138,27 +138,36 @@ func (q ServerTemplates) Pagination(tdir string, tmplData map[string]interface{}
 
 // ServerError method for ServerTemplates structure
 func (q ServerTemplates) ServerError(tdir string, tmplData map[string]interface{}) string {
-	if q.dasError != "" {
-		return q.dasError
+	if q.serverError != "" {
+		return q.serverError
 	}
-	q.dasError = parseTmpl(Config.Templates, "error.tmpl", tmplData)
-	return q.dasError
+	q.serverError = parseTmpl(Config.Templates, "error.tmpl", tmplData)
+	return q.serverError
 }
 
 // ServerZeroResults method for ServerTemplates structure
 func (q ServerTemplates) ServerZeroResults(tdir string, tmplData map[string]interface{}) string {
-	if q.dasZero != "" {
-		return q.dasZero
+	if q.zero != "" {
+		return q.zero
 	}
-	q.dasZero = parseTmpl(Config.Templates, "zero_results.tmpl", tmplData)
-	return q.dasZero
+	q.zero = parseTmpl(Config.Templates, "zero_results.tmpl", tmplData)
+	return q.zero
 }
 
 // Status method for ServerTemplates structure
 func (q ServerTemplates) Status(tdir string, tmplData map[string]interface{}) string {
-	if q.dasError != "" {
-		return q.dasError
+	if q.status != "" {
+		return q.status
 	}
-	q.dasError = parseTmpl(Config.Templates, "status.tmpl", tmplData)
-	return q.dasError
+	q.status = parseTmpl(Config.Templates, "status.tmpl", tmplData)
+	return q.status
+}
+
+// Update method for ServerTemplates structure
+func (q ServerTemplates) Update(tdir string, tmplData map[string]interface{}) string {
+	if q.record != "" {
+		return q.record
+	}
+	q.record = parseTmpl(Config.Templates, "update.tmpl", tmplData)
+	return q.record
 }

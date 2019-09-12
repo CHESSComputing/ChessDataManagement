@@ -184,6 +184,10 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 		DataHandler(w, r)
 	case "process":
 		ProcessHandler(w, r)
+	case "update":
+		UpdateHandler(w, r)
+	case "updateRecord":
+		UpdateRecordHandler(w, r)
 	default:
 		DataHandler(w, r)
 	}
@@ -459,6 +463,7 @@ func SettingsHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// helper function to insert data into backend DB
 func insertData(rec Record) error {
 	// main attributes to work with
 	path := rec["path"].(string)
@@ -637,6 +642,54 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 	tmplData := make(map[string]interface{})
 	tmplData["Message"] = msg
 	tmplData["Class"] = class
+	page := templates.Confirm(Config.Templates, tmplData)
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(_top + page + _bottom))
+}
+
+// UpdateHandler handlers Process requests
+func UpdateHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+	var templates ServerTemplates
+	tmplData := make(map[string]interface{})
+	tmplData["Record"] = r.FormValue("record")
+	tmplData["Id"] = r.FormValue("_id")
+	page := templates.Update(Config.Templates, tmplData)
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(_top + page + _bottom))
+}
+
+// UpdateRecordHandler handlers Process requests
+func UpdateRecordHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+	var msg, cls string
+	var rec Record
+	err := json.Unmarshal([]byte(r.FormValue("record")), &rec)
+	if err != nil {
+		msg = fmt.Sprintf("record update failed, reason: %v", err)
+		cls = "is-error"
+	} else {
+		rid := r.FormValue("_id")
+		msg = fmt.Sprintf("record %v is successfully updated", rid)
+		records := []Record{rec}
+		err = MongoUpsert(Config.DBName, Config.DBColl, records)
+		if err != nil {
+			msg = fmt.Sprintf("record %v update is failed, reason: %v", rid, err)
+			cls = "is-error"
+		} else {
+			cls = "is-success"
+		}
+	}
+	var templates ServerTemplates
+	tmplData := make(map[string]interface{})
+	tmplData["Message"] = strings.ToTitle(msg)
+	tmplData["Class"] = fmt.Sprintf("alert %s is-large is-text-center", cls)
 	page := templates.Confirm(Config.Templates, tmplData)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(_top + page + _bottom))

@@ -1,4 +1,22 @@
-<h3>record: {{.Id}}</h3>
+<hr />
+<div class="is-row">
+    <div class="is-col is-80">
+    <h3>record: {{.Id}}</h3>
+    </div>
+    <div class="is-col is-20">
+<form class="form-content" method="post" action="update" enctype="multipart/form-data">
+    <div class="form-item">
+        <div class="is-append is-push-right is-right">
+            <div class="is-80">
+            <input name="_id" type="hidden" value="{{.Id}}">
+            <input name="record" type="hidden" value="{{.Record}}">
+            </div>
+            <button class="button is-secondary">Update</button>
+        </div>
+    </div>
+</form>
+    </div>
+</div>
 <pre>
 {{.Record}}
 </pre>
