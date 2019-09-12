@@ -8,6 +8,7 @@ package main
 //              https://gist.github.com/border/3489566
 
 import (
+	"encoding/json"
 	"fmt"
 	"html"
 	"strings"
@@ -20,6 +21,13 @@ import (
 
 // Record define Mongo record
 type Record map[string]interface{}
+
+// ToJson provides string representation of Record
+func (r Record) ToJson() string {
+	// create pretty JSON representation of the record
+	data, _ := json.MarshalIndent(r, "", "    ")
+	return string(data)
+}
 
 // ToString provides string representation of Record
 func (r Record) ToString() string {
