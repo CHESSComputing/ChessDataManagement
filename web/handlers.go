@@ -459,6 +459,36 @@ func SettingsHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func insertData(rec Record) error {
+	// main attributes to work with
+	path := rec["path"].(string)
+	experiment := rec["experiment"].(string)
+	processing := rec["processing"].(string)
+	tier := rec["tier"].(string)
+
+	//         files := FindFiles(path)
+	files := []string{path}
+	dataset := fmt.Sprintf("/%s/%s/%s", experiment, processing, tier)
+	rec["dataset"] = dataset
+	if len(files) > 0 {
+		logs.WithFields(logs.Fields{
+			"Record": rec,
+			"Files":  files,
+		}).Debug("input data")
+		rec["path"] = files[0]
+		did, err := InsertFiles(experiment, processing, tier, files)
+		if err != nil {
+			return err
+		}
+		rec["did"] = did
+		records := []Record{rec}
+		MongoUpsert(Config.DBName, Config.DBColl, records)
+		return nil
+	}
+	msg := fmt.Sprintf("No files found associated with path=%s, experiment=%s, processing=%s, tier=%s", path, experiment, processing, tier)
+	return errors.New(msg)
+}
+
 // ProcessHandler handlers Process requests
 func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
@@ -477,39 +507,51 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 		}
-		path := rec["path"].(string)
-		//         files := FindFiles(path)
-		files := []string{path}
-		delete(rec, "path")
-		experiment := rec["experiment"].(string)
-		processing := rec["processing"].(string)
-		tier := rec["tier"].(string)
-		dataset := fmt.Sprintf("/%s/%s/%s", experiment, processing, tier)
-		rec["dataset"] = dataset
-		if len(files) > 0 {
-			logs.WithFields(logs.Fields{
-				"Record": rec,
-				"Files":  files,
-			}).Debug("input data")
-			rec["path"] = files[0]
-			did, err := InsertFiles(experiment, processing, tier, files)
-			rec["did"] = did
-			if err != nil {
+		err := insertData(rec)
+		if err == nil {
+			msg = fmt.Sprintf("Your meta-data is inserted successfully")
+			class = "alert is-success"
+		} else {
+			msg = fmt.Sprintf("Web processing error: %v", err)
+			class = "alert is-error"
+		}
+
+		/*
+				path := rec["path"].(string)
+				//         files := FindFiles(path)
+				files := []string{path}
+				delete(rec, "path")
+				experiment := rec["experiment"].(string)
+				processing := rec["processing"].(string)
+				tier := rec["tier"].(string)
+				dataset := fmt.Sprintf("/%s/%s/%s", experiment, processing, tier)
+				rec["dataset"] = dataset
+				if len(files) > 0 {
+					logs.WithFields(logs.Fields{
+						"Record": rec,
+						"Files":  files,
+					}).Debug("input data")
+					rec["path"] = files[0]
+					did, err := InsertFiles(experiment, processing, tier, files)
+					rec["did"] = did
+					if err != nil {
+						msg = fmt.Sprintf("ERROR:\nWeb processing error: %v", err)
+						class = "alert is-error"
+					} else {
+						records := []Record{rec}
+						MongoUpsert(Config.DBName, Config.DBColl, records)
+						msg = fmt.Sprintf("SUCCESS:\n\nMETA-DATA:\n%v\n\nDATASET: %s contains %d files", rec.ToString(), dataset, len(files))
+						class = "alert is-success"
+					}
+				} else {
+					msg = fmt.Sprintf("WARNING:\nUnable to find any files in given path '%s'", path)
+					class = "alert is-warning"
+				}
+			} else {
 				msg = fmt.Sprintf("ERROR:\nWeb processing error: %v", err)
 				class = "alert is-error"
-			} else {
-				records := []Record{rec}
-				MongoUpsert(Config.DBName, Config.DBColl, records)
-				msg = fmt.Sprintf("SUCCESS:\n\nMETA-DATA:\n%v\n\nDATASET: %s contains %d files", rec.ToString(), dataset, len(files))
-				class = "alert is-success"
 			}
-		} else {
-			msg = fmt.Sprintf("WARNING:\nUnable to find any files in given path '%s'", path)
-			class = "alert is-warning"
-		}
-	} else {
-		msg = fmt.Sprintf("ERROR:\nWeb processing error: %v", err)
-		class = "alert is-error"
+		*/
 	}
 	var templates ServerTemplates
 	tmplData := make(map[string]interface{})
@@ -536,7 +578,6 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		user = creds.UserName()
 		config := r.FormValue("config")
-		fmt.Println("### config", config)
 		var data = ChessMetaData{}
 		data.User = user
 		err = json.Unmarshal([]byte(config), &data)
@@ -545,7 +586,13 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 			handleError(w, r, msg, err)
 			return
 		}
-		msg := fmt.Sprintf("Successfully read:\n%v", data)
+		err = insertData(data.ToRecord())
+		if err != nil {
+			msg := "unable to insert data"
+			handleError(w, r, msg, err)
+			return
+		}
+		msg := fmt.Sprintf("Successfully inserted:\n%v", data.String())
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(msg))
 		return
@@ -576,8 +623,14 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 			msg = fmt.Sprintf("error: %v, unable to parse request data", err)
 			class = "alert is-error"
 		} else {
-			msg = fmt.Sprintf("Successfully read:\n%v", data.String())
-			class = "alert is-success"
+			err := insertData(data.ToRecord())
+			if err == nil {
+				msg = fmt.Sprintf("meta-data is inserted successfully")
+				class = "alert is-success"
+			} else {
+				msg = fmt.Sprintf("Web processing error: %v", err)
+				class = "alert is-error"
+			}
 		}
 	}
 	var templates ServerTemplates
