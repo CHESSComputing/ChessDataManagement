@@ -1,0 +1,14 @@
+<h3>record: {{.Id}}</h3>
+<div class="is-70 is-center">
+<form method="post" action="update" enctype="multipart/form-data">
+    <div class="form-item">
+        <input name="_id" type="hidden" value="{{.Id}}">
+        <textarea rows="6">{{.Record}}</textarea>
+    </div>
+
+    <div class="form-item is-buttons">
+        <button class="button">Update</button>
+        <button class="button is-tertiary">Cancel</button>
+    </div>
+</form>
+</div>
