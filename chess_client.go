@@ -200,8 +200,9 @@ func placeRequest(uri, configFile, krbFile string) error {
 	url := fmt.Sprintf("%s/api", uri)
 	req, err := http.NewRequest("POST", url, strings.NewReader(form.Encode()))
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	ckey, cert, servercrt := getCerticiates()
-	client := httpClient(ckey, cert, servercrt)
+	//     ckey, cert, servercrt := getCerticiates()
+	//     client := httpClient(ckey, cert, servercrt)
+	client := http.Client{}
 	resp, err := client.Do(req)
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
@@ -222,8 +223,9 @@ func findRecords(uri, query, krbFile string) {
 	if err != nil {
 		exit("find records method fails", err)
 	}
-	ckey, cert, servercrt := getCerticiates()
-	client := httpClient(ckey, cert, servercrt)
+	//     ckey, cert, servercrt := getCerticiates()
+	//     client := httpClient(ckey, cert, servercrt)
+	client := http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
 		exit("Fail to place request", err)
@@ -247,7 +249,7 @@ func main() {
 	var krbFile string
 	flag.StringVar(&krbFile, "krbFile", "", "kerberos file")
 	var uri string
-	flag.StringVar(&uri, "uri", "https://chessdata.lns.cornell.edu:8243", "CHESS Data Management System URI")
+	flag.StringVar(&uri, "uri", "http://chessdata.lns.cornell.edu:8243", "CHESS Data Management System URI")
 	flag.Usage = func() {
 		client := "chess_client"
 		msg := fmt.Sprintf("\nCommand line interface to CHESS Data Management System\nOptions:\n")
