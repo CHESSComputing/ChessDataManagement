@@ -174,6 +174,9 @@ func findRecords(uri, query, krbFile string) {
 	}
 	client := http.Client{}
 	resp, err := client.Do(req)
+	if err != nil {
+		exit("Fail to place request", err)
+	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
 		exit(fmt.Sprintf("requset fails with status: %v", resp.Status), nil)
