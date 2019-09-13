@@ -53,8 +53,9 @@ func httpClient(uckey, ucert, servercrt string) *http.Client {
 		client = &http.Client{
 			Transport: &http.Transport{
 				TLSClientConfig: &tls.Config{
-					RootCAs:      caCertPool,
-					Certificates: []tls.Certificate{cert},
+					InsecureSkipVerify: true,
+					RootCAs:            caCertPool,
+					Certificates:       []tls.Certificate{cert},
 				},
 			},
 		}
@@ -62,7 +63,8 @@ func httpClient(uckey, ucert, servercrt string) *http.Client {
 		client = &http.Client{
 			Transport: &http.Transport{
 				TLSClientConfig: &tls.Config{
-					Certificates: []tls.Certificate{cert},
+					InsecureSkipVerify: true,
+					Certificates:       []tls.Certificate{cert},
 				},
 			},
 		}
@@ -200,9 +202,8 @@ func placeRequest(uri, configFile, krbFile string) error {
 	url := fmt.Sprintf("%s/api", uri)
 	req, err := http.NewRequest("POST", url, strings.NewReader(form.Encode()))
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	//     ckey, cert, servercrt := getCerticiates()
-	//     client := httpClient(ckey, cert, servercrt)
-	client := http.Client{}
+	ckey, cert, servercrt := getCerticiates()
+	client := httpClient(ckey, cert, servercrt)
 	resp, err := client.Do(req)
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
@@ -223,9 +224,8 @@ func findRecords(uri, query, krbFile string) {
 	if err != nil {
 		exit("find records method fails", err)
 	}
-	//     ckey, cert, servercrt := getCerticiates()
-	//     client := httpClient(ckey, cert, servercrt)
-	client := http.Client{}
+	ckey, cert, servercrt := getCerticiates()
+	client := httpClient(ckey, cert, servercrt)
 	resp, err := client.Do(req)
 	if err != nil {
 		exit("Fail to place request", err)
