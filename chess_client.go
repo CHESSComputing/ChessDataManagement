@@ -2,6 +2,8 @@ package main
 
 import (
 	"bufio"
+	"crypto/tls"
+	"crypto/x509"
 	"flag"
 	"fmt"
 	"io"
@@ -20,6 +22,53 @@ import (
 	"gopkg.in/jcmturner/gokrb5.v7/config"
 	"gopkg.in/jcmturner/gokrb5.v7/credentials"
 )
+
+// helper function to get client/server certificates
+func getCerticiates() (string, string, string) {
+	ckey := os.Getenv("X509_USER_KEY")
+	cert := os.Getenv("X509_USER_CERT")
+	scrt := os.Getenv("X509_ROOT_CA")
+	if ckey == "" || cert == "" {
+		exit("Please setup your X509_USER_KEY and X509_USER_CERT environemt variables", nil)
+	}
+	return ckey, cert, scrt
+}
+
+// helper function to get https client
+func httpClient(uckey, ucert, servercrt string) *http.Client {
+	cert, err := tls.LoadX509KeyPair(ucert, uckey)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var client *http.Client
+	if servercrt != "" {
+		caCert, err := ioutil.ReadFile(servercrt)
+		if err != nil {
+			exit("fail to read server certificates", nil)
+		}
+		caCertPool := x509.NewCertPool()
+		caCertPool.AppendCertsFromPEM(caCert)
+
+		client = &http.Client{
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{
+					RootCAs:      caCertPool,
+					Certificates: []tls.Certificate{cert},
+				},
+			},
+		}
+	} else {
+		client = &http.Client{
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{
+					Certificates: []tls.Certificate{cert},
+				},
+			},
+		}
+	}
+	return client
+}
 
 // helper function to exit
 func exit(msg string, err error) {
@@ -151,7 +200,8 @@ func placeRequest(uri, configFile, krbFile string) error {
 	url := fmt.Sprintf("%s/api", uri)
 	req, err := http.NewRequest("POST", url, strings.NewReader(form.Encode()))
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	client := http.Client{}
+	ckey, cert, servercrt := getCerticiates()
+	client := httpClient(ckey, cert, servercrt)
 	resp, err := client.Do(req)
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
@@ -172,7 +222,8 @@ func findRecords(uri, query, krbFile string) {
 	if err != nil {
 		exit("find records method fails", err)
 	}
-	client := http.Client{}
+	ckey, cert, servercrt := getCerticiates()
+	client := httpClient(ckey, cert, servercrt)
 	resp, err := client.Do(req)
 	if err != nil {
 		exit("Fail to place request", err)
