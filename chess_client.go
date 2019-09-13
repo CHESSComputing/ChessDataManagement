@@ -249,7 +249,7 @@ func main() {
 	var krbFile string
 	flag.StringVar(&krbFile, "krbFile", "", "kerberos file")
 	var uri string
-	flag.StringVar(&uri, "uri", "http://chessdata.lns.cornell.edu:8243", "CHESS Data Management System URI")
+	flag.StringVar(&uri, "uri", "https://chessdata.lns.cornell.edu:8243", "CHESS Data Management System URI")
 	flag.Usage = func() {
 		client := "chess_client"
 		msg := fmt.Sprintf("\nCommand line interface to CHESS Data Management System\nOptions:\n")
