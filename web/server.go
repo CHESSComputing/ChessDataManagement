@@ -45,6 +45,7 @@ func Server(configFile string) {
 	if err != nil {
 		logs.WithFields(logs.Fields{"Time": time.Now(), "Config": configFile}).Error("Unable to parse")
 	}
+	fmt.Println("Configuration:", Config.String())
 
 	// initialize FilesDB connection
 	FilesDB, err = InitFilesDB()

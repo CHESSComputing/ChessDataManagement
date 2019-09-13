@@ -111,7 +111,7 @@ func InList(a string, list []string) bool {
 }
 
 // MapKeys helper function to return keys from a map
-func MapKeys(rec map[string]interface{}) []string {
+func MapKeys(rec Record) []string {
 	keys := make([]string, 0, len(rec))
 	for k := range rec {
 		keys = append(keys, k)

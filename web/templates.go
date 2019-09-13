@@ -32,6 +32,19 @@ func parseTmpl(tdir, tmpl string, data interface{}) string {
 			}
 			return false
 		},
+		// The name "inListFunc" is what the function will be called in the template text.
+		"inListFunc": func(a string, list []string) bool {
+			check := 0
+			for _, b := range list {
+				if b == a {
+					check += 1
+				}
+			}
+			if check != 0 {
+				return true
+			}
+			return false
+		},
 	}
 	t := template.Must(template.New(tmpl).Funcs(funcMap).ParseFiles(filenames...))
 	err := t.Execute(buf, data)
