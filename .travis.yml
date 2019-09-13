@@ -14,4 +14,5 @@ install:
   - go get -d gopkg.in/jcmturner/gokrb5.v7/...
   - go get gopkg.in/mgo.v2/
   - go get gopkg.in/mgo.v2/bson
+  - go get golang.org/x/crypto/ssh/terminal
   - cd web
