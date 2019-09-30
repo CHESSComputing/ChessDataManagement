@@ -23,24 +23,17 @@ import (
 	"gopkg.in/jcmturner/gokrb5.v7/credentials"
 )
 
-// helper function to get client/server certificates
-func getCerticiates() (string, string, string) {
-	ckey := os.Getenv("X509_USER_KEY")
-	cert := os.Getenv("X509_USER_CERT")
+// helper function to get ROOT certificate
+func getCertificate() string {
 	scrt := os.Getenv("X509_ROOT_CA")
-	if ckey == "" || cert == "" {
-		exit("Please setup your X509_USER_KEY and X509_USER_CERT environemt variables", nil)
+	if scrt == "" {
+		exit("Please setup your X509_ROOT_CA environemt variable", nil)
 	}
-	return ckey, cert, scrt
+	return scrt
 }
 
 // helper function to get https client
-func httpClient(uckey, ucert, servercrt string) *http.Client {
-	cert, err := tls.LoadX509KeyPair(ucert, uckey)
-	if err != nil {
-		log.Fatal(err)
-	}
-
+func httpClient(servercrt string) *http.Client {
 	var client *http.Client
 	if servercrt != "" {
 		caCert, err := ioutil.ReadFile(servercrt)
@@ -53,19 +46,14 @@ func httpClient(uckey, ucert, servercrt string) *http.Client {
 		client = &http.Client{
 			Transport: &http.Transport{
 				TLSClientConfig: &tls.Config{
-					InsecureSkipVerify: true,
-					RootCAs:            caCertPool,
-					Certificates:       []tls.Certificate{cert},
+					RootCAs: caCertPool,
 				},
 			},
 		}
 	} else {
 		client = &http.Client{
 			Transport: &http.Transport{
-				TLSClientConfig: &tls.Config{
-					InsecureSkipVerify: true,
-					Certificates:       []tls.Certificate{cert},
-				},
+				TLSClientConfig: &tls.Config{},
 			},
 		}
 	}
@@ -202,8 +190,8 @@ func placeRequest(uri, configFile, krbFile string) error {
 	url := fmt.Sprintf("%s/api", uri)
 	req, err := http.NewRequest("POST", url, strings.NewReader(form.Encode()))
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	ckey, cert, servercrt := getCerticiates()
-	client := httpClient(ckey, cert, servercrt)
+	servercrt := getCertificate()
+	client := httpClient(servercrt)
 	resp, err := client.Do(req)
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
@@ -224,8 +212,8 @@ func findRecords(uri, query, krbFile string) {
 	if err != nil {
 		exit("find records method fails", err)
 	}
-	ckey, cert, servercrt := getCerticiates()
-	client := httpClient(ckey, cert, servercrt)
+	servercrt := getCertificate()
+	client := httpClient(servercrt)
 	resp, err := client.Do(req)
 	if err != nil {
 		exit("Fail to place request", err)
@@ -249,7 +237,7 @@ func main() {
 	var krbFile string
 	flag.StringVar(&krbFile, "krbFile", "", "kerberos file")
 	var uri string
-	flag.StringVar(&uri, "uri", "https://chessdata.lns.cornell.edu:8243", "CHESS Data Management System URI")
+	flag.StringVar(&uri, "uri", "https://chessdata.classe.cornell.edu:8243", "CHESS Data Management System URI")
 	flag.Usage = func() {
 		client := "chess_client"
 		msg := fmt.Sprintf("\nCommand line interface to CHESS Data Management System\nOptions:\n")
