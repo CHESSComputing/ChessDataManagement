@@ -31,8 +31,10 @@ type Configuration struct {
 	Krb5Conf        string   `json:"krb5Conf"`             // kerberos krb5.conf
 	ServerKey       string   `json:"ckey"`                 // tls.key file
 	ServerCrt       string   `json:"cert"`                 // tls.cert file
+	RootCA          string   `json:"rootCA"`               // RootCA file
 	MandatoryAttrs  []string `json:"mandatoryAttributes"`  // list of madatory attributes
 	AdjustableAttrs []string `json:"adjustableAttributes"` // list of adjustable attributes
+	TestMode        bool     `json:"testMode"`             // test mode to bypass auth
 }
 
 // Config variable represents configuration object
