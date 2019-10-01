@@ -26,14 +26,31 @@ import (
 // helper function to get ROOT certificate
 func getCertificate() string {
 	scrt := os.Getenv("X509_ROOT_CA")
-	if scrt == "" {
-		exit("Please setup your X509_ROOT_CA environemt variable", nil)
-	}
+	//     if scrt == "" {
+	//         exit("X509_ROOT_CA environemt is not set", nil)
+	//     }
 	return scrt
 }
 
 // helper function to get https client
+// for chess internal usage we'll not provide client's cert and
+// we will not verify server certificate
 func httpClient(servercrt string) *http.Client {
+	var client *http.Client
+	client = &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				ClientAuth:         tls.NoClientCert, // we will not send client's cert
+				InsecureSkipVerify: true,             // we will not verify server cert
+			},
+		},
+	}
+	return client
+}
+
+// helper function to get https client, this is more secure version
+// which will verify server certificate
+func httpClient_orig(servercrt string) *http.Client {
 	var client *http.Client
 	if servercrt != "" {
 		caCert, err := ioutil.ReadFile(servercrt)
