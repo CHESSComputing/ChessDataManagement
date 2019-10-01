@@ -7,7 +7,9 @@ package main
 
 import (
 	"crypto/tls"
+	"crypto/x509"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -83,10 +85,14 @@ func Server(configFile string) {
 	_, e2 := os.Stat(Config.ServerKey)
 	if e1 == nil && e2 == nil {
 		//start HTTPS server which require user certificates
+		rootCA := x509.NewCertPool()
+		caCert, _ := ioutil.ReadFile(Config.RootCA)
+		rootCA.AppendCertsFromPEM(caCert)
 		server := &http.Server{
 			Addr: addr,
 			TLSConfig: &tls.Config{
-				ClientAuth: tls.RequestClientCert,
+				//                 ClientAuth: tls.RequestClientCert,
+				RootCAs: rootCA,
 			},
 		}
 		logs.WithFields(logs.Fields{"Addr": addr}).Info("Starting HTTPs server")
