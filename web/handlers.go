@@ -54,10 +54,16 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// check if server started with hkey file (auth is required)
-	user, err := username(r)
-	if err != nil {
-		LoginHandler(w, r)
-		return
+	var user string
+	var err error
+	if Config.TestMode {
+		user = "testUser"
+	} else {
+		user, err = username(r)
+		if err != nil {
+			LoginHandler(w, r)
+			return
+		}
 	}
 	logs.WithFields(logs.Fields{"User": user, "Path": r.URL.Path}).Info("")
 	// define all methods which requires authentication
@@ -383,43 +389,6 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 			msg = fmt.Sprintf("Web processing error: %v", err)
 			class = "alert is-error"
 		}
-
-		/*
-				path := rec["path"].(string)
-				//         files := FindFiles(path)
-				files := []string{path}
-				delete(rec, "path")
-				experiment := rec["experiment"].(string)
-				processing := rec["processing"].(string)
-				tier := rec["tier"].(string)
-				dataset := fmt.Sprintf("/%s/%s/%s", experiment, processing, tier)
-				rec["dataset"] = dataset
-				if len(files) > 0 {
-					logs.WithFields(logs.Fields{
-						"Record": rec,
-						"Files":  files,
-					}).Debug("input data")
-					rec["path"] = files[0]
-					did, err := InsertFiles(experiment, processing, tier, files)
-					rec["did"] = did
-					if err != nil {
-						msg = fmt.Sprintf("ERROR:\nWeb processing error: %v", err)
-						class = "alert is-error"
-					} else {
-						records := []Record{rec}
-						MongoUpsert(Config.DBName, Config.DBColl, records)
-						msg = fmt.Sprintf("SUCCESS:\n\nMETA-DATA:\n%v\n\nDATASET: %s contains %d files", rec.ToString(), dataset, len(files))
-						class = "alert is-success"
-					}
-				} else {
-					msg = fmt.Sprintf("WARNING:\nUnable to find any files in given path '%s'", path)
-					class = "alert is-warning"
-				}
-			} else {
-				msg = fmt.Sprintf("ERROR:\nWeb processing error: %v", err)
-				class = "alert is-error"
-			}
-		*/
 	}
 	var templates ServerTemplates
 	tmplData := make(map[string]interface{})

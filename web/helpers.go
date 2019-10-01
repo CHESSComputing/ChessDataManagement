@@ -8,6 +8,7 @@ import (
 	"os"
 	"sort"
 	"strings"
+	"time"
 
 	logs "github.com/sirupsen/logrus"
 	"gopkg.in/jcmturner/gokrb5.v7/client"
@@ -144,12 +145,14 @@ func validateData(rec Record) error {
 		msg := fmt.Sprintf("List of records keys does not have all mandatory attributes")
 		msg = fmt.Sprintf("%s\nList of records keys: %v", msg, keys)
 		msg = fmt.Sprintf("%s\nList of mandatory attrs: %v", msg, mKeys)
+		msg = fmt.Sprintf("%s\nList of config mandatory attrs: %v", msg, Config.MandatoryAttrs)
 		return errors.New(msg)
 	}
 	if len(aKeys) != len(Config.AdjustableAttrs) {
 		msg := fmt.Sprintf("List of records keys does not have all adjustable attributes")
 		msg = fmt.Sprintf("%s\nList of records keys: %v", msg, keys)
 		msg = fmt.Sprintf("%s\nList of adjustable attrs: %v", msg, aKeys)
+		msg = fmt.Sprintf("%s\nList of config adjustable attrs: %v", msg, Config.AdjustableAttrs)
 		return errors.New(msg)
 	}
 	return nil
@@ -165,21 +168,19 @@ func insertData(rec Record) error {
 	experiment := rec["experiment"].(string)
 	processing := rec["processing"].(string)
 	tier := rec["tier"].(string)
-
-	//         files := FindFiles(path)
-	files := []string{path}
 	dataset := fmt.Sprintf("/%s/%s/%s", experiment, processing, tier)
 	rec["dataset"] = dataset
-	if len(files) > 0 {
+	// check if given path exist on file system
+	_, err := os.Stat(path)
+	if err == nil {
 		logs.WithFields(logs.Fields{
 			"Record": rec,
-			"Files":  files,
+			"Path":   path,
 		}).Debug("input data")
-		rec["path"] = files[0]
-		did, err := InsertFiles(experiment, processing, tier, files)
-		if err != nil {
-			return err
-		}
+		rec["path"] = path
+		// we generate unique id by using time stamp
+		did := time.Now().UnixNano()
+		go InsertFiles(did, experiment, processing, tier, path)
 		rec["did"] = did
 		records := []Record{rec}
 		MongoUpsert(Config.DBName, Config.DBColl, records)

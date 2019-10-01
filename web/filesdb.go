@@ -147,12 +147,15 @@ func FindId(stmt string, args ...interface{}) (int64, error) {
 }
 
 // InsertFiles insert given files into FilesDB
-func InsertFiles(experiment, processing, tier string, files []string) (int64, error) {
+func InsertFiles(did int64, experiment, processing, tier, path string) error {
+	// look-up files for given path
+	files := FindFiles(path)
+
 	// check if we have already our dataset in DB
 	dstmt := "SELECT dataset_id FROM datasets JOIN tiers ON datasets.tier_id=tiers.tier_id JOIN processing ON datasets.processing_id=processing.processing_id JOIN experiments ON datasets.experiment_id=experiments.experiment_id WHERE experiments.name=? and processing.name=? and tiers.name=?"
 	datasetId, e := FindId(dstmt, experiment, processing, tier)
-	if e == nil && datasetId > 0 {
-		return datasetId, nil
+	if e == nil && datasetId == did {
+		return nil
 	}
 
 	// proceed with transaction operation
@@ -161,7 +164,7 @@ func InsertFiles(experiment, processing, tier string, files []string) (int64, er
 		logs.WithFields(logs.Fields{
 			"Error": err,
 		}).Error("DB error")
-		return -1, err
+		return err
 	}
 	defer tx.Rollback()
 
@@ -171,17 +174,17 @@ func InsertFiles(experiment, processing, tier string, files []string) (int64, er
 	stmt = "INSERT INTO tiers (name) VALUES (?)"
 	_, err = tx.Exec(stmt, tier)
 	if err != nil {
-		return -1, tx.Rollback()
+		return tx.Rollback()
 	}
 	stmt = "INSERT INTO processing (name) VALUES (?)"
 	_, err = tx.Exec(stmt, processing)
 	if err != nil {
-		return -1, tx.Rollback()
+		return tx.Rollback()
 	}
 	stmt = "INSERT INTO experiments (name) VALUES (?)"
 	_, err = tx.Exec(stmt, experiment)
 	if err != nil {
-		return -1, tx.Rollback()
+		return tx.Rollback()
 	}
 
 	// select main attributes ids
@@ -189,7 +192,7 @@ func InsertFiles(experiment, processing, tier string, files []string) (int64, er
 	stmt = "SELECT experiment_id FROM experiments WHERE name=?"
 	res, err = execute(tx, stmt, experiment)
 	if err != nil {
-		return -1, tx.Rollback()
+		return tx.Rollback()
 	}
 	rec = res[0]
 	eid := rec["experiment_id"].(int64)
@@ -197,7 +200,7 @@ func InsertFiles(experiment, processing, tier string, files []string) (int64, er
 	stmt = "SELECT processing_id FROM processing WHERE name=?"
 	res, err = execute(tx, stmt, processing)
 	if err != nil {
-		return -1, tx.Rollback()
+		return tx.Rollback()
 	}
 	rec = res[0]
 	pid := rec["processing_id"].(int64)
@@ -205,40 +208,31 @@ func InsertFiles(experiment, processing, tier string, files []string) (int64, er
 	stmt = "SELECT tier_id FROM tiers WHERE name=?"
 	res, err = execute(tx, stmt, tier)
 	if err != nil {
-		return -1, tx.Rollback()
+		return tx.Rollback()
 	}
 	rec = res[0]
 	tid := rec["tier_id"].(int64)
 
 	// insert data into datasets table
 	tstamp := time.Now()
-	stmt = "INSERT INTO datasets (experiment_id,processing_id,tier_id,tstamp) VALUES (?, ?, ?, ?)"
-	_, err = tx.Exec(stmt, eid, pid, tid, tstamp)
+	stmt = "INSERT INTO datasets (dataset_id,experiment_id,processing_id,tier_id,tstamp) VALUES (?, ?, ?, ?, ?)"
+	_, err = tx.Exec(stmt, did, eid, pid, tid, tstamp)
 	if err != nil {
-		return -1, tx.Rollback()
+		return tx.Rollback()
 	}
-
-	// find out dataset id
-	stmt = "SELECT dataset_id FROM datasets WHERE experiment_id=? and processing_id=? and tier_id=?"
-	res, err = execute(tx, stmt, eid, pid, tid)
-	if err != nil {
-		return -1, tx.Rollback()
-	}
-	rec = res[0]
-	did := rec["dataset_id"].(int64)
 
 	// insert files info
 	for _, name := range files {
 		stmt = "INSERT INTO FILES (dataset_id,name) VALUES (?,?)"
 		_, err = tx.Exec(stmt, did, name)
 		if err != nil {
-			return -1, tx.Rollback()
+			return tx.Rollback()
 		}
 	}
 	// commit whole workflow
 	err = tx.Commit()
 	if err != nil {
-		return -1, tx.Rollback()
+		return tx.Rollback()
 	}
-	return did, nil
+	return nil
 }

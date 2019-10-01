@@ -16,7 +16,7 @@ CREATE TABLE processing (
 );
 
 CREATE TABLE datasets (
- dataset_id INTEGER PRIMARY KEY AUTOINCREMENT,
+ dataset_id INTEGER PRIMARY KEY,
  experiment_id integer REFERENCES experiments(experiment_id) ON UPDATE CASCADE,
  processing_id integer REFERENCES processing(processing_id) ON UPDATE CASCADE,
  tier_id integer REFERENCES tiers(tier_id) ON UPDATE CASCADE,
