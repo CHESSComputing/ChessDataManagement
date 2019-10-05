@@ -378,6 +378,13 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 						rec[k] = v
 					}
 				}
+			} else if k == "Energy" {
+				if len(items) > 0 {
+					v, e := strconv.ParseFloat(items[0], 64)
+					if e == nil {
+						rec[k] = v
+					}
+				}
 			} else if k == "ConstituentElements" || k == "Phases" {
 				if len(items) > 0 {
 					arr := strings.Split(items[0], ",")
