@@ -139,20 +139,21 @@ func validateData(rec Record) error {
 			aKeys = append(aKeys, k)
 		}
 	}
+	sort.Sort(StringList(keys))
 	sort.Sort(StringList(mKeys))
 	sort.Sort(StringList(aKeys))
 	if len(mKeys) != len(Config.MandatoryAttrs) {
-		msg := fmt.Sprintf("List of records keys does not have all mandatory attributes")
-		msg = fmt.Sprintf("%s\nList of records keys: %v", msg, keys)
-		msg = fmt.Sprintf("%s\nList of mandatory attrs: %v", msg, mKeys)
-		msg = fmt.Sprintf("%s\nList of config mandatory attrs: %v", msg, Config.MandatoryAttrs)
+		msg := fmt.Sprintf("record does not have all mandatory attributes")
+		msg = fmt.Sprintf("%s\nExisting records keys :\n%v", msg, keys)
+		msg = fmt.Sprintf("%s\nPassed mandatory attrs:\n%v", msg, mKeys)
+		msg = fmt.Sprintf("%s\nConfig mandatory attrs:\n%v", msg, Config.MandatoryAttrs)
 		return errors.New(msg)
 	}
 	if len(aKeys) != len(Config.AdjustableAttrs) {
-		msg := fmt.Sprintf("List of records keys does not have all adjustable attributes")
-		msg = fmt.Sprintf("%s\nList of records keys: %v", msg, keys)
-		msg = fmt.Sprintf("%s\nList of adjustable attrs: %v", msg, aKeys)
-		msg = fmt.Sprintf("%s\nList of config adjustable attrs: %v", msg, Config.AdjustableAttrs)
+		msg := fmt.Sprintf("record does not have all adjustable attributes")
+		msg = fmt.Sprintf("%s\nExisting records keys  :\n%v", msg, keys)
+		msg = fmt.Sprintf("%s\nPassed adjustable attrs:\n%v", msg, aKeys)
+		msg = fmt.Sprintf("%s\nConfig adjustable attrs:\n%v", msg, Config.AdjustableAttrs)
 		return errors.New(msg)
 	}
 	return nil
@@ -164,10 +165,10 @@ func insertData(rec Record) error {
 		return err
 	}
 	// main attributes to work with
-	path := rec["path"].(string)
-	experiment := rec["experiment"].(string)
-	processing := rec["processing"].(string)
-	tier := rec["tier"].(string)
+	path := rec["RawDataDirectory"].(string)
+	experiment := rec["AbbreviatedName"].(string)
+	processing := rec["Processing"].(string)
+	tier := "raw"
 	dataset := fmt.Sprintf("/%s/%s/%s", experiment, processing, tier)
 	rec["dataset"] = dataset
 	// check if given path exist on file system
@@ -186,6 +187,6 @@ func insertData(rec Record) error {
 		MongoUpsert(Config.DBName, Config.DBColl, records)
 		return nil
 	}
-	msg := fmt.Sprintf("No files found associated with path=%s, experiment=%s, processing=%s, tier=%s", path, experiment, processing, tier)
+	msg := fmt.Sprintf("No files found associated with path=%s", path)
 	return errors.New(msg)
 }
