@@ -91,7 +91,7 @@
             <fieldset>
             <label>Calibration Sample</label>
 			<div name="CalibrationSample" class="form-item">
-                <select class="is-50" multiple="multiple">
+                <select class="is-50">
 				<option value="yes">yes</option>
 				<option value="no">no</option>
                 </select>
@@ -100,14 +100,15 @@
             <fieldset>
             <label>Material Class</label>
 			<div name="MaterialClass" class="form-item">
-                <select class="is-50" multiple="multiple">
+                <select class="is-50">
 				<option value="#">Metal</option>
 				<option value="#">Ceramic</option>
 				<option value="#">Composite</option>
 				<option value="#">Polymer</option>
-				<option value="#">Other</option>
                 </select>
 			</div>
+            <label>Other</label>
+            <input name="MaterialClassOther" type="text" class="is-90" placeholder="Other">
             </fieldset>
         </div>
 
@@ -153,11 +154,13 @@
             <fieldset>
             <legend>Xray Modality</legend>
             <div class="form-item">
-                <select class="is-50" multiple="multiple">
+                <select class="is-50">
 				<option value="WhiteBeam">WhiteBeam</option>
-				<option value="MonochromaticBeam">MonochromaticBeam:</option>
+				<option value="MonochromaticBeam">MonochromaticBeam</option>
                 </select>
             </div>
+            <label>Energy</label>
+            <input name="Energy" type="text" class="is-90" placeholder="61.332">
             </fieldset>
             
             <fieldset>
