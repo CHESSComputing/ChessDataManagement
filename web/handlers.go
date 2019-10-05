@@ -229,15 +229,9 @@ func DataHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	user, _ := username(r)
 	var templates ServerTemplates
-	keysData := make(map[string]string)
-	keysData["Experiment"] = "Name of the experiment"
-	keysData["Processing"] = "processing version, e.g. tag-123, gcc-700"
-	keysData["Tier"] = "data-tier, e.g. RAW"
-	keysData["Run"] = "run number or annotation"
-	keysData["Path"] = "input directory of experiment's files"
 	tmplData := make(map[string]interface{})
-	tmplData["Keys"] = keysData
 	tmplData["User"] = user
+	tmplData["Date"] = time.Now().Unix()
 	page := templates.Keys(Config.Templates, tmplData)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(_top + page + _bottom))
@@ -373,14 +367,44 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 	var class string
 	if err := r.ParseForm(); err == nil {
 		rec := make(Record)
+		rec["Date"] = time.Now().Unix()
 		// r.PostForm provides url.Values which is map[string][]string type
 		// we convert it to Record
 		for k, items := range r.PostForm {
-			for _, v := range items {
-				rec[strings.ToLower(k)] = v
-				break
+			if k == "Proposal" || k == "BTR" {
+				if len(items) > 0 {
+					v, e := strconv.Atoi(items[0])
+					if e == nil {
+						rec[k] = v
+					}
+				}
+			} else if k == "ConstituentElements" || k == "Phases" {
+				if len(items) > 0 {
+					arr := strings.Split(items[0], ",")
+					rec[k] = arr
+				}
+			} else {
+				if strings.Contains(k, "-") {
+					kkk := strings.Split(k, "-")
+					k := kkk[0]
+					if vals, ok := rec[k]; ok {
+						values := vals.([]string)
+						for _, v := range items {
+							values = append(values, v)
+						}
+						rec[k] = values
+					} else {
+						rec[k] = items
+					}
+				} else {
+					for _, v := range items {
+						rec[k] = v
+						break
+					}
+				}
 			}
 		}
+		logs.WithFields(logs.Fields{"record": rec}).Info("process upload form")
 		err := insertData(rec)
 		if err == nil {
 			msg = fmt.Sprintf("Your meta-data is inserted successfully")
