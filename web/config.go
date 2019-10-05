@@ -63,15 +63,48 @@ func ParseConfig(configFile string) error {
 	return nil
 }
 
+// MetaData provides details about CHESS experiment
+type MetaData struct {
+	Date             int64  `json:"Date"`
+	PI               string `json:"PI"`
+	Affliation       string `json:"Affiliation"`
+	Email            string `json:"Email"`
+	Proposal         string `json:"Proposal"`
+	BTR              int64  `json:"BTR"`
+	RawDataDirectory string `json:"RawDataDirectory"`
+	AuxDataDirectory string `json:"AuxDataDirectory"`
+}
+
+// Sample defines details of used sample in CHESS experiment
+type Material struct {
+	SpecName            string   `json:"SpecName"`
+	CalibrationSample   bool     `json:"CalibrationSample"`
+	MaterialClass       string   `json:"MaterialClass"`
+	CommonName          string   `json:"CommonName"`
+	AbbreviatedName     string   `json:"AbbreviatedName"`
+	ConstituentElements []string `json:"ConstituentElements"`
+	Phases              []string `json:"Phases"`
+	Processing          string   `json:"Processing"`
+}
+
+// Experiment provides Meta-Data attributes about CHESS experiment
+type Experiment struct {
+	ExperimentType            []string `json:"ExperimentType"`
+	XrayModality              string   `json:"XrayModality"`
+	XrayTechnique             []string `json:"XrawTechnique"`
+	SupplementaryMeasurements []string `json:"SupplementaryMeasurements"`
+	Furnance                  []string `json:"Furnance"`
+	LoadFrame                 []string `json:"LoadFrame"`
+	Detectors                 []string `json:"Detectors"`
+}
+
 // ChessMetaData represents input CHESS meta-data
 type ChessMetaData struct {
-	User        string `json:"user"`
-	Name        string `json:"name"`
-	Experiment  string `json:"experiment"`
-	Path        string `json:"path"`
-	Processing  string `json:"processing"`
-	Tier        string `json:"tier"`
-	Description string `json:"description"`
+	User        string     `json:"user"`
+	MetaData    MetaData   `json:"MetaData"`
+	Material    Material   `json:"Material"`
+	Experiment  Experiment `json:"Experiment"`
+	Description string     `json:"description"`
 }
 
 // String returns string representation of server Config
