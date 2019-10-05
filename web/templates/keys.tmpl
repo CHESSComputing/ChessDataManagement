@@ -1,7 +1,7 @@
 <!-- keys.tmpl -->
 <div class="is-row">
-    <div class="is-col is-30">
-<div class="form-container center-70">
+    <div class="is-col is-20">
+<div class="form-container center-90">
 <form class="form-content" method="post" action="api" enctype="multipart/form-data">
     <h3>Upload via configuration file</h3>
     <br/>
@@ -12,29 +12,260 @@
     <div class="form-item">
         <div class="is-append is-push-right is-right">
             <div class="is-80">
-                <input type="hidden" name="user" value="{{.User}}"/>
+                <input type="hidden" name="User" value="{{.User}}"/>
             </div>
-            <button class="button is-secondary">Submit</button>
+            <button class="button is-small">Submit</button>
         </div>
     </div>
 </form>
 </div>
 
     </div>
-    <div class="is-col is-70">
+    <div class="is-col is-80">
 
 <div class="form-container center-70">
 <form class="form-content" method="post" action="process">
     <h3>Upload via form submission</h3>
     <br/>
-    <fieldset>
-        <legend>Experiment data ({{.User}})</legend>
-{{range $k, $v := .Keys}}
+    <fieldset id="Generic">
+        <legend>Generic meta-data ({{.User}})</legend>
         <div class="form-item">
-            <label> {{$k}} </label>
-            <input name="{{$k}}" type="text" class="is-90" placeholder="{{$v}}">
+            <label>PI</label>
+            <input name="PI" type="text" class="is-90" placeholder="Fist Last Name">
         </div>
+        <div class="form-item">
+            <label>Affliation</label>
+            <input name="Affiliation" type="text" class="is-90" placeholder="Cornell University">
+        </div>
+        <div class="form-item">
+            <label>Email</label>
+            <input name="Email" type="text" class="is-90" placeholder="user@gmail.com">
+        </div>
+        <div class="form-item">
+            <label>Proposal</label>
+            <input name="Proposal" type="text" class="is-90" placeholder="12345">
+        </div>
+        <div class="form-item">
+            <label>BTR</label>
+            <input name="BTR" type="text" class="is-90" placeholder="1">
+        </div>
+        <div class="form-item">
+            <label>RawDataDirectory</label>
+            <input name="RawDataDirectory" type="text" class="is-90" placeholder="/path/A">
+        </div>
+        <div class="form-item">
+            <label>AuxDataDirectory</label>
+            <input name="AuxDataDirectory" type="text" class="is-90" placeholder="/path/B">
+        </div>
+
+        <a href="javascript:next('Material')" class="button is-small">Next</a>
+    </fieldset>
+
+    <fieldset id="Material" class="hide">
+        <legend>Material meta-data</legend>
+        <div id="materialSection" class="">
+			<div class="form-item">
+				<label>Spec</label>
+				<input name="Spec" type="text" class="is-90" placeholder="304_ss_1">
+			</div>
+			<div class="form-item">
+				<label>Common Name</label>
+				<input name="CommonName" type="text" class="is-90" placeholder="304 Stainless steel">
+			</div>
+			<div class="form-item">
+				<label>Abbreviated Name</label>
+				<input name="AbbreviatedName" type="text" class="is-90" placeholder="ss304">
+			</div>
+			<div class="form-item">
+				<label>Constituent Elements</label>
+				<input name="ConstituentElements" type="text" class="is-90" placeholder="FE,Ni,Cr">
+			</div>
+			<div class="form-item">
+				<label>Phases</label>
+				<input name="Phases" type="text" class="is-90" placeholder="phase1,phase2">
+			</div>
+			<div class="form-item">
+				<label>Processing</label>
+				<input name="Processing" type="text" class="is-90" placeholder="heat-treatment,test">
+			</div>
+            <fieldset>
+            <label>Calibration Sample</label>
+			<div name="CalibrationSample" class="form-item">
+                <select class="is-50" multiple="multiple">
+				<option value="yes">yes</option>
+				<option value="no">no</option>
+                </select>
+			</div>
+            </fieldset>
+            <fieldset>
+            <label>Material Class</label>
+			<div name="MaterialClass" class="form-item">
+                <select class="is-50" multiple="multiple">
+				<option value="#">Metal</option>
+				<option value="#">Ceramic</option>
+				<option value="#">Composite</option>
+				<option value="#">Polymer</option>
+				<option value="#">Other</option>
+                </select>
+			</div>
+            </fieldset>
+        </div>
+
+        <a href="javascript:next('Experiment')" class="button is-small">Next</a>
+    </fieldset>
+
+    <fieldset id="Experiment" class="hide">
+        <legend>Experiment meta-data</legend>
+        <div id="experimentSection" class="">
+{{range $k, $v := .ExperimentData}}
+			<div class="form-item">
+				<label> {{$k}} </label>
+				<input name="{{$k}}" type="text" class="is-90" placeholder="{{$v}}">
+			</div>
 {{end}}
+            <fieldset>
+            <legend>Experiment Type</legend>
+			<div class="form-item form-checkboxes">
+				<label class="is-checkbox">
+                    <input type="checkbox" name="ExperimentType-1" value="Tesion">Tension
+                </label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="ExperimentType-2" value="Compression">Compression
+                </label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="ExperimentType-3" value="Fatigue">Fatigue
+                </label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="ExperimentType-4" value="Torsion">Torsion
+                </label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="ExperimentType-5" value="MultiAxial">MultiAxial
+                </label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="ExperimentType-6" value="Temperature">Temperature
+                </label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="ExperimentType-7" value="Ex-situ">Ex-situ
+                </label>
+			</div>
+            </fieldset>
+            
+            <fieldset>
+            <legend>Xray Modality</legend>
+            <div class="form-item">
+                <select class="is-50" multiple="multiple">
+				<option value="WhiteBeam">WhiteBeam</option>
+				<option value="MonochromaticBeam">MonochromaticBeam:</option>
+                </select>
+            </div>
+            </fieldset>
+            
+            <fieldset>
+            <legend>Xray Technique</legend>
+			<div class="form-item form-checkboxes">
+				<label class="is-checkbox">
+                    <input type="checkbox" name="XrayTechnique-1" value="EDD">Energy Dispersive Diffraction (EDD)
+                </label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="XrayTechnique-2" value="ff-HEDM">far-field High Energy Diffraction Microscopy (ff-HEDM)
+                </label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="XrayTechnique-3" value="nf-HEDM">near-field High Energy Diffraction Microscopy (nf-HEDM)
+                </label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="XrayTechnique-4" value="XPD">Powder Diffraction (XPD)
+                </label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="XrayTechnique-5" value="CT">Absorption Computed Tomography (CT)
+                </label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="XrayTechnique-6" value="PCT">Phase Contrast Tomography (PCT)
+                </label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="XrayTechnique-7" value="SAXS">Small Angle X-ray Scattering (SAXS)
+                </label>
+			</div>
+            </fieldset>
+            
+            <fieldset>
+            <legend>Supplementary Measurements</legend>
+			<div class="form-item form-checkboxes">
+				<label class="is-checkbox">
+                    <input type="checkbox" name="SupplementaryMeasurements-1" value="Surface">Surface optical DIC
+                </label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="SupplementaryMeasurements-2" value="Thermocouple">Thermocouple
+                </label>
+			</div>
+            <label>Other</label>
+            <input name="SupplementaryMeasurements-3" type="text" class="is-90" placeholder="Other">
+            </fieldset>
+            
+            <fieldset>
+            <legend>Furnance</legend>
+			<div class="form-item form-checkboxes">
+				<label class="is-checkbox"><input type="checkbox" name="Furnance" value="NA">NA</label>
+			</div>
+            </fieldset>
+            
+            <fieldset>
+            <legend>Load Frame</legend>
+			<div class="form-item form-checkboxes">
+				<label class="is-checkbox">
+                    <input type="checkbox" name="LoadFrame-1" value="None">None
+                </label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="LoadFrame-2" value="RAMS4">RAMS4
+                </label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="LoadFrame-3" value="RAMS2">RAMS2
+                </label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="LoadFrame-4" value="Triaxial">Triaxial
+                </label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="LoadFrame-5" value="Compact">Cornell Compact Load Frame
+                </label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="LoadFrame-6" value="Bose">Bose
+                </label>
+			</div>
+            <label>Other</label>
+            <input name="LoadFrame-7" type="text" class="is-90" placeholder="Other">
+            </fieldset>
+            
+            <fieldset>
+            <legend>Detectors</legend>
+			<div class="form-item form-checkboxes">
+				<label class="is-checkbox">
+                    <input type="checkbox" name="Detectors-1" value="Dexel">Dexela(s)</label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="Detectors-2" value="GE">GE</label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="Detectors-3" value="Retiga">Retiga</label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="Detectors-4" value="Manta">Manta</label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="Detectors-5" value="Point Gray">Point Gray</label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="Detectors-6" value="Pilatus">Pilatus</label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="Detectors-7" value="Eiger 1M">Eiger 1M</label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="Detectors" value="Canberra single-element">Canberra single-element</label>
+				<label class="is-checkbox">
+                    <input type="checkbox" name="Detectors-8" value="Canberra 5-element">Canberra 5-element</label>
+			</div>
+            <label>Other</label>
+            <input name="Detectors-9" type="text" class="is-90" placeholder="Other">
+            </fieldset>
+        </div>
+
+        <a href="javascript:next('Final')" class="button is-small">Next</a>
+    </fieldset>
+
+    <fieldset id="Final" class="hide">
+        <legend>Description meta-data ({{.User}})</legend>
         <div class="form-item">
             <label>Description</label>
             <textarea name="description" rows="3" class="is-90"></textarea>
@@ -43,7 +274,7 @@
         <div class="form-item">
             <div class="is-append is-push-right is-right">
                 <div class="is-80">
-                    <input type="hidden" name="user" value="{{.User}}"/>
+                    <input type="hidden" name="User" value="{{.User}}"/>
                 </div>
                 <button class="button">Submit</button>
             </div>
@@ -54,4 +285,15 @@
 
     </div>
 </div>
+
+<script>
+function next(tag)
+{
+    HideTag("Generic");
+    HideTag("Material");
+    HideTag("Experiment");
+    HideTag("Final");
+    ShowTag(tag);
+}
+</script>
 <!-- end of keys.tmpl -->
