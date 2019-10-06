@@ -31,34 +31,34 @@
         <legend>Generic meta-data ({{.User}})</legend>
         <div class="form-item">
             <label>PI</label>
-            <input name="PI" type="text" class="is-90" placeholder="Fist Last Name">
+            <input name="PI" type="text" class="is-90" placeholder="Fist Last Name" required>
         </div>
         <div class="form-item">
             <label>Affliation</label>
-            <input name="Affiliation" type="text" class="is-90" placeholder="Cornell University">
+            <input name="Affiliation" type="text" class="is-90" placeholder="Cornell University" required>
         </div>
         <div class="form-item">
             <label>Email</label>
-            <input name="Email" type="text" class="is-90" placeholder="user@gmail.com">
+            <input name="Email" type="text" class="is-90" placeholder="user@gmail.com" required>
         </div>
         <div class="form-item">
             <label>Proposal</label>
-            <input name="Proposal" type="text" class="is-90" placeholder="12345">
+            <input name="Proposal" type="text" class="is-90" placeholder="12345" required>
         </div>
         <div class="form-item">
             <label>BTR</label>
-            <input name="BTR" type="text" class="is-90" placeholder="1">
+            <input name="BTR" type="text" class="is-90" placeholder="1" required>
         </div>
         <div class="form-item">
             <label>RawDataDirectory</label>
-            <input name="RawDataDirectory" type="text" class="is-90" placeholder="/path/A">
+            <input name="RawDataDirectory" type="text" class="is-90" placeholder="/path/A" required>
         </div>
         <div class="form-item">
             <label>AuxDataDirectory</label>
-            <input name="AuxDataDirectory" type="text" class="is-90" placeholder="/path/B">
+            <input name="AuxDataDirectory" type="text" class="is-90" placeholder="/path/B" required>
         </div>
 
-        <a href="javascript:next('Material')" class="button is-small">Next</a>
+        <a href="javascript:next('Generic', 'Material')" class="button is-small">Next</a>
     </fieldset>
 
     <fieldset id="Material" class="hide">
@@ -66,27 +66,27 @@
         <div id="materialSection" class="">
 			<div class="form-item">
 				<label>Spec</label>
-				<input name="Spec" type="text" class="is-90" placeholder="304_ss_1">
+				<input name="Spec" type="text" class="is-90" placeholder="304_ss_1" required>
 			</div>
 			<div class="form-item">
 				<label>Common Name</label>
-				<input name="CommonName" type="text" class="is-90" placeholder="304 Stainless steel">
+				<input name="CommonName" type="text" class="is-90" placeholder="304 Stainless steel" required>
 			</div>
 			<div class="form-item">
 				<label>Abbreviated Name</label>
-				<input name="AbbreviatedName" type="text" class="is-90" placeholder="ss304">
+				<input name="AbbreviatedName" type="text" class="is-90" placeholder="ss304" required>
 			</div>
 			<div class="form-item">
 				<label>Constituent Elements</label>
-				<input name="ConstituentElements" type="text" class="is-90" placeholder="FE,Ni,Cr">
+				<input name="ConstituentElements" type="text" class="is-90" placeholder="FE,Ni,Cr" required>
 			</div>
 			<div class="form-item">
 				<label>Phases</label>
-				<input name="Phases" type="text" class="is-90" placeholder="phase1,phase2">
+				<input name="Phases" type="text" class="is-90" placeholder="phase1,phase2" required>
 			</div>
 			<div class="form-item">
 				<label>Processing</label>
-				<input name="Processing" type="text" class="is-90" placeholder="heat-treatment,test">
+				<input name="Processing" type="text" class="is-90" placeholder="heat-treatment,test" required>
 			</div>
             <fieldset>
             <label>Calibration Sample</label>
@@ -112,7 +112,7 @@
             </fieldset>
         </div>
 
-        <a href="javascript:next('Experiment')" class="button is-small">Next</a>
+        <a href="javascript:next('Material', 'Experiment')" class="button is-small">Next</a>
     </fieldset>
 
     <fieldset id="Experiment" class="hide">
@@ -121,7 +121,7 @@
 {{range $k, $v := .ExperimentData}}
 			<div class="form-item">
 				<label> {{$k}} </label>
-				<input name="{{$k}}" type="text" class="is-90" placeholder="{{$v}}">
+				<input name="{{$k}}" type="text" class="is-90" placeholder="{{$v}}" required>
 			</div>
 {{end}}
             <fieldset>
@@ -264,14 +264,14 @@
             </fieldset>
         </div>
 
-        <a href="javascript:next('Final')" class="button is-small">Next</a>
+        <a href="javascript:next('Experiment', 'Final')" class="button is-small">Next</a>
     </fieldset>
 
     <fieldset id="Final" class="hide">
         <legend>Description meta-data ({{.User}})</legend>
         <div class="form-item">
-            <label>Description</label>
-            <textarea name="description" rows="3" class="is-90"></textarea>
+            <label>Beamtime Notes</label>
+            <textarea name="Description" rows="3" class="is-90" required></textarea>
         </div>
 
         <div class="form-item">
@@ -290,13 +290,28 @@
 </div>
 
 <script>
-function next(tag)
+function next(prevTag, nextTag)
 {
     HideTag("Generic");
     HideTag("Material");
     HideTag("Experiment");
     HideTag("Final");
-    ShowTag(tag);
+    if(validate(prevTag) == true) {
+        ShowTag(nextTag);
+    }
+}
+function validate(tag)
+{
+    var fieldset = document.getElementById(tag);
+    var docs = fieldset.getElementsByTagName("input");
+    for(var i=0; i<docs.length; i++) {
+        if(docs[i].required && docs[i].value == "") {
+            ShowTag(tag);
+            docs[i].focus();
+            return false;
+        }
+    }
+    return true;
 }
 </script>
 <!-- end of keys.tmpl -->
