@@ -99,7 +99,7 @@
             </fieldset>
             <fieldset>
             <label>Material Class</label>
-			<div name="MaterialClass" class="form-item">
+			<div id="MaterialClass" name="MaterialClass" class="form-item">
                 <select class="is-50">
 				<option value="#">Metal</option>
 				<option value="#">Ceramic</option>
@@ -108,7 +108,7 @@
                 </select>
 			</div>
             <label>Other</label>
-            <input name="MaterialClassOther" type="text" class="is-90" placeholder="Other">
+            <input id="MaterialClassOther" name="MaterialClassOther" type="text" class="is-90" placeholder="Other" onchange="javascript:disable('MaterialClass');">
             </fieldset>
         </div>
 
@@ -194,14 +194,14 @@
             <legend>Supplementary Measurements</legend>
 			<div class="form-item form-checkboxes">
 				<label class="is-checkbox">
-                    <input type="checkbox" name="SupplementaryMeasurements-1" value="Surface">Surface optical DIC
+                    <input id="SupplementaryMeasurements-1" type="checkbox" name="SupplementaryMeasurements-1" value="Surface">Surface optical DIC
                 </label>
 				<label class="is-checkbox">
-                    <input type="checkbox" name="SupplementaryMeasurements-2" value="Thermocouple">Thermocouple
+                    <input id="SupplementaryMeasurements-2" type="checkbox" name="SupplementaryMeasurements-2" value="Thermocouple">Thermocouple
                 </label>
 			</div>
             <label>Other</label>
-            <input name="SupplementaryMeasurements-3" type="text" class="is-90" placeholder="Other">
+            <input name="SupplementaryMeasurements-O" type="text" class="is-90" placeholder="Other" onchange="javascript:disable('SummplementaryMeasurements-1');disable('SupplementaryMeasurements-2')">
             </fieldset>
             
             <fieldset>
@@ -215,52 +215,52 @@
             <legend>Load Frame</legend>
 			<div class="form-item form-checkboxes">
 				<label class="is-checkbox">
-                    <input type="checkbox" name="LoadFrame-1" value="None">None
+                    <input id="LoadFrame-1" type="checkbox" name="LoadFrame-1" value="None">None
                 </label>
 				<label class="is-checkbox">
-                    <input type="checkbox" name="LoadFrame-2" value="RAMS4">RAMS4
+                    <input id="LoadFrame-2" type="checkbox" name="LoadFrame-2" value="RAMS4">RAMS4
                 </label>
 				<label class="is-checkbox">
-                    <input type="checkbox" name="LoadFrame-3" value="RAMS2">RAMS2
+                    <input id="LoadFrame-3" type="checkbox" name="LoadFrame-3" value="RAMS2">RAMS2
                 </label>
 				<label class="is-checkbox">
-                    <input type="checkbox" name="LoadFrame-4" value="Triaxial">Triaxial
+                    <input id="LoadFrame-4" type="checkbox" name="LoadFrame-4" value="Triaxial">Triaxial
                 </label>
 				<label class="is-checkbox">
-                    <input type="checkbox" name="LoadFrame-5" value="Compact">Cornell Compact Load Frame
+                    <input id="LoadFrame-5" type="checkbox" name="LoadFrame-5" value="Compact">Cornell Compact Load Frame
                 </label>
 				<label class="is-checkbox">
-                    <input type="checkbox" name="LoadFrame-6" value="Bose">Bose
+                    <input id="LoadFrame-6" type="checkbox" name="LoadFrame-6" value="Bose">Bose
                 </label>
 			</div>
             <label>Other</label>
-            <input name="LoadFrame-7" type="text" class="is-90" placeholder="Other">
+            <input name="LoadFrame-O" type="text" class="is-90" placeholder="Other" onchange="javascript:disable('LoadFrame-1');disable('LoadFrame-2');disable('LoadFrame-3');disable('LoadFrame-4');disable('LoadFrame-5');disable('LoadFrame-6');">
             </fieldset>
             
             <fieldset>
             <legend>Detectors</legend>
 			<div class="form-item form-checkboxes">
 				<label class="is-checkbox">
-                    <input type="checkbox" name="Detectors-1" value="Dexel">Dexela(s)</label>
+                    <input id="Detectors-1" type="checkbox" name="Detectors-1" value="Dexel">Dexela(s)</label>
 				<label class="is-checkbox">
-                    <input type="checkbox" name="Detectors-2" value="GE">GE</label>
+                    <input id="Detectors-2" type="checkbox" name="Detectors-2" value="GE">GE</label>
 				<label class="is-checkbox">
-                    <input type="checkbox" name="Detectors-3" value="Retiga">Retiga</label>
+                    <input id="Detectors-3" type="checkbox" name="Detectors-3" value="Retiga">Retiga</label>
 				<label class="is-checkbox">
-                    <input type="checkbox" name="Detectors-4" value="Manta">Manta</label>
+                    <input id="Detectors-4" type="checkbox" name="Detectors-4" value="Manta">Manta</label>
 				<label class="is-checkbox">
-                    <input type="checkbox" name="Detectors-5" value="Point Gray">Point Gray</label>
+                    <input id="Detectors-5" type="checkbox" name="Detectors-5" value="Point Gray">Point Gray</label>
 				<label class="is-checkbox">
-                    <input type="checkbox" name="Detectors-6" value="Pilatus">Pilatus</label>
+                    <input id="Detectors-6" type="checkbox" name="Detectors-6" value="Pilatus">Pilatus</label>
 				<label class="is-checkbox">
-                    <input type="checkbox" name="Detectors-7" value="Eiger 1M">Eiger 1M</label>
+                    <input id="Detectors-7" type="checkbox" name="Detectors-7" value="Eiger 1M">Eiger 1M</label>
 				<label class="is-checkbox">
-                    <input type="checkbox" name="Detectors" value="Canberra single-element">Canberra single-element</label>
+                    <input id="Detectors-8" type="checkbox" name="Detectors-8" value="Canberra single-element">Canberra single-element</label>
 				<label class="is-checkbox">
-                    <input type="checkbox" name="Detectors-8" value="Canberra 5-element">Canberra 5-element</label>
+                    <input id="Detectors-9" type="checkbox" name="Detectors-9" value="Canberra 5-element">Canberra 5-element</label>
 			</div>
             <label>Other</label>
-            <input name="Detectors-9" type="text" class="is-90" placeholder="Other">
+            <input name="Detectors-O" type="text" class="is-90" placeholder="Other" onchange="javascript:disable('Detectors-1');disable('Detectors-2');disable('Detectors-3');disable('Detectors-4');disable('Detectors-5');disable('Detectors-6');disable('Detectors-7');disable('Detectors-8');">
             </fieldset>
         </div>
 
@@ -312,6 +312,12 @@ function validate(tag)
         }
     }
     return true;
+}
+func disable(tid)
+{
+    var doc = document.getElementById(tid);
+    doc.value = "";
+    doc.disabled = true;
 }
 </script>
 <!-- end of keys.tmpl -->
