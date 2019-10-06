@@ -13,4 +13,46 @@
     </div>
 </form>
 
+Need more help on Query Language?
+<button class="button is-small is-secondary" onclick="ToggleTag('help')">Show Me</button>
+<div id="help" class="hide" style>
+    You may either use free-text search queries or choose explicit keyword search attributes.
+    For later please use <code>key:value</code> syntax, e.g.
+    <code>Email:user@gmail.com</code>.
+    <br/>
+    You may combine keyword search together along with free text. For example,
+    if you are looking for data sample with known user, proposal number and some description
+    you may use the query as following:
+    <pre>
+    Email:user@gmail.com Proposal:12345 mydescription
+    </pre>
+    <br/>
+    Here is a list of supported keywords along with their description:
+    <ul>
+        <li><b>PI:</b> name of PI, e.g. FirstName LastName</li>
+        <li><b>Affiliation:</b> user affiliation, Cornell</li>
+        <li><b>Proposal:</b> proposal number, e.g. 12345</li>
+        <li><b>BTR:</b> bla-bla-bla, e.g. 1</li>
+        <li><b>RawDataDirectory:</b> path to raw data directory, e.g. /path/A</li>
+        <li><b>AuxDataDirectory:</b> path to aux data directory, /path/B</li>
+        <li><b>Spec:</b> sample specification name, e.g. 304_ss_1</li>
+        <li><b>CalibrationSample:</b> calibration sample, yes or no</li>
+        <li><b>MaterialClass:</b> material class, e.g. Metal</li>
+        <li><b>CommonName:</b> common name of material, 304 Stainless Steel</li>
+        <li><b>AbbreviatedName:</b> abbreviated name of material, e.g. ss304</li>
+        <li><b>ConstituentElements:</b> constituent elements, e.g. Fe, Ni</li>
+        <li><b>Phases:</b> name of material group</li>
+        <li><b>Processing:</b> proceesing aspect of experiment, e.g. heat-treatment</li>
+        <li><b>ExperimentType:</b> experiment type, e.g. Torsion</li>
+        <li><b>XrayModality:</b> x-ray modality, e.g. white beam</li>
+        <li><b>XrayTechnique:</b> x-ray technique, e.g. EDD</li>
+        <li><b>SupplementalMeasurements:</b> supplemental measurements, e.g. Thermocouple</li>
+        <li><b>Furnance:</b> furnance</li>
+        <li><b>LoadFrame:</b> load-frame, e.g. RAMS4</li>
+        <li><b>Detectors:</b> detectors name, e.g. GE</li>
+        <li><b>Description:</b> beamtime notes</li>
+    </ul>
+</div>
+<br/>
+
 <!-- end of web_searchform.tmpl -->
