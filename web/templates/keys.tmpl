@@ -58,7 +58,7 @@
             <input name="AuxDataDirectory" type="text" class="is-90" placeholder="/path/B" required>
         </div>
 
-        <a href="javascript:next('Generic', 'Material')" class="button is-small">Next</a>
+        <a href="javascript:move('Generic', 'Material')" class="button is-small">Next</a>
     </fieldset>
 
     <fieldset id="Material" class="hide">
@@ -99,8 +99,8 @@
             </fieldset>
             <fieldset>
             <label>Material Class</label>
-			<div id="MaterialClass" name="MaterialClass" class="form-item">
-                <select class="is-50">
+			<div class="form-item">
+                <select class="is-50" id="MaterialClass" name="MaterialClass">
 				<option value="#">Metal</option>
 				<option value="#">Ceramic</option>
 				<option value="#">Composite</option>
@@ -108,11 +108,11 @@
                 </select>
 			</div>
             <label>Other</label>
-            <input id="MaterialClassOther" name="MaterialClassOther" type="text" class="is-90" placeholder="Other" onchange="javascript:disable('MaterialClass');">
+            <input id="MaterialClassOther" name="MaterialClassOther" type="text" class="is-90" placeholder="Other" onchange="javascript:disableOption('MaterialClass');">
             </fieldset>
         </div>
 
-        <a href="javascript:next('Material', 'Experiment')" class="button is-small">Next</a>
+        <a href="javascript:move('Material', 'Experiment')" class="button is-small">Next</a>
     </fieldset>
 
     <fieldset id="Experiment" class="hide">
@@ -201,7 +201,7 @@
                 </label>
 			</div>
             <label>Other</label>
-            <input name="SupplementaryMeasurements-O" type="text" class="is-90" placeholder="Other" onchange="javascript:disable('SummplementaryMeasurements-1');disable('SupplementaryMeasurements-2')">
+            <input name="SupplementaryMeasurements-O" type="text" class="is-90" placeholder="Other">
             </fieldset>
             
             <fieldset>
@@ -234,7 +234,7 @@
                 </label>
 			</div>
             <label>Other</label>
-            <input name="LoadFrame-O" type="text" class="is-90" placeholder="Other" onchange="javascript:disable('LoadFrame-1');disable('LoadFrame-2');disable('LoadFrame-3');disable('LoadFrame-4');disable('LoadFrame-5');disable('LoadFrame-6');">
+            <input name="LoadFrame-O" type="text" class="is-90" placeholder="Other">
             </fieldset>
             
             <fieldset>
@@ -260,11 +260,11 @@
                     <input id="Detectors-9" type="checkbox" name="Detectors-9" value="Canberra 5-element">Canberra 5-element</label>
 			</div>
             <label>Other</label>
-            <input name="Detectors-O" type="text" class="is-90" placeholder="Other" onchange="javascript:disable('Detectors-1');disable('Detectors-2');disable('Detectors-3');disable('Detectors-4');disable('Detectors-5');disable('Detectors-6');disable('Detectors-7');disable('Detectors-8');">
+            <input name="Detectors-O" type="text" class="is-90" placeholder="Other">
             </fieldset>
         </div>
 
-        <a href="javascript:next('Experiment', 'Final')" class="button is-small">Next</a>
+        <a href="javascript:move('Experiment', 'Final')" class="button is-small">Next</a>
     </fieldset>
 
     <fieldset id="Final" class="hide">
@@ -290,7 +290,7 @@
 </div>
 
 <script>
-function next(prevTag, nextTag)
+function move(prevTag, nextTag)
 {
     HideTag("Generic");
     HideTag("Material");
@@ -313,11 +313,19 @@ function validate(tag)
     }
     return true;
 }
-func disable(tid)
+function disable(tid)
 {
     var doc = document.getElementById(tid);
     doc.value = "";
     doc.disabled = true;
 }
+function disableOption(tid, val)
+{
+    var docs = document.getElementById(tid);
+    for(var i=0; i<docs.length; i++) {
+        docs[i].disabled=true;
+    }
+}
+</script>
 </script>
 <!-- end of keys.tmpl -->
