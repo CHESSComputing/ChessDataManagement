@@ -159,10 +159,40 @@ func validateData(rec Record) error {
 	return nil
 }
 
+// helper function to preprocess given record
+func preprocess(rec Record) Record {
+	r := make(Record)
+	for k, v := range rec {
+		switch val := v.(type) {
+		case string:
+			r[strings.ToLower(k)] = strings.ToLower(val)
+		case []string:
+			var vals []string
+			for _, vvv := range val {
+				vals = append(vals, strings.ToLower(vvv))
+			}
+			r[strings.ToLower(k)] = vals
+		case []interface{}:
+			var vals []string
+			for _, vvv := range val {
+				s := fmt.Sprintf("%v", vvv)
+				vals = append(vals, strings.ToLower(s))
+			}
+			r[strings.ToLower(k)] = vals
+		default:
+			r[strings.ToLower(k)] = val
+		}
+	}
+	return r
+}
+
 // helper function to insert data into backend DB
 func insertData(rec Record) error {
 	if err := validateData(rec); err != nil {
 		return err
+	}
+	if _, ok := rec["Date"]; !ok {
+		rec["Date"] = time.Now().Unix()
 	}
 	// main attributes to work with
 	path := rec["RawDataDirectory"].(string)
@@ -171,6 +201,7 @@ func insertData(rec Record) error {
 	tier := "raw"
 	dataset := fmt.Sprintf("/%s/%s/%s", experiment, processing, tier)
 	rec["dataset"] = dataset
+	rec = preprocess(rec)
 	// check if given path exist on file system
 	_, err := os.Stat(path)
 	if err == nil {
