@@ -46,10 +46,13 @@ func convertType(val interface{}) interface{} {
 // ParseQuery function provides basic parser for user queries and return
 // results in bson dictionary
 func ParseQuery(query string) bson.M {
+	spec := make(bson.M)
 	if strings.TrimSpace(query) == "" {
 		return nil
 	}
-	spec := make(bson.M)
+	if strings.TrimSpace(query) == "__all__" {
+		return spec
+	}
 	var description string
 	for _, item := range strings.Split(query, " ") {
 		val := strings.Split(strings.TrimSpace(item), ":")
