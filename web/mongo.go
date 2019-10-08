@@ -37,7 +37,7 @@ func (r Record) ToString() string {
 			continue
 		}
 		switch v := r[k].(type) {
-		case int:
+		case int, int64:
 			out = append(out, fmt.Sprintf("%s:%d", k, v))
 		case float64:
 			d := int(v)
@@ -46,9 +46,18 @@ func (r Record) ToString() string {
 			} else {
 				out = append(out, fmt.Sprintf("%s:%f", k, v))
 			}
+		case []interface{}:
+			var vals []string
+			for i, val := range v {
+				if i == len(v)-1 {
+					vals = append(vals, fmt.Sprintf("%v", val))
+				} else {
+					vals = append(vals, fmt.Sprintf("%v,", val))
+				}
+			}
+			out = append(out, fmt.Sprintf("%s:%s", k, vals))
 		default:
-			s := fmt.Sprintf("%s:%#v", k, r[k])
-			out = append(out, strings.Replace(s, ", ", ",\n   ", -1))
+			out = append(out, fmt.Sprintf("%s:%v", k, r[k]))
 		}
 	}
 	return strings.Join(out, "\n")
