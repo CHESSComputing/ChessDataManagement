@@ -261,6 +261,11 @@ func IsInt(val string) bool {
 	return PatternInt.MatchString(val)
 }
 
+// IsFloat helper function to test if given value is a float
+func IsFloat(val string) bool {
+	return PatternFloat.MatchString(val)
+}
+
 // Sum helper function to perform sum operation over provided array of values
 func Sum(data []interface{}) float64 {
 	out := 0.0
