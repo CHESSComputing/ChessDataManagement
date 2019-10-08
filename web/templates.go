@@ -56,7 +56,7 @@ func parseTmpl(tdir, tmpl string, data interface{}) string {
 
 // ServerTemplates structure
 type ServerTemplates struct {
-	top, bottom, searchForm, cards, serverError, keys, zero, record, status string
+	top, bottom, pagination, files, searchForm, cards, serverError, keys, zero, record, status string
 }
 
 // Top method for ServerTemplates structure
@@ -142,11 +142,20 @@ func (q ServerTemplates) Confirm(tdir string, tmplData map[string]interface{}) s
 
 // Pagination  method for ServerTemplates structure
 func (q ServerTemplates) Pagination(tdir string, tmplData map[string]interface{}) string {
-	if q.searchForm != "" {
-		return q.searchForm
+	if q.pagination != "" {
+		return q.pagination
 	}
-	q.searchForm = parseTmpl(Config.Templates, "pagination.tmpl", tmplData)
-	return q.searchForm
+	q.pagination = parseTmpl(Config.Templates, "pagination.tmpl", tmplData)
+	return q.pagination
+}
+
+// Files  method for ServerTemplates structure
+func (q ServerTemplates) Files(tdir string, tmplData map[string]interface{}) string {
+	if q.files != "" {
+		return q.files
+	}
+	q.files = parseTmpl(Config.Templates, "files.tmpl", tmplData)
+	return q.files
 }
 
 // ServerError method for ServerTemplates structure
