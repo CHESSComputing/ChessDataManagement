@@ -86,6 +86,8 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 		UpdateHandler(w, r)
 	case "updateRecord":
 		UpdateRecordHandler(w, r)
+	case "files":
+		FilesHandler(w, r)
 	default:
 		DataHandler(w, r)
 	}
@@ -208,6 +210,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 			oid := rec["_id"].(bson.ObjectId)
 			rec["_id"] = oid
 			tmplData["Id"] = oid.Hex()
+			tmplData["Did"] = rec["did"]
 			tmplData["RecordString"] = rec.ToString()
 			tmplData["Record"] = rec.ToJson()
 			prec := templates.Record(Config.Templates, tmplData)
@@ -614,6 +617,45 @@ func UpdateRecordHandler(w http.ResponseWriter, r *http.Request) {
 	tmplData["Message"] = strings.ToTitle(msg)
 	tmplData["Class"] = fmt.Sprintf("alert %s is-large is-text-center", cls)
 	page := templates.Confirm(Config.Templates, tmplData)
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(_top + page + _bottom))
+}
+
+// FilesHandler handlers Files requests
+func FilesHandler(w http.ResponseWriter, r *http.Request) {
+	_, err := username(r)
+	if err != nil {
+		_, err := getUserCredentials(r)
+		if err != nil {
+			msg := "unable to get user credentials"
+			handleError(w, r, msg, err)
+			return
+		}
+	}
+	var templates ServerTemplates
+	tmplData := make(map[string]interface{})
+	did, err := strconv.ParseInt(r.FormValue("did"), 10, 64)
+	if err != nil {
+		tmplData["Message"] = fmt.Sprintf("Unable to parse did\nError: %v", err)
+		tmplData["Class"] = "alert is-error is-large is-text-center"
+		page := templates.Confirm(Config.Templates, tmplData)
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(_top + page + _bottom))
+		return
+	}
+	files, err := getFiles(did)
+	if err != nil {
+		tmplData["Message"] = fmt.Sprintf("Unable to query FilesDB\nError: %v", err)
+		tmplData["Class"] = "alert is-error is-large is-text-center"
+		page := templates.Confirm(Config.Templates, tmplData)
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(_top + page + _bottom))
+		return
+	}
+	tmplData["Id"] = r.FormValue("_id")
+	tmplData["Did"] = did
+	tmplData["Files"] = strings.Join(files, "\n")
+	page := templates.Files(Config.Templates, tmplData)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(_top + page + _bottom))
 }
