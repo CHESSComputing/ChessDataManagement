@@ -278,8 +278,8 @@ func main() {
 	flag.StringVar(&query, "query", "", "query string to look-up your data")
 	var did int64
 	flag.Int64Var(&did, "did", 0, "show files for given dataset-id")
-	var jsonConfig string
-	flag.StringVar(&jsonConfig, "json", "", "json configuration file to inject")
+	var record string
+	flag.StringVar(&record, "insert", "", "insert record to the server")
 	var krbFile string
 	flag.StringVar(&krbFile, "krbFile", "", "kerberos file")
 	var uri string
@@ -309,5 +309,5 @@ func main() {
 		findRecords(uri, query, krbFile)
 		return
 	}
-	placeRequest(uri, jsonConfig, krbFile)
+	placeRequest(uri, record, krbFile)
 }
