@@ -291,10 +291,14 @@ func main() {
 		msg = fmt.Sprintf("%s\nOptions:\n", msg)
 		fmt.Fprintf(os.Stderr, msg)
 		flag.PrintDefaults()
-		fmt.Fprintf(os.Stderr, "\nExamples:\n\n# inject new configuration into the system")
-		fmt.Fprintf(os.Stderr, "\n%s -krbFile krb5cc_ccache -json config.json", client)
-		fmt.Fprintf(os.Stderr, "\n\n# look-up some data from the system")
-		fmt.Fprintf(os.Stderr, "\n%s -krbFile krb5cc_ccache -query \"search words\"\n", client)
+		fmt.Fprintf(os.Stderr, "\nExamples:\n\n# inject new record into the system")
+		fmt.Fprintf(os.Stderr, "\n%s -krbFile krb5cc_ccache -json record.json", client)
+		fmt.Fprintf(os.Stderr, "\n\n# look-up data from the system using free text-search")
+		fmt.Fprintf(os.Stderr, "\n%s -krbFile krb5cc_ccache -query=\"search words\"", client)
+		fmt.Fprintf(os.Stderr, "\n\n# look-up data from the system using keyword search")
+		fmt.Fprintf(os.Stderr, "\n%s -krbFile krb5cc_ccache -query=\"proposal:123\"", client)
+		fmt.Fprintf(os.Stderr, "\n\n# look-up files for specific dataset-id")
+		fmt.Fprintf(os.Stderr, "\n%s -krbFile krb5cc_ccache -did=1570563920579312510\n", client)
 	}
 	flag.Parse()
 	if did > 0 {
