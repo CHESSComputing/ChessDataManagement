@@ -246,9 +246,38 @@ func findRecords(uri, query, krbFile string) {
 	fmt.Println(string(data))
 }
 
+// helper function to look-up records in chess data management system
+func findFiles(uri string, did int64, krbFile string) {
+	form := getForm(krbFile)
+	form.Add("did", fmt.Sprintf("%d", did))
+	url := fmt.Sprintf("%s/files", uri)
+	req, err := http.NewRequest("POST", url, strings.NewReader(form.Encode()))
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	if err != nil {
+		exit("find records method fails", err)
+	}
+	servercrt := getCertificate()
+	client := httpClient(servercrt)
+	resp, err := client.Do(req)
+	if err != nil {
+		exit("Fail to place request", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		exit(fmt.Sprintf("requset fails with status: %v", resp.Status), nil)
+	}
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		exit(fmt.Sprintf("read response body failure, error: %v", resp.Status), nil)
+	}
+	fmt.Println(string(data))
+}
+
 func main() {
 	var query string
 	flag.StringVar(&query, "query", "", "query string to look-up your data")
+	var did int64
+	flag.Int64Var(&did, "did", 0, "show files for given dataset-id")
 	var jsonConfig string
 	flag.StringVar(&jsonConfig, "json", "", "json configuration file to inject")
 	var krbFile string
@@ -257,15 +286,21 @@ func main() {
 	flag.StringVar(&uri, "uri", "https://chessdata.classe.cornell.edu:8243", "CHESS Data Management System URI")
 	flag.Usage = func() {
 		client := "chess_client"
-		msg := fmt.Sprintf("\nCommand line interface to CHESS Data Management System\nOptions:\n")
+		msg := fmt.Sprintf("\nCommand line interface to CHESS Data Management System\n")
+		msg = fmt.Sprintf("%s\nObtain kerberos ticket:\nkinit -c krb5_ccache <username>\n", msg)
+		msg = fmt.Sprintf("%s\nOptions:\n", msg)
 		fmt.Fprintf(os.Stderr, msg)
 		flag.PrintDefaults()
 		fmt.Fprintf(os.Stderr, "\nExamples:\n\n# inject new configuration into the system")
-		fmt.Fprintf(os.Stderr, "\n%s -krbFile /tmp/krb5cc_%d -json config.json", client, os.Getuid())
+		fmt.Fprintf(os.Stderr, "\n%s -krbFile krb5cc_ccache -json config.json", client)
 		fmt.Fprintf(os.Stderr, "\n\n# look-up some data from the system")
-		fmt.Fprintf(os.Stderr, "\n%s -krbFile /tmp/krb5cc_%d -query \"search words\"\n", client, os.Getuid())
+		fmt.Fprintf(os.Stderr, "\n%s -krbFile krb5cc_ccache -query \"search words\"\n", client)
 	}
 	flag.Parse()
+	if did > 0 {
+		findFiles(uri, did, krbFile)
+		return
+	}
 	if query != "" {
 		findRecords(uri, query, krbFile)
 		return
