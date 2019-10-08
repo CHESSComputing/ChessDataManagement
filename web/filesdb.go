@@ -236,3 +236,27 @@ func InsertFiles(did int64, experiment, processing, tier, path string) error {
 	}
 	return nil
 }
+
+// helper function to get list of files
+func getFiles(did int64) ([]string, error) {
+	var files []string
+	// proceed with transaction operation
+	tx, err := FilesDB.Begin()
+	if err != nil {
+		logs.WithFields(logs.Fields{
+			"Error": err,
+		}).Error("DB error")
+		return files, err
+	}
+	defer tx.Rollback()
+	// look-up files info
+	stmt := "SELECT name FROM FILES WHERE dataset_id=?"
+	res, err := execute(tx, stmt, did)
+	if err != nil {
+		return files, tx.Rollback()
+	}
+	for _, r := range res {
+		files = append(files, r["name"].(string))
+	}
+	return files, nil
+}
