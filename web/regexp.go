@@ -12,6 +12,9 @@ import (
 // PatternInt represents an integer pattern
 var PatternInt = regexp.MustCompile("(^[0-9-]$|^[0-9-][0-9]*$)")
 
+// PatternFloat represents an integer pattern
+var PatternFloat = regexp.MustCompile("[+-]?([0-9]*[.])?[0-9]+")
+
 // PatternUrl represents URL pattern
 var PatternUrl = regexp.MustCompile("(https|http)://[-A-Za-z0-9_+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|]")
 
