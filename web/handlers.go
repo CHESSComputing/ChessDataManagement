@@ -631,6 +631,23 @@ func FilesHandler(w http.ResponseWriter, r *http.Request) {
 			handleError(w, r, msg, err)
 			return
 		}
+		did, err := strconv.ParseInt(r.FormValue("did"), 10, 64)
+		if err != nil {
+			msg := fmt.Sprintf("Unable to parse did\nError: %v", err)
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte(msg))
+			return
+		}
+		files, err := getFiles(did)
+		if err != nil {
+			msg := fmt.Sprintf("Unable to get files\nError: %v", err)
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte(msg))
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(strings.Join(files, "\n")))
+		return
 	}
 	var templates ServerTemplates
 	tmplData := make(map[string]interface{})

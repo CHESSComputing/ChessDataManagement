@@ -77,6 +77,7 @@ func Server(configFile string) {
 	http.HandleFunc("/auth", KAuthHandler)
 	http.HandleFunc("/api", ApiHandler)
 	http.HandleFunc("/search", SearchHandler)
+	http.HandleFunc("/files", FilesHandler)
 	http.HandleFunc("/", AuthHandler)
 
 	// Start server
