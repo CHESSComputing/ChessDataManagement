@@ -357,6 +357,59 @@ func SettingsHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// helper function to process input form
+func processForm(r *http.Request) Record {
+	rec := make(Record)
+	rec["date"] = time.Now().Unix()
+	// r.PostForm provides url.Values which is map[string][]string type
+	// we convert it to Record
+	arr := []string{"constituentelements", "phases", "experimenttype", "supplementarymeasurements", "xraytechnique", "loadframe", "detectors"}
+	for k, items := range r.PostForm {
+		k = strings.ToLower(k)
+		if k == "proposal" || k == "btr" || k == "date" || k == "did" {
+			if len(items) > 0 {
+				v, e := strconv.ParseInt(items[0], 10, 64)
+				if e == nil {
+					rec[k] = v
+				}
+			}
+		} else if k == "energy" {
+			if len(items) > 0 {
+				v, e := strconv.ParseFloat(items[0], 64)
+				if e == nil {
+					rec[k] = v
+				}
+			}
+		} else if InList(k, arr) {
+			if len(items) > 0 {
+				arr := strings.Split(items[0], ",")
+				rec[k] = arr
+			}
+		} else {
+			if strings.Contains(k, "-") {
+				kkk := strings.Split(k, "-")
+				k := kkk[0]
+				if vals, ok := rec[k]; ok {
+					values := vals.([]string)
+					for _, v := range items {
+						values = append(values, v)
+					}
+					rec[k] = values
+				} else {
+					rec[k] = items
+				}
+			} else {
+				for _, v := range items {
+					rec[k] = v
+					break
+				}
+			}
+		}
+	}
+	logs.WithFields(logs.Fields{"record": rec}).Info("process form")
+	return rec
+}
+
 // ProcessHandler handlers Process requests
 func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
@@ -366,52 +419,7 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 	var msg string
 	var class string
 	if err := r.ParseForm(); err == nil {
-		rec := make(Record)
-		rec["Date"] = time.Now().Unix()
-		// r.PostForm provides url.Values which is map[string][]string type
-		// we convert it to Record
-		for k, items := range r.PostForm {
-			if k == "Proposal" || k == "BTR" {
-				if len(items) > 0 {
-					v, e := strconv.Atoi(items[0])
-					if e == nil {
-						rec[k] = v
-					}
-				}
-			} else if k == "Energy" {
-				if len(items) > 0 {
-					v, e := strconv.ParseFloat(items[0], 64)
-					if e == nil {
-						rec[k] = v
-					}
-				}
-			} else if k == "ConstituentElements" || k == "Phases" {
-				if len(items) > 0 {
-					arr := strings.Split(items[0], ",")
-					rec[k] = arr
-				}
-			} else {
-				if strings.Contains(k, "-") {
-					kkk := strings.Split(k, "-")
-					k := kkk[0]
-					if vals, ok := rec[k]; ok {
-						values := vals.([]string)
-						for _, v := range items {
-							values = append(values, v)
-						}
-						rec[k] = values
-					} else {
-						rec[k] = items
-					}
-				} else {
-					for _, v := range items {
-						rec[k] = v
-						break
-					}
-				}
-			}
-		}
-		logs.WithFields(logs.Fields{"record": rec}).Info("process upload form")
+		rec := processForm(r)
 		err := insertData(rec)
 		if err == nil {
 			msg = fmt.Sprintf("Your meta-data is inserted successfully")
@@ -530,11 +538,36 @@ func UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	// where each entry represented in form of template.HTML
 	// to avoid escaping of HTML characters
 	var inputs []template.HTML
+	var attrs []string
+	for _, a := range Config.AdjustableAttrs {
+		attrs = append(attrs, strings.ToLower(a))
+	}
 	for _, k := range MapKeys(rec) {
-		v := fmt.Sprintf("%v", rec[k])
+		var v string
+		switch vvv := rec[k].(type) {
+		case []string:
+			v = strings.Join(vvv, ",")
+		case []interface{}:
+			var out []string
+			for _, val := range vvv {
+				out = append(out, fmt.Sprintf("%v", val))
+			}
+			v = strings.Join(out, ",")
+		case int64, int:
+			v = fmt.Sprintf("%d", vvv)
+		case float64:
+			d := int64(vvv)
+			if float64(d) == vvv {
+				v = fmt.Sprintf("%d", d)
+			} else {
+				v = fmt.Sprintf("%v", vvv)
+			}
+		default:
+			v = fmt.Sprintf("%v", vvv)
+		}
 		in := fmt.Sprintf("<label>%s</label>", k)
-		in = fmt.Sprintf("%s<input type=\"text\" name=\"%s\" placeholder=\"%s\"", in, k, v)
-		if InList(k, Config.AdjustableAttrs) {
+		in = fmt.Sprintf("%s<input type=\"text\" name=\"%s\" value=\"%s\"", in, k, v)
+		if InList(k, attrs) {
 			in = fmt.Sprintf("%s class=\"is-90 is-success\"", in)
 		} else {
 			in = fmt.Sprintf("%s class=\"is-90\" readonly", in)
@@ -557,15 +590,13 @@ func UpdateRecordHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	var msg, cls string
 	var rec Record
-	err := json.Unmarshal([]byte(r.FormValue("record")), &rec)
-	if err != nil {
-		msg = fmt.Sprintf("record update failed, reason: %v", err)
-		cls = "is-error"
-	} else {
+	if err := r.ParseForm(); err == nil {
+		rec = processForm(r)
 		rid := r.FormValue("_id")
 		// delete record id before the update
 		delete(rec, "_id")
 		msg = fmt.Sprintf("record %v is successfully updated", rid)
+		fmt.Println("MongoUpsert", rec)
 		records := []Record{rec}
 		err = MongoUpsert(Config.DBName, Config.DBColl, records)
 		if err != nil {
@@ -574,6 +605,9 @@ func UpdateRecordHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			cls = "is-success"
 		}
+	} else {
+		msg = fmt.Sprintf("record update failed, reason: %v", err)
+		cls = "is-error"
 	}
 	var templates ServerTemplates
 	tmplData := make(map[string]interface{})
