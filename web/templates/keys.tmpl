@@ -296,11 +296,11 @@ function move(prevTag, nextTag)
     HideTag("Material");
     HideTag("Experiment");
     HideTag("Final");
-    if(validate(prevTag) == true) {
+    if(validateInput(prevTag) == true) {
         ShowTag(nextTag);
     }
 }
-function validate(tag)
+function validateInput(tag)
 {
     var fieldset = document.getElementById(tag);
     var docs = fieldset.getElementsByTagName("input");
@@ -327,6 +327,5 @@ function disableOption(tid, val)
         docs[i].disabled=true;
     }
 }
-</script>
 </script>
 <!-- end of keys.tmpl -->
