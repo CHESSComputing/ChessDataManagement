@@ -31,31 +31,31 @@
         <legend>Generic meta-data ({{.User}})</legend>
         <div class="form-item">
             <label class="is-req">PI</label>
-            <input name="PI" type="text" class="is-90 is-req" placeholder="Fist Last Name" required>
+            <input name="PI" type="text" class="is-90" placeholder="Fist Last Name" required>
         </div>
         <div class="form-item">
             <label class="is-req">Affliation</label>
-            <input name="Affiliation" type="text" class="is-90 is-req" placeholder="Cornell University" required>
+            <input name="Affiliation" type="text" class="is-90" placeholder="Cornell University" required>
         </div>
         <div class="form-item">
             <label class="is-req">Email</label>
-            <input name="Email" type="text" class="is-90 is-req" placeholder="user@gmail.com" required>
+            <input name="Email" type="text" class="is-90" placeholder="user@gmail.com" required>
         </div>
         <div class="form-item">
             <label class="is-req">Proposal</label>
-            <input name="Proposal" type="text" class="is-90 is-req" placeholder="12345" required>
+            <input name="Proposal" type="text" class="is-90" placeholder="12345" required>
         </div>
         <div class="form-item">
             <label class="is-req">BTR</label>
-            <input name="BTR" type="text" class="is-90 is-req" placeholder="1" required>
+            <input name="BTR" type="text" class="is-90" placeholder="1" required>
         </div>
         <div class="form-item">
             <label class="is-req">RawDataDirectory</label>
-            <input name="RawDataDirectory" type="text" class="is-90 is-req" placeholder="/path/A" required>
+            <input name="RawDataDirectory" type="text" class="is-90" placeholder="/path/A" required>
         </div>
         <div class="form-item">
             <label class="is-req">AuxDataDirectory</label>
-            <input name="AuxDataDirectory" type="text" class="is-90 is-req" placeholder="/path/B" required>
+            <input name="AuxDataDirectory" type="text" class="is-90" placeholder="/path/B" required>
         </div>
 
         <a href="javascript:move('Generic', 'Material')" class="button is-small">Next</a>
@@ -66,27 +66,27 @@
         <div id="materialSection" class="">
 			<div class="form-item">
 				<label class="is-req">Spec</label>
-				<input name="Spec" type="text" class="is-90 is-req" placeholder="304_ss_1" required>
+				<input name="Spec" type="text" class="is-90" placeholder="304_ss_1" required>
 			</div>
 			<div class="form-item">
 				<label class="is-req">Common Name</label>
-				<input name="CommonName" type="text" class="is-90 is-req" placeholder="304 Stainless steel" required>
+				<input name="CommonName" type="text" class="is-90" placeholder="304 Stainless steel" required>
 			</div>
 			<div class="form-item">
 				<label class="is-req">Abbreviated Name</label>
-				<input name="AbbreviatedName" type="text" class="is-90 is-req" placeholder="ss304" required>
+				<input name="AbbreviatedName" type="text" class="is-90" placeholder="ss304" required>
 			</div>
 			<div class="form-item">
 				<label class="is-req">Constituent Elements</label>
-				<input name="ConstituentElements" type="text" class="is-90 is-req" placeholder="FE,Ni,Cr" required>
+				<input name="ConstituentElements" type="text" class="is-90" placeholder="FE,Ni,Cr" required>
 			</div>
 			<div class="form-item">
 				<label class="is-req">Phases</label>
-				<input name="Phases" type="text" class="is-90 is-req" placeholder="phase1,phase2" required>
+				<input name="Phases" type="text" class="is-90" placeholder="phase1,phase2" required>
 			</div>
 			<div class="form-item">
 				<label class="is-req">Processing</label>
-				<input name="Processing" type="text" class="is-90 is-req" placeholder="heat-treatment,test" required>
+				<input name="Processing" type="text" class="is-90" placeholder="heat-treatment,test" required>
 			</div>
             <fieldset>
             <label>Calibration Sample</label>
@@ -121,7 +121,7 @@
 {{range $k, $v := .ExperimentData}}
 			<div class="form-item">
 				<label class="is-req"> {{$k}} </label>
-				<input name="{{$k}}" type="text" class="is-90 is-req" placeholder="{{$v}}" required>
+				<input name="{{$k}}" type="text" class="is-90" placeholder="{{$v}}" required>
 			</div>
 {{end}}
             <fieldset>
@@ -271,7 +271,7 @@
         <legend>Description meta-data ({{.User}})</legend>
         <div class="form-item">
             <label class="is-req">Beamtime Notes</label>
-            <textarea name="Description" rows="3" class="is-90 is-req" required></textarea>
+            <textarea name="Description" rows="3" class="is-90" required></textarea>
         </div>
 
         <div class="form-item">
@@ -308,7 +308,7 @@ function validate(tag)
         if(docs[i].required && docs[i].value == "") {
             ShowTag(tag);
             docs[i].focus();
-            docs[i].className = "alert is-focus is-req";
+            docs[i].className = "alert is-focus is-req is-90";
             return false;
         }
     }
