@@ -437,13 +437,13 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 			for _, k := range Config.MandatoryAttrs {
 				k = strings.ToLower(k)
 				if !InList(k, rKeys) {
-					rec[k] = "ERROR: fill out this value"
+					rec[k] = "ERROR fill out this value"
 				}
 			}
 			for _, k := range Config.AdjustableAttrs {
 				k = strings.ToLower(k)
 				if !InList(k, rKeys) {
-					rec[k] = "ERROR: fill out this value"
+					rec[k] = "ERROR fill out this value"
 				}
 			}
 			inputs := htmlInputs(rec)
@@ -573,6 +573,8 @@ func htmlInputs(rec Record) []template.HTML {
 		}
 		in := fmt.Sprintf("<label>%s</label>", k)
 		if strings.Contains(v, "ERROR") {
+			in = fmt.Sprintf("<label class=\"is-req\">%s</label>", k)
+			v = strings.Trim(strings.Replace(v, "ERROR", "", -1), " ")
 			in = fmt.Sprintf("%s<input required class=\"alert is-error is-90\" type=\"text\" name=\"%s\" value=\"%s\"", in, k, v)
 		} else {
 			in = fmt.Sprintf("%s<input type=\"text\" name=\"%s\" value=\"%s\"", in, k, v)
