@@ -421,6 +421,8 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	var msg string
 	var class string
+	var templates ServerTemplates
+	tmplData := make(map[string]interface{})
 	if err := r.ParseForm(); err == nil {
 		rec := processForm(r)
 		err := insertData(rec)
@@ -430,10 +432,29 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			msg = fmt.Sprintf("Web processing error: %v", err)
 			class = "alert is-error"
+			// redirect users to update their record
+			rKeys := MapKeys(rec)
+			for _, k := range Config.MandatoryAttrs {
+				k = strings.ToLower(k)
+				if !InList(k, rKeys) {
+					rec[k] = "ERROR: fill out this value"
+				}
+			}
+			for _, k := range Config.AdjustableAttrs {
+				k = strings.ToLower(k)
+				if !InList(k, rKeys) {
+					rec[k] = "ERROR: fill out this value"
+				}
+			}
+			inputs := htmlInputs(rec)
+			tmplData["Inputs"] = inputs
+			tmplData["Id"] = ""
+			page := templates.Update(Config.Templates, tmplData)
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte(_top + page + _bottom))
+			return
 		}
 	}
-	var templates ServerTemplates
-	tmplData := make(map[string]interface{})
 	tmplData["Message"] = msg
 	tmplData["Class"] = class
 	page := templates.Confirm(Config.Templates, tmplData)
@@ -507,7 +528,7 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 				msg = fmt.Sprintf("meta-data is inserted successfully")
 				class = "alert is-success"
 			} else {
-				msg = fmt.Sprintf("Web processing error: %v", err)
+				msg = fmt.Sprintf("Api web processing error: %v", err)
 				class = "alert is-error"
 			}
 		}
@@ -521,25 +542,7 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(_top + page + _bottom))
 }
 
-// UpdateHandler handlers Process requests
-func UpdateHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	}
-	var templates ServerTemplates
-	tmplData := make(map[string]interface{})
-	record := r.FormValue("record")
-	var rec Record
-	err := json.Unmarshal([]byte(record), &rec)
-	if err != nil {
-		msg := "unable to unmarshal passed record"
-		handleError(w, r, msg, err)
-		return
-	}
-	// we will prepare input entries for the template
-	// where each entry represented in form of template.HTML
-	// to avoid escaping of HTML characters
+func htmlInputs(rec Record) []template.HTML {
 	var inputs []template.HTML
 	var attrs []string
 	for _, a := range Config.AdjustableAttrs {
@@ -569,15 +572,42 @@ func UpdateHandler(w http.ResponseWriter, r *http.Request) {
 			v = fmt.Sprintf("%v", vvv)
 		}
 		in := fmt.Sprintf("<label>%s</label>", k)
-		in = fmt.Sprintf("%s<input type=\"text\" name=\"%s\" value=\"%s\"", in, k, v)
-		if InList(k, attrs) {
-			in = fmt.Sprintf("%s class=\"is-90 is-success\"", in)
+		if strings.Contains(v, "ERROR") {
+			in = fmt.Sprintf("%s<input required class=\"alert is-error is-90\" type=\"text\" name=\"%s\" value=\"%s\"", in, k, v)
 		} else {
-			in = fmt.Sprintf("%s class=\"is-90\" readonly", in)
+			in = fmt.Sprintf("%s<input type=\"text\" name=\"%s\" value=\"%s\"", in, k, v)
+			if InList(k, attrs) {
+				in = fmt.Sprintf("%s class=\"is-90 is-success\"", in)
+			} else {
+				in = fmt.Sprintf("%s class=\"is-90\" readonly", in)
+			}
 		}
 		in = fmt.Sprintf("%s>", in)
 		inputs = append(inputs, template.HTML(in))
 	}
+	return inputs
+}
+
+// UpdateHandler handlers Process requests
+func UpdateHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+	var templates ServerTemplates
+	tmplData := make(map[string]interface{})
+	record := r.FormValue("record")
+	var rec Record
+	err := json.Unmarshal([]byte(record), &rec)
+	if err != nil {
+		msg := "unable to unmarshal passed record"
+		handleError(w, r, msg, err)
+		return
+	}
+	// we will prepare input entries for the template
+	// where each entry represented in form of template.HTML
+	// to avoid escaping of HTML characters
+	inputs := htmlInputs(rec)
 	tmplData["Inputs"] = inputs
 	tmplData["Id"] = r.FormValue("_id")
 	page := templates.Update(Config.Templates, tmplData)
@@ -598,15 +628,26 @@ func UpdateRecordHandler(w http.ResponseWriter, r *http.Request) {
 		rid := r.FormValue("_id")
 		// delete record id before the update
 		delete(rec, "_id")
-		msg = fmt.Sprintf("record %v is successfully updated", rid)
-		fmt.Println("MongoUpsert", rec)
-		records := []Record{rec}
-		err = MongoUpsert(Config.DBName, Config.DBColl, records)
-		if err != nil {
-			msg = fmt.Sprintf("record %v update is failed, reason: %v", rid, err)
-			cls = "is-error"
+		if rid == "" {
+			err := insertData(rec)
+			if err == nil {
+				msg = fmt.Sprintf("Your meta-data is inserted successfully")
+				cls = "alert is-success"
+			} else {
+				msg = fmt.Sprintf("update web processing error: %v", err)
+				cls = "alert is-error"
+			}
 		} else {
-			cls = "is-success"
+			msg = fmt.Sprintf("record %v is successfully updated", rid)
+			fmt.Println("MongoUpsert", rec)
+			records := []Record{rec}
+			err = MongoUpsert(Config.DBName, Config.DBColl, records)
+			if err != nil {
+				msg = fmt.Sprintf("record %v update is failed, reason: %v", rid, err)
+				cls = "is-error"
+			} else {
+				cls = "is-success"
+			}
 		}
 	} else {
 		msg = fmt.Sprintf("record update failed, reason: %v", err)
