@@ -1,4 +1,10 @@
 --
+-- drop files/datasets tables first since they contain foreign keys
+--
+DROP TABLE IF EXISTS `files`;
+DROP TABLE IF EXISTS `datasets`;
+
+--
 -- Table structure for table `experiments`
 --
 
