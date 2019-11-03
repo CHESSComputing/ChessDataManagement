@@ -37,7 +37,7 @@ func InitFilesDB() (*sql.DB, error) {
 	if len(dbAttrs) != 2 {
 		return nil, errors.New("Please provide proper FilesDB uri")
 	}
-    dbSafeAttrs := strings.Split(dbAttrs[1], "@")
+	dbSafeAttrs := strings.Split(dbAttrs[1], "@")
 	logs.WithFields(logs.Fields{
 		"Driver":  dbAttrs[0],
 		"FilesDB": dbSafeAttrs[1],

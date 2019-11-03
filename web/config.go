@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"sort"
-    "strings"
+	"strings"
 
 	logs "github.com/sirupsen/logrus"
 )
@@ -43,10 +43,10 @@ var Config Configuration
 
 // String returns string representation of server Config
 func (c *Configuration) String() string {
-    dbAttrs := strings.Split(c.FilesDBUri, "@")
-    var cc Configuration
-    cc = *c
-    cc.FilesDBUri = dbAttrs[1]
+	dbAttrs := strings.Split(c.FilesDBUri, "@")
+	var cc Configuration
+	cc = *c
+	cc.FilesDBUri = dbAttrs[1]
 	data, _ := json.Marshal(cc)
 	return fmt.Sprintf(string(data))
 }
