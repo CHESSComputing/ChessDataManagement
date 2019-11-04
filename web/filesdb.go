@@ -224,7 +224,7 @@ func InsertFiles(did int64, experiment, processing, tier, path string) error {
 
 	// insert files info
 	for _, name := range files {
-		stmt = "INSERT INTO FILES (dataset_id,name) VALUES (?,?)"
+		stmt = "INSERT INTO files (dataset_id,name) VALUES (?,?)"
 		_, err = tx.Exec(stmt, did, name)
 		if err != nil {
 			return tx.Rollback()
@@ -251,7 +251,7 @@ func getFiles(did int64) ([]string, error) {
 	}
 	defer tx.Rollback()
 	// look-up files info
-	stmt := "SELECT name FROM FILES WHERE dataset_id=?"
+	stmt := "SELECT name FROM files WHERE dataset_id=?"
 	res, err := execute(tx, stmt, did)
 	if err != nil {
 		return files, tx.Rollback()
