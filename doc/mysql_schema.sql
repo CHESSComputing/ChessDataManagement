@@ -43,7 +43,7 @@ CREATE TABLE `tiers` (
 
 DROP TABLE IF EXISTS `datasets`;
 CREATE TABLE `datasets` (
-  `dataset_id` int(11) NOT NULL,
+  `dataset_id` BIGINT NOT NULL,
   `experiment_id` int(11) NOT NULL,
   `processing_id` int(11) NOT NULL,
   `tier_id` int(11) NOT NULL,
