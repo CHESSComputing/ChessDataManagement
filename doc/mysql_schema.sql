@@ -65,7 +65,7 @@ CREATE TABLE `datasets` (
 DROP TABLE IF EXISTS `files`;
 CREATE TABLE `files` (
   `file_id` int(11) NOT NULL AUTO_INCREMENT,
-  `dataset_id` int(11) NOT NULL,
+  `dataset_id` BIGINT NOT NULL,
   `name` varchar(100) NOT NULL,
   PRIMARY KEY (`file_id`),
   KEY `fk_did` (`dataset_id`),
