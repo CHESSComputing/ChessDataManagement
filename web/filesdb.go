@@ -21,6 +21,7 @@ import (
 	"errors"
 	"strings"
 	"time"
+    "fmt"
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/mattn/go-sqlite3"
@@ -252,12 +253,23 @@ func getFiles(did int64) ([]string, error) {
 	defer tx.Rollback()
 	// look-up files info
 	stmt := "SELECT name FROM files WHERE dataset_id=?"
-	res, err := execute(tx, stmt, did)
+//	res, err := execute(tx, stmt, did)
+    res, err := tx.Query(stmt, did)
 	if err != nil {
 		return files, tx.Rollback()
 	}
-	for _, r := range res {
-		files = append(files, r["name"].(string))
-	}
+    for res.Next() {
+        var name string
+        err = res.Scan(&name)
+        if err != nil {
+            return files, tx.Rollback()
+        }
+        fmt.Println("file", name)
+        files = append(files, name)
+    }
+    
+//	for _, r := range res {
+//		files = append(files, r["name"].(string))
+//	}
 	return files, nil
 }
