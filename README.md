@@ -1,3 +1,8 @@
+### Chess Data Management service
+
+[![Build Status](https://travis-ci.org/vkuznet/ChessDataManagement.svg?branch=master)](https://travis-ci.org/vkuznet/ChessDataManagement)
+[![Go Report Card](https://goreportcard.com/badge/github.com/vkuznet/ChessDataManagement)](https://goreportcard.com/report/github.com/vkuznet/ChessDataManagement)
+
 ### Introduction
 
 The CHESS data flow has been discussed in this

@@ -59,7 +59,7 @@ func execute(tx *sql.Tx, stm string, args ...interface{}) ([]Record, error) {
 
 	rows, err := tx.Query(stm, args...)
 	if err != nil {
-		log.Printf("query %v arguments %v error\n", stm, args, err)
+		log.Printf("query %v arguments %v error %v\n", stm, args, err)
 		return records, err
 	}
 	defer rows.Close()

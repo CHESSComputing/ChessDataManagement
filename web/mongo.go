@@ -98,7 +98,7 @@ func GetValue(rec Record, key string) interface{} {
 				return ""
 			}
 		default:
-			log.Printf("Unknown type %v, rec %v, key %v keys %v\n", fmt.Sprintf("%T", v), v, rec, key, keys)
+			log.Printf("Unknown type %v, rec %v, key %v keys %v\n", fmt.Sprintf("%T", v), v, key, keys)
 			return ""
 		}
 		if len(keys) == 2 {
@@ -261,7 +261,7 @@ func MongoUpdate(dbname, collname string, spec, newdata bson.M) {
 	c := s.DB(dbname).C(collname)
 	err := c.Update(spec, newdata)
 	if err != nil {
-		log.Printf("Unable to update record, spec %v, data %v, error", spec, newdata, err)
+		log.Printf("Unable to update record, spec %v, data %v, error %v\n", spec, newdata, err)
 	}
 }
 
@@ -272,7 +272,7 @@ func MongoCount(dbname, collname string, spec bson.M) int {
 	c := s.DB(dbname).C(collname)
 	nrec, err := c.Find(spec).Count()
 	if err != nil {
-		log.Printf("Unable to count records, spec %v, error", spec, err)
+		log.Printf("Unable to count records, spec %v, error %v\n", spec, err)
 	}
 	return nrec
 }
@@ -284,6 +284,6 @@ func MongoRemove(dbname, collname string, spec bson.M) {
 	c := s.DB(dbname).C(collname)
 	_, err := c.RemoveAll(spec)
 	if err != nil && err != mgo.ErrNotFound {
-		log.Printf("Unable to remove records, spec %v, error", spec, err)
+		log.Printf("Unable to remove records, spec %v, error %v\n", spec, err)
 	}
 }
