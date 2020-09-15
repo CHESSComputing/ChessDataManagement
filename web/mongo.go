@@ -11,10 +11,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"html"
+	"log"
 	"strings"
-	"time"
 
-	logs "github.com/sirupsen/logrus"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -22,8 +21,8 @@ import (
 // Record define Mongo record
 type Record map[string]interface{}
 
-// ToJson provides string representation of Record
-func (r Record) ToJson() string {
+// ToJSON provides string representation of Record
+func (r Record) ToJSON() string {
 	// create pretty JSON representation of the record
 	data, _ := json.MarshalIndent(r, "", "    ")
 	return string(data)
@@ -79,11 +78,7 @@ func GetValue(rec Record, key string) interface{} {
 	if len(keys) > 1 {
 		value, ok := rec[keys[0]]
 		if !ok {
-			logs.WithFields(logs.Fields{
-				"Time":         time.Now(),
-				"Mongo record": rec,
-				"key":          key,
-			}).Warn("Unable to find key value in Record")
+			log.Printf("Unable to find key value in Record %v, key %v\n", rec, key)
 			return ""
 		}
 		switch v := value.(type) {
@@ -103,14 +98,7 @@ func GetValue(rec Record, key string) interface{} {
 				return ""
 			}
 		default:
-			logs.WithFields(logs.Fields{
-				"Time":         time.Now(),
-				"Type":         fmt.Sprintf("%T", v),
-				"record":       v,
-				"Mongo record": rec,
-				"key":          key,
-				"keys":         keys,
-			}).Error("Unknown type")
+			log.Printf("Unknown type %v, rec %v, key %v keys %v\n", fmt.Sprintf("%T", v), v, rec, key, keys)
 			return ""
 		}
 		if len(keys) == 2 {
@@ -175,7 +163,7 @@ type MongoConnection struct {
 func (m *MongoConnection) Connect() *mgo.Session {
 	var err error
 	if m.Session == nil {
-		m.Session, err = mgo.Dial(Config.Uri)
+		m.Session, err = mgo.Dial(Config.URI)
 		if err != nil {
 			panic(err)
 		}
@@ -195,10 +183,7 @@ func MongoInsert(dbname, collname string, records []Record) {
 	c := s.DB(dbname).C(collname)
 	for _, rec := range records {
 		if err := c.Insert(&rec); err != nil {
-			logs.WithFields(logs.Fields{
-				"Error":  err,
-				"Record": rec,
-			}).Error("Fail to insert record")
+			log.Printf("Fail to insert record %v, error %v\n", rec, err)
 		}
 	}
 }
@@ -211,17 +196,12 @@ func MongoUpsert(dbname, collname string, records []Record) error {
 	for _, rec := range records {
 		dataset := rec["dataset"].(string)
 		if dataset == "" {
-			logs.WithFields(logs.Fields{
-				"Record": rec,
-			}).Warn("no dataset")
+			log.Printf("no dataset, record %v\n", rec)
 			continue
 		}
 		spec := bson.M{"dataset": dataset}
 		if _, err := c.Upsert(spec, &rec); err != nil {
-			logs.WithFields(logs.Fields{
-				"Error":  err,
-				"Record": rec,
-			}).Error("Fail to insert record")
+			log.Printf("Fail to insert record %v, error %v\n", rec, err)
 			return err
 		}
 	}
@@ -241,9 +221,7 @@ func MongoGet(dbname, collname string, spec bson.M, idx, limit int) []Record {
 		err = c.Find(spec).Skip(idx).All(&out)
 	}
 	if err != nil {
-		logs.WithFields(logs.Fields{
-			"Error": err,
-		}).Error("Unable to get records")
+		log.Printf("Unable to get records, error %v\n", err)
 	}
 	return out
 }
@@ -256,15 +234,11 @@ func MongoGetSorted(dbname, collname string, spec bson.M, skeys []string) []Reco
 	c := s.DB(dbname).C(collname)
 	err := c.Find(spec).Sort(skeys...).All(&out)
 	if err != nil {
-		logs.WithFields(logs.Fields{
-			"Error": err,
-		}).Warn("Unable to sort records")
+		log.Printf("Unable to sort records, error %v\n", err)
 		// try to fetch all unsorted data
 		err = c.Find(spec).All(&out)
 		if err != nil {
-			logs.WithFields(logs.Fields{
-				"Error": err,
-			}).Error("Unable to find records")
+			log.Printf("Unable to find records, error %v\n", err)
 			out = append(out, ErrorRecord(fmt.Sprintf("%v", err), MongoDBErrorName, MongoDBError))
 		}
 	}
@@ -287,12 +261,7 @@ func MongoUpdate(dbname, collname string, spec, newdata bson.M) {
 	c := s.DB(dbname).C(collname)
 	err := c.Update(spec, newdata)
 	if err != nil {
-		logs.WithFields(logs.Fields{
-			"Time":  time.Now(),
-			"Error": err,
-			"Spec":  spec,
-			"data":  newdata,
-		}).Error("Unable to update record")
+		log.Printf("Unable to update record, spec %v, data %v, error", spec, newdata, err)
 	}
 }
 
@@ -303,11 +272,7 @@ func MongoCount(dbname, collname string, spec bson.M) int {
 	c := s.DB(dbname).C(collname)
 	nrec, err := c.Find(spec).Count()
 	if err != nil {
-		logs.WithFields(logs.Fields{
-			"Time":  time.Now(),
-			"Error": err,
-			"Spec":  spec,
-		}).Error("Unable to count records")
+		log.Printf("Unable to count records, spec %v, error", spec, err)
 	}
 	return nrec
 }
@@ -319,10 +284,6 @@ func MongoRemove(dbname, collname string, spec bson.M) {
 	c := s.DB(dbname).C(collname)
 	_, err := c.RemoveAll(spec)
 	if err != nil && err != mgo.ErrNotFound {
-		logs.WithFields(logs.Fields{
-			"Time":  time.Now(),
-			"Error": err,
-			"Spec":  spec,
-		}).Error("Unable to remove records")
+		log.Printf("Unable to remove records, spec %v, error", spec, err)
 	}
 }

@@ -8,6 +8,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -15,8 +16,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	logs "github.com/sirupsen/logrus"
 )
 
 // FindFiles find files in given path
@@ -30,10 +29,7 @@ func FindFiles(root string) []string {
 		return nil
 	})
 	if err != nil {
-		logs.WithFields(logs.Fields{
-			"root":  root,
-			"error": err,
-		}).Error("FindFiles")
+		log.Printf("FindFiles root %v, error %v\n", root, err)
 	}
 	return files
 }
@@ -48,10 +44,7 @@ func Stack() string {
 // ErrPropagate error helper function which can be used in defer ErrPropagate()
 func ErrPropagate(api string) {
 	if err := recover(); err != nil {
-		logs.WithFields(logs.Fields{
-			"api":   api,
-			"error": Stack(),
-		}).Error("Server ERROR")
+		log.Printf("Server api %v, error %v\n", api, Stack())
 		panic(fmt.Sprintf("%s:%s", api, err))
 	}
 }
@@ -64,10 +57,7 @@ func ErrPropagate(api string) {
 // }()
 func ErrPropagate2Channel(api string, ch chan interface{}) {
 	if err := recover(); err != nil {
-		logs.WithFields(logs.Fields{
-			"api":   api,
-			"error": Stack(),
-		}).Error("Server ERROR")
+		log.Printf("server api %v error %v\n", api, Stack())
 		ch <- fmt.Sprintf("%s:%s", api, err)
 	}
 }
@@ -101,7 +91,7 @@ func InList(a string, list []string) bool {
 	check := 0
 	for _, b := range list {
 		if b == a {
-			check += 1
+			check++
 		}
 	}
 	if check != 0 {
@@ -125,7 +115,7 @@ func EqualLists(list1, list2 []string) bool {
 	count := 0
 	for _, k := range list1 {
 		if InList(k, list2) {
-			count += 1
+			count++
 		} else {
 			return false
 		}
@@ -171,10 +161,7 @@ func UnixTime(ts string) int64 {
 	const layout = "20060102"
 	t, err := time.Parse(layout, ts)
 	if err != nil {
-		logs.WithFields(logs.Fields{
-			"Error":     err,
-			"Timestamp": ts,
-		}).Error("Unable to parse")
+		log.Printf("unable to parse, error %v\n", err)
 		return 0
 	}
 	return int64(t.Unix())
@@ -392,8 +379,8 @@ func Color(col, text string) string {
 	return BOLD + "\x1b[" + col + text + PLAIN
 }
 
-// ColorUrl returns colored string of given url
-func ColorUrl(rurl string) string {
+// ColorURL returns colored string of given url
+func ColorURL(rurl string) string {
 	return Color(BLUE, rurl)
 }
 
@@ -402,7 +389,7 @@ func Error(args ...interface{}) {
 	fmt.Println(Color(RED, "Server ERROR"), args)
 }
 
-// ServerWarning prints Server error message with given arguments
+// Warning prints Server error message with given arguments
 func Warning(args ...interface{}) {
 	fmt.Println(Color(BROWN, "Server WARNING"), args)
 }
@@ -456,15 +443,15 @@ func pagination(query string, nres, startIdx, limit int) string {
 		tmplData["EndIndex"] = fmt.Sprintf("%d", nres)
 	}
 	tmplData["Total"] = fmt.Sprintf("%d", nres)
-	tmplData["FirstUrl"] = makeUrl(url, "first", startIdx, limit, nres)
-	tmplData["PrevUrl"] = makeUrl(url, "prev", startIdx, limit, nres)
-	tmplData["NextUrl"] = makeUrl(url, "next", startIdx, limit, nres)
-	tmplData["LastUrl"] = makeUrl(url, "last", startIdx, limit, nres)
+	tmplData["FirstUrl"] = makeURL(url, "first", startIdx, limit, nres)
+	tmplData["PrevUrl"] = makeURL(url, "prev", startIdx, limit, nres)
+	tmplData["NextUrl"] = makeURL(url, "next", startIdx, limit, nres)
+	tmplData["LastUrl"] = makeURL(url, "last", startIdx, limit, nres)
 	page := templates.Pagination(Config.Templates, tmplData)
 	return fmt.Sprintf("%s<br>", page)
 }
 
-func makeUrl(url, urlType string, startIdx, limit, nres int) string {
+func makeURL(url, urlType string, startIdx, limit, nres int) string {
 	var out string
 	var idx int
 	if urlType == "first" {

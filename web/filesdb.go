@@ -19,16 +19,15 @@ package main
 import (
 	"database/sql"
 	"errors"
+	"log"
 	"strings"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/mattn/go-sqlite3"
-
-	logs "github.com/sirupsen/logrus"
 )
 
-// global variable to keep pointer to FilesDB
+// FilesDB global variable to keep pointer to Files DB
 var FilesDB *sql.DB
 
 // InitFilesDB sets pointer to FilesDB
@@ -38,10 +37,11 @@ func InitFilesDB() (*sql.DB, error) {
 		return nil, errors.New("Please provide proper FilesDB uri")
 	}
 	dbSafeAttrs := strings.Split(dbAttrs[1], "@")
-	logs.WithFields(logs.Fields{
-		"Driver":  dbAttrs[0],
-		"FilesDB": dbSafeAttrs[1],
-	}).Info("FilesDB")
+	if len(dbSafeAttrs) > 1 {
+		log.Printf("FilesDB: %v@%v\n", dbAttrs[0], dbSafeAttrs[1])
+	} else {
+		log.Printf("FilesDB: %v\n", dbAttrs)
+	}
 	db, err := sql.Open(dbAttrs[0], dbAttrs[1])
 	if err != nil {
 		return nil, err
@@ -59,11 +59,7 @@ func execute(tx *sql.Tx, stm string, args ...interface{}) ([]Record, error) {
 
 	rows, err := tx.Query(stm, args...)
 	if err != nil {
-		logs.WithFields(logs.Fields{
-			"Statement": stm,
-			"Arguments": args,
-			"Error":     err,
-		}).Error("query error")
+		log.Printf("query %v arguments %v error\n", stm, args, err)
 		return records, err
 	}
 	defer rows.Close()
@@ -79,19 +75,16 @@ func execute(tx *sql.Tx, stm string, args ...interface{}) ([]Record, error) {
 	for rows.Next() {
 		if rowCount == 0 {
 			// initialize value pointers
-			for i, _ := range columns {
+			for i := range columns {
 				valuePtrs[i] = &values[i]
 			}
 		}
 		err := rows.Scan(valuePtrs...)
 		if err != nil {
-			logs.WithFields(logs.Fields{
-				"Destination": valuePtrs,
-				"Error":       err,
-			}).Error("rows.Scan error")
+			log.Printf("rows.Scan values %v error %v\n", valuePtrs, err)
 			return records, err
 		}
-		rowCount += 1
+		rowCount++
 		// store results into generic record (a dict)
 		rec := make(Record)
 		for i, col := range columns {
@@ -129,16 +122,14 @@ func execute(tx *sql.Tx, stm string, args ...interface{}) ([]Record, error) {
 		records = append(records, rec)
 	}
 	if err = rows.Err(); err != nil {
-		logs.WithFields(logs.Fields{
-			"Error": err,
-		}).Error("Rows")
+		log.Printf("Rows error %v\n", err)
 		return records, err
 	}
 	return records, nil
 }
 
-// FindId finds dataset attributes
-func FindId(stmt string, args ...interface{}) (int64, error) {
+// FindID finds dataset attributes
+func FindID(stmt string, args ...interface{}) (int64, error) {
 	var rid int64
 	err := FilesDB.QueryRow(stmt, args...).Scan(&rid)
 	if err == nil {
@@ -154,17 +145,15 @@ func InsertFiles(did int64, experiment, processing, tier, path string) error {
 
 	// check if we have already our dataset in DB
 	dstmt := "SELECT dataset_id FROM datasets JOIN tiers ON datasets.tier_id=tiers.tier_id JOIN processing ON datasets.processing_id=processing.processing_id JOIN experiments ON datasets.experiment_id=experiments.experiment_id WHERE experiments.name=? and processing.name=? and tiers.name=?"
-	datasetId, e := FindId(dstmt, experiment, processing, tier)
-	if e == nil && datasetId == did {
+	datasetID, e := FindID(dstmt, experiment, processing, tier)
+	if e == nil && datasetID == did {
 		return nil
 	}
 
 	// proceed with transaction operation
 	tx, err := FilesDB.Begin()
 	if err != nil {
-		logs.WithFields(logs.Fields{
-			"Error": err,
-		}).Error("DB error")
+		log.Printf("DB error %v\n", err)
 		return err
 	}
 	defer tx.Rollback()
@@ -244,9 +233,7 @@ func getFiles(did int64) ([]string, error) {
 	// proceed with transaction operation
 	tx, err := FilesDB.Begin()
 	if err != nil {
-		logs.WithFields(logs.Fields{
-			"Error": err,
-		}).Error("DB error")
+		log.Printf("DB error %v\n", err)
 		return files, err
 	}
 	defer tx.Rollback()

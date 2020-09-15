@@ -4,13 +4,13 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"sort"
 	"strings"
 	"time"
 
-	logs "github.com/sirupsen/logrus"
 	"gopkg.in/jcmturner/gokrb5.v7/client"
 	"gopkg.in/jcmturner/gokrb5.v7/config"
 	"gopkg.in/jcmturner/gokrb5.v7/credentials"
@@ -59,19 +59,13 @@ func kuserFromCache(cacheFile string) (*credentials.Credentials, error) {
 func kuser(user, password string) (*credentials.Credentials, error) {
 	cfg, err := config.Load(Config.Krb5Conf)
 	if err != nil {
-		msg := "reading krb5.conf fails"
-		logs.WithFields(logs.Fields{
-			"Error": err,
-		}).Error(msg)
+		log.Printf("reading krb5.conf failes, error %v\n", err)
 		return nil, err
 	}
 	client := client.NewClientWithPassword(user, Config.Realm, password, cfg, client.DisablePAFXFAST(true))
 	err = client.Login()
 	if err != nil {
-		msg := "client login fails"
-		logs.WithFields(logs.Fields{
-			"Error": err,
-		}).Error(msg)
+		log.Printf("client login fails, error %v\n", err)
 		return nil, err
 	}
 	return client.Credentials, nil
@@ -85,9 +79,7 @@ func auth(r *http.Request) error {
 
 // helper function to handle http server errors
 func handleError(w http.ResponseWriter, r *http.Request, msg string, err error) {
-	logs.WithFields(logs.Fields{
-		"Error": err,
-	}).Error(msg)
+	log.Printf("Error %v\n", err)
 	var templates ServerTemplates
 	tmplData := make(map[string]interface{})
 	tmplData["Message"] = strings.ToTitle(msg)
@@ -131,7 +123,7 @@ func getUserCredentials(r *http.Request) (*credentials.Credentials, error) {
 func validateData(rec Record) error {
 	keys := MapKeys(rec)
 	var mKeys, aKeys []string
-	for k, _ := range rec {
+	for k := range rec {
 		if InList(k, Config.MandatoryAttrs) {
 			mKeys = append(mKeys, k)
 		}
@@ -205,10 +197,7 @@ func insertData(rec Record) error {
 	// check if given path exist on file system
 	_, err := os.Stat(path)
 	if err == nil {
-		logs.WithFields(logs.Fields{
-			"Record": rec,
-			"Path":   path,
-		}).Debug("input data")
+		log.Printf("input data, record %v, path %v\n", rec, path)
 		rec["path"] = path
 		// we generate unique id by using time stamp
 		did := time.Now().UnixNano()

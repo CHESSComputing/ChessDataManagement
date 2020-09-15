@@ -16,10 +16,9 @@ and series of dependencies:
 ```
 # obtain necessary dependencies
 go get gopkg.in/mgo.v2
-go get github.com/sirupsen/logrus
 go get github.com/shirou/gopsutil
 go get github.com/divan/expvarmon
-go get github.com/sirupsen/logrus
+go get github.com/lestrrat-go/file-rotatelogs
 go get github.com/mattn/go-sqlite3
 go get github.com/go-sql-driver/mysql
 go get -d github.com/shirou/gopsutil/...

@@ -8,16 +8,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"sort"
 	"strings"
-
-	logs "github.com/sirupsen/logrus"
 )
 
 // Configuration stores server configuration parameters
 type Configuration struct {
 	Port            int      `json:"port"`                 // server port number
-	Uri             string   `json:"uri"`                  // server mongodb URI
+	URI             string   `json:"uri"`                  // server mongodb URI
 	DBName          string   `json:"dbname"`               // mongo db name
 	DBColl          string   `json:"dbcoll"`               // mongo db name
 	FilesDBUri      string   `json:"filesdburi"`           // server FilesDB URI
@@ -36,6 +35,7 @@ type Configuration struct {
 	MandatoryAttrs  []string `json:"mandatoryAttributes"`  // list of madatory attributes
 	AdjustableAttrs []string `json:"adjustableAttributes"` // list of adjustable attributes
 	TestMode        bool     `json:"testMode"`             // test mode to bypass auth
+	LogFile         string   `json:logFile`                // location of service log file
 }
 
 // Config variable represents configuration object
@@ -46,26 +46,28 @@ func (c *Configuration) String() string {
 	dbAttrs := strings.Split(c.FilesDBUri, "@")
 	var cc Configuration
 	cc = *c
-	cc.FilesDBUri = dbAttrs[1]
+	if len(dbAttrs) > 1 {
+		cc.FilesDBUri = dbAttrs[1]
+	}
 	data, _ := json.Marshal(cc)
 	return fmt.Sprintf(string(data))
 }
 
 // ParseConfig parse given config file
-func ParseConfig(configFile string) error {
+func ParseConfig(configFile string) {
 	data, err := ioutil.ReadFile(configFile)
 	if err != nil {
-		logs.WithFields(logs.Fields{"configFile": configFile}).Fatal("Unable to read", err)
-		return err
+		log.Fatalf("Unable to read logfile %s, error %v", configFile, err)
 	}
 	err = json.Unmarshal(data, &Config)
 	if err != nil {
-		logs.WithFields(logs.Fields{"configFile": configFile}).Fatal("Unable to parse", err)
-		return err
+		log.Fatalf("Unable to parse logfile %s, error %v", configFile, err)
+	}
+	if Config.LogFile == "" {
+		Config.LogFile = "/tmp/ChessDataManagement.log"
 	}
 	sort.Sort(StringList(Config.MandatoryAttrs))
 	sort.Sort(StringList(Config.AdjustableAttrs))
-	return nil
 }
 
 // MetaData provides details about CHESS experiment
@@ -80,7 +82,7 @@ type MetaData struct {
 	AuxDataDirectory string `json:"AuxDataDirectory"`
 }
 
-// Sample defines details of used sample in CHESS experiment
+// Material defines details of used sample in CHESS experiment
 type Material struct {
 	SpecName            string   `json:"SpecName"`
 	CalibrationSample   bool     `json:"CalibrationSample"`

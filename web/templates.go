@@ -37,7 +37,7 @@ func parseTmpl(tdir, tmpl string, data interface{}) string {
 			check := 0
 			for _, b := range list {
 				if b == a {
-					check += 1
+					check++
 				}
 			}
 			if check != 0 {

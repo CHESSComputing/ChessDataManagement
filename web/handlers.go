@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"runtime"
@@ -22,7 +23,6 @@ import (
 	"github.com/shirou/gopsutil/load"
 	"github.com/shirou/gopsutil/mem"
 	"github.com/shirou/gopsutil/process"
-	logs "github.com/sirupsen/logrus"
 	"gopkg.in/jcmturner/gokrb5.v7/credentials"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -65,7 +65,7 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	logs.WithFields(logs.Fields{"User": user, "Path": r.URL.Path}).Info("")
+	log.Printf("User %v path %v\n", user, r.URL.Path)
 	// define all methods which requires authentication
 	arr := strings.Split(r.URL.Path, "/")
 	path := arr[len(arr)-1]
@@ -113,9 +113,7 @@ func KAuthHandler(w http.ResponseWriter, r *http.Request) {
 	// First, we need to get the value of the `code` query param
 	err := r.ParseForm()
 	if err != nil {
-		logs.WithFields(logs.Fields{
-			"Error": err,
-		}).Error("could not parse http form")
+		log.Printf("could not parse http form, error %v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
 	}
 	name := r.FormValue("name")
@@ -212,7 +210,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 			tmplData["Id"] = oid.Hex()
 			tmplData["Did"] = rec["did"]
 			tmplData["RecordString"] = rec.ToString()
-			tmplData["Record"] = rec.ToJson()
+			tmplData["Record"] = rec.ToJSON()
 			prec := templates.Record(Config.Templates, tmplData)
 			page = fmt.Sprintf("%s<br>%s", page, prec)
 		}
@@ -345,17 +343,7 @@ func SettingsHandler(w http.ResponseWriter, r *http.Request) {
 		handleError(w, r, msg, err)
 		return
 	}
-	if s.LogFormatter == "json" {
-		logs.SetFormatter(&logs.JSONFormatter{})
-	} else if s.LogFormatter == "text" {
-		logs.SetFormatter(&logs.TextFormatter{})
-	} else {
-		logs.SetFormatter(&logs.TextFormatter{})
-	}
-	logs.WithFields(logs.Fields{
-		"Verbose level": s.Level,
-		"Log formatter": s.LogFormatter,
-	}).Debug("update server settings")
+	log.Printf("update server settings, level %v\n", s.Level)
 	w.WriteHeader(http.StatusOK)
 	return
 }
@@ -409,7 +397,7 @@ func processForm(r *http.Request) Record {
 			}
 		}
 	}
-	logs.WithFields(logs.Fields{"record": rec}).Info("process form")
+	log.Printf("process form, record %v\n", rec)
 	return rec
 }
 
@@ -462,8 +450,8 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(_top + page + _bottom))
 }
 
-// ApiHandler handlers Api requests
-func ApiHandler(w http.ResponseWriter, r *http.Request) {
+// APIHandler handlers Api requests
+func APIHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -517,7 +505,7 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		var data = Record{}
 		data["user"] = user
-		fmt.Println("body", string(body))
+		log.Println("body", string(body))
 		err := json.Unmarshal(body, &data)
 		if err != nil {
 			msg = fmt.Sprintf("error: %v, unable to parse request data", err)
@@ -641,7 +629,7 @@ func UpdateRecordHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		} else {
 			msg = fmt.Sprintf("record %v is successfully updated", rid)
-			fmt.Println("MongoUpsert", rec)
+			log.Println("MongoUpsert", rec)
 			records := []Record{rec}
 			err = MongoUpsert(Config.DBName, Config.DBColl, records)
 			if err != nil {

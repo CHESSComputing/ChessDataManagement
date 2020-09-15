@@ -12,16 +12,18 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"time"
 
-	logs "github.com/sirupsen/logrus"
 	"gopkg.in/jcmturner/gokrb5.v7/keytab"
 	"gopkg.in/jcmturner/gokrb5.v7/service"
 	"gopkg.in/jcmturner/gokrb5.v7/spnego"
 
 	_ "expvar"         // to be used for monitoring, see https://github.com/divan/expvarmon
 	_ "net/http/pprof" // profiler, see https://golang.org/pkg/net/http/pprof/
+
+	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 )
 
 // global variables
@@ -30,30 +32,60 @@ var _top, _bottom, _search string
 // Time0 represents initial time when we started the server
 var Time0 time.Time
 
+// custom rotate logger
+type rotateLogWriter struct {
+	RotateLogs *rotatelogs.RotateLogs
+}
+
+func (w rotateLogWriter) Write(data []byte) (int, error) {
+	return w.RotateLogs.Write([]byte(utcMsg(data)))
+}
+
+// helper function to use proper UTC message in a logger
+func utcMsg(data []byte) string {
+	s := string(data)
+	v, e := url.QueryUnescape(s)
+	if e == nil {
+		return v
+	}
+	return s
+}
+
 // Server code
 func Server(configFile string) {
 	Time0 = time.Now()
-	err := ParseConfig(configFile)
-	if Config.LogFormatter == "json" {
-		logs.SetFormatter(&logs.JSONFormatter{})
-	} else if Config.LogFormatter == "text" {
-		logs.SetFormatter(&logs.TextFormatter{})
+	var err error
+	ParseConfig(configFile)
+	// set log file or log output
+	if Config.LogFile != "" {
+		logName := Config.LogFile + "-%Y%m%d"
+		hostname, err := os.Hostname()
+		if err == nil {
+			logName = Config.LogFile + "-" + hostname + "-%Y%m%d"
+		}
+		rl, err := rotatelogs.New(logName)
+		if err == nil {
+			rotlogs := rotateLogWriter{RotateLogs: rl}
+			log.SetOutput(rotlogs)
+		} else {
+			log.SetFlags(log.LstdFlags | log.Lshortfile)
+		}
 	} else {
-		logs.SetFormatter(&logs.JSONFormatter{})
+		// log time, filename, and line number
+		if Config.Verbose > 0 {
+			log.SetFlags(log.LstdFlags | log.Lshortfile)
+		} else {
+			log.SetFlags(log.LstdFlags)
+		}
 	}
-	if Config.Verbose > 0 {
-		logs.SetLevel(logs.DebugLevel)
-	}
-	if err != nil {
-		logs.WithFields(logs.Fields{"Time": time.Now(), "Config": configFile}).Error("Unable to parse")
-	}
-	fmt.Println("Configuration:", Config.String())
+
+	log.Println("Configuration:", Config.String())
 
 	// initialize FilesDB connection
 	FilesDB, err = InitFilesDB()
 	defer FilesDB.Close()
 	if err != nil {
-		logs.WithFields(logs.Fields{"Error": err}).Fatal("FilesDB")
+		log.Printf("FilesDB error: %v\n", err)
 	}
 
 	var templates ServerTemplates
@@ -75,7 +107,7 @@ func Server(configFile string) {
 	http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir(Config.Jscripts))))
 	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir(Config.Images))))
 	http.HandleFunc("/auth", KAuthHandler)
-	http.HandleFunc("/api", ApiHandler)
+	http.HandleFunc("/api", APIHandler)
 	http.HandleFunc("/search", SearchHandler)
 	http.HandleFunc("/files", FilesHandler)
 	http.HandleFunc("/", AuthHandler)
@@ -96,16 +128,14 @@ func Server(configFile string) {
 				RootCAs: rootCA,
 			},
 		}
-		logs.WithFields(logs.Fields{"Addr": addr}).Info("Starting HTTPs server")
+		log.Printf("Starting HTTPs server, %v\n", addr)
 		err = server.ListenAndServeTLS(Config.ServerCrt, Config.ServerKey)
 	} else {
 		// Start server without user certificates
-		logs.WithFields(logs.Fields{"Addr": addr}).Info("Starting HTTP server")
+		log.Printf("Starting HTTP server, %v\n", addr)
 		err = http.ListenAndServe(addr, nil)
 	}
 	if err != nil {
-		logs.WithFields(logs.Fields{
-			"Error": err,
-		}).Fatal("ListenAndServe: ")
+		log.Fatalf("Unable to start server, %v\n", err)
 	}
 }
