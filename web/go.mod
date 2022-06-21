@@ -1,36 +1,33 @@
 module github.com/vkuznet/ChessDataManagement
 
-go 1.13
+go 1.18
 
 require (
-	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
-	github.com/coreos/go-oidc v2.1.0+incompatible // indirect
-	github.com/go-ole/go-ole v1.2.4 // indirect
-	github.com/go-sql-driver/mysql v1.4.1
-	github.com/google/uuid v1.1.1 // indirect
-	github.com/hashicorp/go-uuid v1.0.1 // indirect
-	github.com/jcmturner/gofork v1.0.0 // indirect
-	github.com/kr/pretty v0.1.0 // indirect
+	github.com/go-sql-driver/mysql v1.6.0
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
-	github.com/lestrrat-go/strftime v1.0.3 // indirect
-	github.com/mattn/go-sqlite3 v1.11.0
+	github.com/mattn/go-sqlite3 v1.14.13
+	github.com/shirou/gopsutil v3.21.11+incompatible
+	gopkg.in/jcmturner/gokrb5.v7 v7.5.0
+	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
+)
+
+require (
+	github.com/go-ole/go-ole v1.2.6 // indirect
+	github.com/hashicorp/go-uuid v1.0.3 // indirect
+	github.com/jcmturner/gofork v1.0.0 // indirect
+	github.com/jonboulle/clockwork v0.3.0 // indirect
+	github.com/lestrrat-go/strftime v1.0.6 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/pquerna/cachecontrol v0.0.0-20180517163645-1555304b9b35 // indirect
-	github.com/shirou/gopsutil v2.19.9+incompatible
-	github.com/shirou/w32 v0.0.0-20160930032740-bb4de0191aa4 // indirect
-	github.com/sirupsen/logrus v1.4.2
-	github.com/thomasdarimont/go-kc-example v0.0.0-20170529223628-e3951d8faa4c // indirect
-	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
-	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d // indirect
-	golang.org/x/tools v0.0.0-20200915031644-64986481280e // indirect
-	google.golang.org/appengine v1.6.5 // indirect
-	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
+	github.com/stretchr/testify v1.7.4 // indirect
+	github.com/tklauser/go-sysconf v0.3.10 // indirect
+	github.com/tklauser/numcpus v0.4.0 // indirect
+	github.com/yusufpapurcu/wmi v1.2.2 // indirect
+	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e // indirect
+	golang.org/x/sys v0.0.0-20220615213510-4f61da869c0c // indirect
+	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/jcmturner/aescts.v1 v1.0.1 // indirect
 	gopkg.in/jcmturner/dnsutils.v1 v1.0.1 // indirect
 	gopkg.in/jcmturner/goidentity.v3 v3.0.0 // indirect
-	gopkg.in/jcmturner/gokrb5.v7 v7.3.0
 	gopkg.in/jcmturner/rpc.v1 v1.1.0 // indirect
-	gopkg.in/mgo.v2 v2.0.0-20160801194620-b6121c6199b7
-	gopkg.in/square/go-jose.v2 v2.4.1 // indirect
-	gopkg.in/yaml.v2 v2.2.4 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
