@@ -1,5 +1,10 @@
 package main
 
+// schema module
+//
+// Copyright (c) 2022 - Valentin Kuznetsov <vkuznet AT gmail dot com>
+//
+
 import (
 	"encoding/json"
 	"errors"
@@ -8,14 +13,35 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	yaml "gopkg.in/yaml.v2"
 )
 
-// schema module
-//
-// Copyright (c) 2022 - Valentin Kuznetsov <vkuznet AT gmail dot com>
-//
+// SchemaRenewInterval setup interal to update schema cache
+var SchemaRenewInterval time.Duration
+
+// SchemaManager holds current MetaData schema
+type SchemaManager struct {
+	Map    map[string]SchemaRecord
+	Expire time.Time
+}
+
+// Schema returns either cached schema map or load it from provided file
+func (m *SchemaManager) SchemaMap(fname string) (map[string]SchemaRecord, error) {
+	// we'll use existing schema if our window is not expired
+	if m.Map == nil || time.Since(m.Expire) > SchemaRenewInterval {
+		return m.Map, nil
+	}
+	// otherwise load new schema
+	s := Schema{FileName: fname}
+	err := s.Load(fname)
+	if err != nil {
+		return s.Map, err
+	}
+	m.Map = s.Map
+	return m.Map, nil
+}
 
 // SchemaRecord provide schema record structure
 type SchemaRecord struct {
