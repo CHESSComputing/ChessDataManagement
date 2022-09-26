@@ -93,6 +93,7 @@ func Server(configFile string) {
 	}
 	// initialize schema manager
 	_smgr := SchemaManager{}
+	_smgr.Load(Config.SchemaFile)
 	log.Println("Schema", _smgr.String())
 
 	var templates Templates
