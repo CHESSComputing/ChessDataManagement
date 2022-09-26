@@ -23,24 +23,24 @@ var SchemaRenewInterval time.Duration
 
 // SchemaManager holds current MetaData schema
 type SchemaManager struct {
-	Map    map[string]SchemaRecord
+	Schema *Schema
 	Expire time.Time
 }
 
 // Schema returns either cached schema map or load it from provided file
-func (m *SchemaManager) SchemaMap(fname string) (map[string]SchemaRecord, error) {
+func (m *SchemaManager) String() string {
+	return fmt.Sprintf("%s, expire %v", m.Schema, m.Expire)
+}
+
+// Schema returns either cached schema map or load it from provided file
+func (m *SchemaManager) Load(fname string) (*Schema, error) {
 	// we'll use existing schema if our window is not expired
-	if m.Map == nil || time.Since(m.Expire) > SchemaRenewInterval {
-		return m.Map, nil
+	if m.Schema == nil || time.Since(m.Expire) > SchemaRenewInterval {
+		return m.Schema, nil
 	}
 	// otherwise load new schema
-	s := Schema{FileName: fname}
-	err := s.Load(fname)
-	if err != nil {
-		return s.Map, err
-	}
-	m.Map = s.Map
-	return m.Map, nil
+	m.Schema = &Schema{FileName: fname}
+	return m.Schema, nil
 }
 
 // SchemaRecord provide schema record structure
@@ -54,6 +54,11 @@ type SchemaRecord struct {
 type Schema struct {
 	FileName string                  `json:"fileName`
 	Map      map[string]SchemaRecord `json:"map"`
+}
+
+// Load loads given schema file
+func (s *Schema) String() string {
+	return fmt.Sprintf("<schema %s, map %d entries>", s.FileName, len(s.Map))
 }
 
 // Load loads given schema file

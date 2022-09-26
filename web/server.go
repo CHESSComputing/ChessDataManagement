@@ -29,7 +29,6 @@ import (
 // global variables
 var _top, _bottom, _search string
 var _smgr SchemaManager
-var _schema map[string]SchemaRecord
 
 // Time0 represents initial time when we started the server
 var Time0 time.Time
@@ -94,7 +93,7 @@ func Server(configFile string) {
 	}
 	// initialize schema manager
 	_smgr := SchemaManager{}
-	_schema, err = _smgr.SchemaMap(Config.SchemaFile)
+	log.Println("Schema", _smgr.String())
 
 	var templates Templates
 	tmplData := make(map[string]interface{})
