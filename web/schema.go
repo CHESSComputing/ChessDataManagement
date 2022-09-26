@@ -49,6 +49,7 @@ type SchemaRecord struct {
 	Key      string `json:"key"`
 	Type     string `json:"type"`
 	Optional bool   `json:"optional"`
+	Section  string `json:"section"`
 }
 
 // Schema provides structure of schema file
@@ -161,6 +162,22 @@ func (s *Schema) OptionalKeys() ([]string, error) {
 		if m, ok := s.Map[k]; ok {
 			if m.Optional {
 				keys = append(keys, k)
+			}
+		}
+	}
+	return keys, nil
+}
+
+// Sections provide list of schema sections
+func (s *Schema) Sections() ([]string, error) {
+	var keys []string
+	if err := s.Load(); err != nil {
+		return keys, err
+	}
+	for k, _ := range s.Map {
+		if m, ok := s.Map[k]; ok {
+			if m.Section != "" {
+				keys = append(keys, m.Section)
 			}
 		}
 	}
