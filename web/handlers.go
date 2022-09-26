@@ -298,8 +298,22 @@ func formEntry(smap map[string]SchemaRecord, k, s, required string) string {
 	}
 	if r, ok := smap[k]; ok {
 		if r.Section == s {
-			tmplData["Value"] = fmt.Sprintf("%v", r.Value)
-			tmplData["Placeholder"] = fmt.Sprintf("%v", r.Placeholder)
+			if r.Type == "list" {
+				tmplData["List"] = true
+				switch values := r.Value.(type) {
+				case []any:
+					tmplData["Value"] = values
+				default:
+					tmplData["Value"] = []string{}
+				}
+			} else {
+				tmplData["Value"] = fmt.Sprintf("%v", r.Value)
+			}
+			desc := fmt.Sprintf("%s", r.Placeholder)
+			if desc == "" {
+				desc = "Not Available"
+			}
+			tmplData["Placeholder"] = desc
 		}
 	}
 	var templates Templates
