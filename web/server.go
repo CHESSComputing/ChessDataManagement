@@ -28,6 +28,8 @@ import (
 
 // global variables
 var _top, _bottom, _search string
+var _smgr SchemaManager
+var _schema map[string]SchemaRecord
 
 // Time0 represents initial time when we started the server
 var Time0 time.Time
@@ -78,6 +80,9 @@ func Server(configFile string) {
 			log.SetFlags(log.LstdFlags)
 		}
 	}
+	if Config.SchemaFile == "" {
+		log.Fatal("Configuration does not have schema file")
+	}
 
 	log.Println("Configuration:", Config.String())
 
@@ -87,14 +92,17 @@ func Server(configFile string) {
 	if err != nil {
 		log.Printf("FilesDB error: %v\n", err)
 	}
+	// initialize schema manager
+	_smgr := SchemaManager{}
+	_schema, err = _smgr.SchemaMap(Config.SchemaFile)
 
-	var templates ServerTemplates
+	var templates Templates
 	tmplData := make(map[string]interface{})
 	tmplData["Time"] = time.Now()
 	tmplData["Version"] = info()
-	_top = templates.Top(Config.Templates, tmplData)
-	_bottom = templates.Bottom(Config.Templates, tmplData)
-	_search = templates.SearchForm(Config.Templates, tmplData)
+	_top = templates.Tmpl(Config.Templates, "top.tmpl", tmplData)
+	_bottom = templates.Tmpl(Config.Templates, "bottom.tmpl", tmplData)
+	_search = templates.Tmpl(Config.Templates, "searchform.tmpl", tmplData)
 
 	// configure kerberos auth
 	kt, err := keytab.Load(Config.Keytab)
