@@ -101,9 +101,9 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
-	var templates ServerTemplates
+	var templates Templates
 	tmplData := make(map[string]interface{})
-	page := templates.LoginForm(Config.Templates, tmplData)
+	page := templates.Tmpl(Config.Templates, "login.tmpl", tmplData)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(_top + page + _bottom))
 }
@@ -187,10 +187,10 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	query := r.FormValue("query")
 
 	// create search template form
-	var templates ServerTemplates
+	var templates Templates
 	tmplData := make(map[string]interface{})
 	tmplData["Query"] = query
-	page := templates.SearchForm(Config.Templates, tmplData)
+	page := templates.Tmpl(Config.Templates, "searchform.tmpl", tmplData)
 
 	// process the query
 	spec := ParseQuery(query)
@@ -211,7 +211,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 			tmplData["Did"] = rec["did"]
 			tmplData["RecordString"] = rec.ToString()
 			tmplData["Record"] = rec.ToJSON()
-			prec := templates.Record(Config.Templates, tmplData)
+			prec := templates.Tmpl(Config.Templates, "record.tmpl", tmplData)
 			page = fmt.Sprintf("%s<br>%s", page, prec)
 		}
 		if nrec > 5 {
@@ -229,11 +229,11 @@ func DataHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	user, _ := username(r)
-	var templates ServerTemplates
+	var templates Templates
 	tmplData := make(map[string]interface{})
 	tmplData["User"] = user
 	tmplData["Date"] = time.Now().Unix()
-	page := templates.Keys(Config.Templates, tmplData)
+	page := templates.Tmpl(Config.Templates, "keys.tmpl", tmplData)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(_top + page + _bottom))
 }
@@ -244,9 +244,9 @@ func FAQHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
-	var templates ServerTemplates
+	var templates Templates
 	tmplData := make(map[string]interface{})
-	page := templates.FAQ(Config.Templates, tmplData)
+	page := templates.Tmpl(Config.Templates, "faq.tmpl", tmplData)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(_top + page + _bottom))
 }
@@ -288,7 +288,7 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	process, perr := process.NewProcess(int32(os.Getpid()))
 
 	// get unfinished queries
-	var templates ServerTemplates
+	var templates Templates
 	tmplData := make(map[string]interface{})
 	tmplData["NGo"] = runtime.NumGoroutine()
 	//     virt := Memory{Total: m.Total, Free: m.Free, Used: m.Used, UsedPercent: m.UsedPercent}
@@ -312,7 +312,7 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	tmplData["Uptime"] = time.Since(Time0).Seconds()
 	tmplData["GetRequests"] = TotalGetRequests
 	tmplData["PostRequests"] = TotalPostRequests
-	page := templates.Status(Config.Templates, tmplData)
+	page := templates.Tmpl(Config.Templates, "status.tmpl", tmplData)
 	if strings.Contains(accept, "json") || strings.Contains(content, "json") {
 		data, err := json.Marshal(tmplData)
 		if err != nil {
@@ -409,7 +409,7 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	var msg string
 	var class string
-	var templates ServerTemplates
+	var templates Templates
 	tmplData := make(map[string]interface{})
 	if err := r.ParseForm(); err == nil {
 		rec := processForm(r)
@@ -437,7 +437,7 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 			inputs := htmlInputs(rec)
 			tmplData["Inputs"] = inputs
 			tmplData["Id"] = ""
-			page := templates.Update(Config.Templates, tmplData)
+			page := templates.Tmpl(Config.Templates, "update.tmpl", tmplData)
 			w.WriteHeader(http.StatusOK)
 			w.Write([]byte(_top + page + _bottom))
 			return
@@ -445,7 +445,7 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	tmplData["Message"] = msg
 	tmplData["Class"] = class
-	page := templates.Confirm(Config.Templates, tmplData)
+	page := templates.Tmpl(Config.Templates, "confirm.tmpl", tmplData)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(_top + page + _bottom))
 }
@@ -521,11 +521,11 @@ func APIHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	var templates ServerTemplates
+	var templates Templates
 	tmplData := make(map[string]interface{})
 	tmplData["Message"] = msg
 	tmplData["Class"] = class
-	page := templates.Confirm(Config.Templates, tmplData)
+	page := templates.Tmpl(Config.Templates, "confirm.tmpl", tmplData)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(_top + page + _bottom))
 }
@@ -584,7 +584,7 @@ func UpdateHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
-	var templates ServerTemplates
+	var templates Templates
 	tmplData := make(map[string]interface{})
 	record := r.FormValue("record")
 	var rec Record
@@ -600,7 +600,7 @@ func UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	inputs := htmlInputs(rec)
 	tmplData["Inputs"] = inputs
 	tmplData["Id"] = r.FormValue("_id")
-	page := templates.Update(Config.Templates, tmplData)
+	page := templates.Tmpl(Config.Templates, "update.tmpl", tmplData)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(_top + page + _bottom))
 }
@@ -643,11 +643,11 @@ func UpdateRecordHandler(w http.ResponseWriter, r *http.Request) {
 		msg = fmt.Sprintf("record update failed, reason: %v", err)
 		cls = "is-error"
 	}
-	var templates ServerTemplates
+	var templates Templates
 	tmplData := make(map[string]interface{})
 	tmplData["Message"] = strings.ToTitle(msg)
 	tmplData["Class"] = fmt.Sprintf("alert %s is-large is-text-center", cls)
-	page := templates.Confirm(Config.Templates, tmplData)
+	page := templates.Tmpl(Config.Templates, "confirm.tmpl", tmplData)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(_top + page + _bottom))
 }
@@ -680,13 +680,13 @@ func FilesHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(strings.Join(files, "\n")))
 		return
 	}
-	var templates ServerTemplates
+	var templates Templates
 	tmplData := make(map[string]interface{})
 	did, err := strconv.ParseInt(r.FormValue("did"), 10, 64)
 	if err != nil {
 		tmplData["Message"] = fmt.Sprintf("Unable to parse did\nError: %v", err)
 		tmplData["Class"] = "alert is-error is-large is-text-center"
-		page := templates.Confirm(Config.Templates, tmplData)
+		page := templates.Tmpl(Config.Templates, "confirm.tmpl", tmplData)
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(_top + page + _bottom))
 		return
@@ -695,7 +695,7 @@ func FilesHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		tmplData["Message"] = fmt.Sprintf("Unable to query FilesDB\nError: %v", err)
 		tmplData["Class"] = "alert is-error is-large is-text-center"
-		page := templates.Confirm(Config.Templates, tmplData)
+		page := templates.Tmpl(Config.Templates, "confirm.tmpl", tmplData)
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(_top + page + _bottom))
 		return
@@ -703,7 +703,7 @@ func FilesHandler(w http.ResponseWriter, r *http.Request) {
 	tmplData["Id"] = r.FormValue("_id")
 	tmplData["Did"] = did
 	tmplData["Files"] = strings.Join(files, "\n")
-	page := templates.Files(Config.Templates, tmplData)
+	page := templates.Tmpl(Config.Templates, "files.tmpl", tmplData)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(_top + page + _bottom))
 }
