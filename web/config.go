@@ -36,9 +36,10 @@ type Configuration struct {
 	MandatoryAttrs      []string `json:"mandatoryAttributes"`  // list of madatory attributes
 	AdjustableAttrs     []string `json:"adjustableAttributes"` // list of adjustable attributes
 	TestMode            bool     `json:"testMode"`             // test mode to bypass auth
-	LogFile             string   `json:logFile`                // location of service log file
-	SchemaFile          string   `json:schemaFile`             // location of MetaData schema file
+	LogFile             string   `json:"logFile"`              // location of service log file
+	SchemaFile          string   `json:"schemaFile"`           // location of MetaData schema file
 	SchemaRenewInterval int      `json:"schemaRenewInterval"`  // schema renew interval
+	SchemaSections      []string `json:"schemaSections"`       // logical schema section list
 }
 
 // Config variable represents configuration object
