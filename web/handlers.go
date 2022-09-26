@@ -222,6 +222,39 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(_top + page + _bottom))
 }
 
+// helper function to generate input form
+func genForm() (string, error) {
+	var out []string
+	var templates Templates
+	tmplData := make(map[string]interface{})
+	s, err := _smgr.Load(Config.SchemaFile)
+	if err != nil {
+		return strings.Join(out, ""), err
+	}
+	optKeys, err := s.OptionalKeys()
+	if err != nil {
+		return strings.Join(out, ""), err
+	}
+	allKeys, err := s.Keys()
+	if err != nil {
+		return strings.Join(out, ""), err
+	}
+	var rec string
+	for _, k := range allKeys {
+		if InList(k, optKeys) {
+			tmplData["Key"] = k
+			tmplData["Value"] = ""
+			rec = templates.Tmpl(Config.Templates, "mandatory_record.tmpl", tmplData)
+		} else {
+			tmplData["Key"] = k
+			tmplData["Value"] = ""
+			rec = templates.Tmpl(Config.Templates, "optional_record.tmpl", tmplData)
+		}
+		out = append(out, rec)
+	}
+	return strings.Join(out, "\n"), nil
+}
+
 // DataHandler handlers Data requests
 func DataHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
@@ -233,6 +266,13 @@ func DataHandler(w http.ResponseWriter, r *http.Request) {
 	tmplData := make(map[string]interface{})
 	tmplData["User"] = user
 	tmplData["Date"] = time.Now().Unix()
+	form, err := genForm()
+	if err != nil {
+		log.Println("ERROR", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	tmplData["Form"] = template.HTML(form)
 	page := templates.Tmpl(Config.Templates, "keys.tmpl", tmplData)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(_top + page + _bottom))
