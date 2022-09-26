@@ -46,10 +46,12 @@ func (m *SchemaManager) Load(fname string) (*Schema, error) {
 
 // SchemaRecord provide schema record structure
 type SchemaRecord struct {
-	Key      string `json:"key"`
-	Type     string `json:"type"`
-	Optional bool   `json:"optional"`
-	Section  string `json:"section"`
+	Key         string `json:"key"`
+	Type        string `json:"type"`
+	Optional    bool   `json:"optional"`
+	Section     string `json:"section"`
+	Value       any    `json:"value"`
+	Placeholder any    `json:"placeholder"`
 }
 
 // Schema provides structure of schema file
