@@ -10,7 +10,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"strings"
 	"time"
@@ -23,23 +22,25 @@ var SchemaRenewInterval time.Duration
 
 // SchemaManager holds current MetaData schema
 type SchemaManager struct {
-	Schema *Schema
-	Expire time.Time
+	Schema   *Schema
+	LoadTime time.Time
 }
 
 // Schema returns either cached schema map or load it from provided file
 func (m *SchemaManager) String() string {
-	return fmt.Sprintf("%s, expire %v", m.Schema, m.Expire)
+	return fmt.Sprintf("%s, loaded %v", m.Schema, m.LoadTime)
 }
 
 // Schema returns either cached schema map or load it from provided file
 func (m *SchemaManager) Load(fname string) (*Schema, error) {
-	// we'll use existing schema if our window is not expired
-	if m.Schema == nil || time.Since(m.Expire) > SchemaRenewInterval {
-		return m.Schema, nil
+	if m.Schema == nil || time.Since(m.LoadTime) > SchemaRenewInterval {
+		m.Schema = &Schema{FileName: fname}
+		err := m.Schema.Load()
+		if err != nil {
+			return m.Schema, err
+		}
+		m.LoadTime = time.Now()
 	}
-	// otherwise load new schema
-	m.Schema = &Schema{FileName: fname}
 	return m.Schema, nil
 }
 
@@ -62,7 +63,8 @@ func (s *Schema) String() string {
 }
 
 // Load loads given schema file
-func (s *Schema) Load(fname string) error {
+func (s *Schema) Load() error {
+	fname := s.FileName
 	file, err := os.Open(fname)
 	if err != nil {
 		msg := fmt.Sprintf("Unable to open %s, error=%v", fname, err)
@@ -106,7 +108,6 @@ func (s *Schema) Load(fname string) error {
 		msg := fmt.Sprintf("unsupported data format of schema file %s", fname)
 		return errors.New(msg)
 	}
-	log.Println("### records", records)
 	s.FileName = fname
 	smap := make(map[string]SchemaRecord)
 	for _, r := range records {
@@ -118,6 +119,9 @@ func (s *Schema) Load(fname string) error {
 
 // Validate validates given record against schema
 func (s *Schema) Validate(rec Record) error {
+	if err := s.Load(); err != nil {
+		return err
+	}
 	for k, v := range rec {
 		if m, ok := s.Map[k]; ok {
 			// check key name
@@ -136,17 +140,23 @@ func (s *Schema) Validate(rec Record) error {
 }
 
 // Keys provide list of keys of the schema
-func (s *Schema) Keys() []string {
+func (s *Schema) Keys() ([]string, error) {
 	var keys []string
+	if err := s.Load(); err != nil {
+		return keys, err
+	}
 	for k, _ := range s.Map {
 		keys = append(keys, k)
 	}
-	return keys
+	return keys, nil
 }
 
 // OptionalKeys provide list of optional keys of the schema
-func (s *Schema) OptionalKeys() []string {
+func (s *Schema) OptionalKeys() ([]string, error) {
 	var keys []string
+	if err := s.Load(); err != nil {
+		return keys, err
+	}
 	for k, _ := range s.Map {
 		if m, ok := s.Map[k]; ok {
 			if m.Optional {
@@ -154,7 +164,7 @@ func (s *Schema) OptionalKeys() []string {
 			}
 		}
 	}
-	return keys
+	return keys, nil
 }
 
 // helper function to validate schema type of given value with respect to schema
