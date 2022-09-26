@@ -1,4 +1,18 @@
+{{if .List }}
+<fieldset>
+    <legend>{{.Key}}</legend>
+    <label>Description: {{.Placeholder}}</label>
+    <div name="{{.Key}}" class="form-item">
+    <select class="is-50">
+{{range $val := .Value}}
+     <option value="{{$val}}">{{$val}}</option>
+{{end}}
+    </select>
+</div>
+</fieldset>
+{{else}}
 <div class="form-item">
     <label class="{{.Class}}">{{.Key}}</label>
     <input name="{{.Key}}" type="text" class="is-90" value="{{.Value}}" placeholder="{{.Placeholder}}" {{.Required}}>
 </div>
+{{end}}
