@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strings"
 	"time"
 
@@ -51,7 +52,7 @@ type SchemaRecord struct {
 	Optional    bool   `json:"optional"`
 	Section     string `json:"section"`
 	Value       any    `json:"value"`
-	Placeholder any    `json:"placeholder"`
+	Placeholder string `json:"placeholder"`
 }
 
 // Schema provides structure of schema file
@@ -151,6 +152,7 @@ func (s *Schema) Keys() ([]string, error) {
 	for k, _ := range s.Map {
 		keys = append(keys, k)
 	}
+	sort.Sort(StringList(keys))
 	return keys, nil
 }
 
@@ -167,23 +169,37 @@ func (s *Schema) OptionalKeys() ([]string, error) {
 			}
 		}
 	}
+	sort.Sort(StringList(keys))
 	return keys, nil
 }
 
 // Sections provide list of schema sections
 func (s *Schema) Sections() ([]string, error) {
-	var keys []string
+	var sections []string
 	if err := s.Load(); err != nil {
-		return keys, err
+		return sections, err
 	}
 	for k, _ := range s.Map {
 		if m, ok := s.Map[k]; ok {
 			if m.Section != "" {
-				keys = append(keys, m.Section)
+				sections = append(sections, m.Section)
 			}
 		}
 	}
-	return keys, nil
+	if len(Config.SchemaSections) > 0 {
+		// we will return sections according to logical SchemaSection order
+		var out []string
+		out = Config.SchemaSections
+		// add other section to the output
+		sort.Sort(StringList(sections))
+		for _, s := range sections {
+			if !InList(s, out) {
+				out = append(out, s)
+			}
+		}
+		return out, nil
+	}
+	return sections, nil
 }
 
 // helper function to validate schema type of given value with respect to schema
@@ -212,6 +228,14 @@ func validSchemaType(stype string, v interface{}) bool {
 		etype = "float64"
 	case string:
 		etype = "string"
+	case []string:
+		etype = "[]string"
+	case []int:
+		etype = "[]int"
+	case []float64:
+		etype = "[]float64"
+	case []float32:
+		etype = "[]float32"
 	}
 	if stype != etype {
 		return false
