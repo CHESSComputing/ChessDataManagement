@@ -66,9 +66,6 @@ func ParseConfig(configFile string) {
 	if err != nil {
 		log.Fatalf("Unable to parse logfile %s, error %v", configFile, err)
 	}
-	if Config.LogFile == "" {
-		Config.LogFile = "/tmp/ChessDataManagement.log"
-	}
 	sort.Sort(StringList(Config.MandatoryAttrs))
 	sort.Sort(StringList(Config.AdjustableAttrs))
 	if Config.SchemaRenewInterval == 0 {
