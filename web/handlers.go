@@ -225,34 +225,85 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 // helper function to generate input form
 func genForm() (string, error) {
 	var out []string
-	var templates Templates
-	tmplData := make(map[string]interface{})
-	s, err := _smgr.Load(Config.SchemaFile)
+	schema, err := _smgr.Load(Config.SchemaFile)
 	if err != nil {
 		return strings.Join(out, ""), err
 	}
-	optKeys, err := s.OptionalKeys()
+	optKeys, err := schema.OptionalKeys()
 	if err != nil {
 		return strings.Join(out, ""), err
 	}
-	allKeys, err := s.Keys()
+	allKeys, err := schema.Keys()
 	if err != nil {
 		return strings.Join(out, ""), err
 	}
+	sections, err := schema.Sections()
+	if err != nil {
+		return strings.Join(out, ""), err
+	}
+	// loop over all defined sections
 	var rec string
-	for _, k := range allKeys {
-		if InList(k, optKeys) {
-			tmplData["Key"] = k
-			tmplData["Value"] = ""
-			rec = templates.Tmpl(Config.Templates, "mandatory_record.tmpl", tmplData)
-		} else {
-			tmplData["Key"] = k
-			tmplData["Value"] = ""
-			rec = templates.Tmpl(Config.Templates, "optional_record.tmpl", tmplData)
+	for _, s := range sections {
+		out = append(out, fmt.Sprintf("<fieldset id=\"%s\">", s))
+		out = append(out, fmt.Sprintf("<legend>%s</legend>", s))
+		for _, k := range allKeys {
+			if r, ok := schema.Map[k]; ok {
+				if r.Section == s {
+					if InList(k, optKeys) {
+						rec = formEntry(schema.Map, k, s, "required")
+					} else {
+						rec = formEntry(schema.Map, k, s, "")
+					}
+					out = append(out, rec)
+				}
+			}
 		}
-		out = append(out, rec)
+		out = append(out, "</fieldset>")
 	}
+	// loop over all keys which do not have sections
+	var nOut []string
+	for _, k := range allKeys {
+		if r, ok := schema.Map[k]; ok {
+			if r.Section == "" {
+				if InList(k, optKeys) {
+					rec = formEntry(schema.Map, k, "", "required")
+				} else {
+					rec = formEntry(schema.Map, k, "", "")
+				}
+				nOut = append(nOut, rec)
+			}
+		}
+	}
+	if len(nOut) > 0 {
+		out = append(out, fmt.Sprintf("<fieldset id=\"attributes\">"))
+		out = append(out, "<legend>Attriburtes</legend>")
+		for _, rec := range nOut {
+			out = append(out, rec)
+		}
+		out = append(out, "</fieldset>")
+	}
+
 	return strings.Join(out, "\n"), nil
+}
+
+// helper function to create form entry
+func formEntry(smap map[string]SchemaRecord, k, s, required string) string {
+	tmplData := make(map[string]interface{})
+	tmplData["Key"] = k
+	tmplData["Value"] = ""
+	tmplData["Placeholder"] = ""
+	tmplData["Required"] = required
+	if required != "" {
+		tmplData["Class"] = "is-req"
+	}
+	if r, ok := smap[k]; ok {
+		if r.Section == s {
+			tmplData["Value"] = fmt.Sprintf("%v", r.Value)
+			tmplData["Placeholder"] = fmt.Sprintf("%v", r.Placeholder)
+		}
+	}
+	var templates Templates
+	return templates.Tmpl(Config.Templates, "form_entry.tmpl", tmplData)
 }
 
 // DataHandler handlers Data requests
