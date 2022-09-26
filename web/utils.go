@@ -429,7 +429,7 @@ const PLAIN = "\x1b[0m"
 
 // helper function to provide pagination
 func pagination(query string, nres, startIdx, limit int) string {
-	var templates ServerTemplates
+	var templates Templates
 	url := fmt.Sprintf("/search?query=%s", query)
 	tmplData := make(map[string]interface{})
 	if nres > 0 {
@@ -447,7 +447,7 @@ func pagination(query string, nres, startIdx, limit int) string {
 	tmplData["PrevUrl"] = makeURL(url, "prev", startIdx, limit, nres)
 	tmplData["NextUrl"] = makeURL(url, "next", startIdx, limit, nres)
 	tmplData["LastUrl"] = makeURL(url, "last", startIdx, limit, nres)
-	page := templates.Pagination(Config.Templates, tmplData)
+	page := templates.Tmpl(Config.Templates, "pagination.tmpl", tmplData)
 	return fmt.Sprintf("%s<br>", page)
 }
 

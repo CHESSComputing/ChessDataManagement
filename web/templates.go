@@ -54,142 +54,16 @@ func parseTmpl(tdir, tmpl string, data interface{}) string {
 	return buf.String()
 }
 
-// ServerTemplates structure
-type ServerTemplates struct {
-	top, bottom, pagination, files, searchForm, cards, serverError, keys, zero, record, status string
+// Templates structure
+type Templates struct {
+	html string
 }
 
-// Top method for ServerTemplates structure
-func (q ServerTemplates) Top(tdir string, tmplData map[string]interface{}) string {
-	if q.top != "" {
-		return q.top
+// Tmpl method for ServerTemplates structure
+func (q Templates) Tmpl(tdir, tfile string, tmplData map[string]interface{}) string {
+	if q.html != "" {
+		return q.html
 	}
-	q.top = parseTmpl(Config.Templates, "top.tmpl", tmplData)
-	return q.top
-}
-
-// Bottom method for ServerTemplates structure
-func (q ServerTemplates) Bottom(tdir string, tmplData map[string]interface{}) string {
-	if q.bottom != "" {
-		return q.bottom
-	}
-	q.bottom = parseTmpl(Config.Templates, "bottom.tmpl", tmplData)
-	return q.bottom
-}
-
-// LoginForm method for ServerTemplates structure
-func (q ServerTemplates) LoginForm(tdir string, tmplData map[string]interface{}) string {
-	if q.searchForm != "" {
-		return q.searchForm
-	}
-	q.searchForm = parseTmpl(Config.Templates, "login.tmpl", tmplData)
-	return q.searchForm
-}
-
-// LogoutForm method for ServerTemplates structure
-func (q ServerTemplates) LogoutForm(tdir string, tmplData map[string]interface{}) string {
-	if q.searchForm != "" {
-		return q.searchForm
-	}
-	q.searchForm = parseTmpl(Config.Templates, "logout.tmpl", tmplData)
-	return q.searchForm
-}
-
-// SearchForm method for ServerTemplates structure
-func (q ServerTemplates) SearchForm(tdir string, tmplData map[string]interface{}) string {
-	if q.searchForm != "" {
-		return q.searchForm
-	}
-	q.searchForm = parseTmpl(Config.Templates, "searchform.tmpl", tmplData)
-	return q.searchForm
-}
-
-// FAQ method for ServerTemplates structure
-func (q ServerTemplates) FAQ(tdir string, tmplData map[string]interface{}) string {
-	if q.top != "" {
-		return q.top
-	}
-	q.top = parseTmpl(Config.Templates, "faq.tmpl", tmplData)
-	return q.top
-}
-
-// Record method for ServerTemplates structure
-func (q ServerTemplates) Record(tdir string, tmplData map[string]interface{}) string {
-	if q.top != "" {
-		return q.top
-	}
-	q.top = parseTmpl(Config.Templates, "record.tmpl", tmplData)
-	return q.top
-}
-
-// Keys method for ServerTemplates structure
-func (q ServerTemplates) Keys(tdir string, tmplData map[string]interface{}) string {
-	if q.top != "" {
-		return q.top
-	}
-	q.top = parseTmpl(Config.Templates, "keys.tmpl", tmplData)
-	return q.top
-}
-
-// Confirm method for ServerTemplates structure
-func (q ServerTemplates) Confirm(tdir string, tmplData map[string]interface{}) string {
-	if q.top != "" {
-		return q.top
-	}
-	q.top = parseTmpl(Config.Templates, "confirm.tmpl", tmplData)
-	return q.top
-}
-
-// Pagination  method for ServerTemplates structure
-func (q ServerTemplates) Pagination(tdir string, tmplData map[string]interface{}) string {
-	if q.pagination != "" {
-		return q.pagination
-	}
-	q.pagination = parseTmpl(Config.Templates, "pagination.tmpl", tmplData)
-	return q.pagination
-}
-
-// Files  method for ServerTemplates structure
-func (q ServerTemplates) Files(tdir string, tmplData map[string]interface{}) string {
-	if q.files != "" {
-		return q.files
-	}
-	q.files = parseTmpl(Config.Templates, "files.tmpl", tmplData)
-	return q.files
-}
-
-// ServerError method for ServerTemplates structure
-func (q ServerTemplates) ServerError(tdir string, tmplData map[string]interface{}) string {
-	if q.serverError != "" {
-		return q.serverError
-	}
-	q.serverError = parseTmpl(Config.Templates, "error.tmpl", tmplData)
-	return q.serverError
-}
-
-// ServerZeroResults method for ServerTemplates structure
-func (q ServerTemplates) ServerZeroResults(tdir string, tmplData map[string]interface{}) string {
-	if q.zero != "" {
-		return q.zero
-	}
-	q.zero = parseTmpl(Config.Templates, "zero_results.tmpl", tmplData)
-	return q.zero
-}
-
-// Status method for ServerTemplates structure
-func (q ServerTemplates) Status(tdir string, tmplData map[string]interface{}) string {
-	if q.status != "" {
-		return q.status
-	}
-	q.status = parseTmpl(Config.Templates, "status.tmpl", tmplData)
-	return q.status
-}
-
-// Update method for ServerTemplates structure
-func (q ServerTemplates) Update(tdir string, tmplData map[string]interface{}) string {
-	if q.record != "" {
-		return q.record
-	}
-	q.record = parseTmpl(Config.Templates, "update.tmpl", tmplData)
-	return q.record
+	q.html = parseTmpl(Config.Templates, tfile, tmplData)
+	return q.html
 }
