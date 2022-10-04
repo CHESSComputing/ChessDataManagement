@@ -18,6 +18,14 @@ import (
 	"time"
 )
 
+// helper function to extract file name
+func fileName(fname string) string {
+	arr := strings.Split(fname, "/")
+	f := arr[len(arr)-1]
+	arr = strings.Split(f, ".")
+	return arr[0]
+}
+
 // FindFiles find files in given path
 func FindFiles(root string) []string {
 	var files []string
