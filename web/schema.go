@@ -21,28 +21,43 @@ import (
 // SchemaRenewInterval setup interal to update schema cache
 var SchemaRenewInterval time.Duration
 
-// SchemaManager holds current MetaData schema
-type SchemaManager struct {
+// SchemaObject holds current MetaData schema
+type SchemaObject struct {
 	Schema   *Schema
 	LoadTime time.Time
 }
 
+// SchemaManager holds current map of MetaData schema objects
+type SchemaManager struct {
+	Map map[string]*SchemaObject
+}
+
 // Schema returns either cached schema map or load it from provided file
 func (m *SchemaManager) String() string {
-	return fmt.Sprintf("%s, loaded %v", m.Schema, m.LoadTime)
+	var out string
+	for k, v := range m.Map {
+		out += fmt.Sprintf("\n%s %s, loaded %v\n", k, v.Schema, v.LoadTime)
+	}
+	return out
 }
 
 // Schema returns either cached schema map or load it from provided file
 func (m *SchemaManager) Load(fname string) (*Schema, error) {
-	if m.Schema == nil || time.Since(m.LoadTime) > SchemaRenewInterval {
-		m.Schema = &Schema{FileName: fname}
-		err := m.Schema.Load()
-		if err != nil {
-			return m.Schema, err
+	if sobj, ok := m.Map[fname]; ok {
+		if sobj.Schema != nil && time.Since(sobj.LoadTime) < SchemaRenewInterval {
+			return sobj.Schema, nil
 		}
-		m.LoadTime = time.Now()
 	}
-	return m.Schema, nil
+	schema := &Schema{FileName: fname}
+	err := schema.Load()
+	if err != nil {
+		return schema, err
+	}
+	if m.Map == nil {
+		m.Map = make(map[string]*SchemaObject)
+	}
+	m.Map[fname] = &SchemaObject{Schema: schema, LoadTime: time.Now()}
+	return schema, nil
 }
 
 // SchemaRecord provide schema record structure
@@ -53,6 +68,7 @@ type SchemaRecord struct {
 	Section     string `json:"section"`
 	Value       any    `json:"value"`
 	Placeholder string `json:"placeholder"`
+	Description string `json:"description"`
 }
 
 // Schema provides structure of schema file
@@ -104,6 +120,10 @@ func (s *Schema) Load() error {
 					smap.Type = v.(string)
 				} else if k == "optional" {
 					smap.Optional = v.(bool)
+				} else if k == "description" {
+					smap.Description = v.(string)
+				} else if k == "placeholder" {
+					smap.Placeholder = v.(string)
 				}
 			}
 			records = append(records, smap)
@@ -126,7 +146,22 @@ func (s *Schema) Validate(rec Record) error {
 	if err := s.Load(); err != nil {
 		return err
 	}
+	keys, err := s.Keys()
+	if err != nil {
+		return err
+	}
+	var mkeys []string
 	for k, v := range rec {
+		// skip user key
+		if k == "user" {
+			continue
+		}
+		// check if our record key belong to the schema keys
+		if !InList(k, keys) {
+			msg := fmt.Sprintf("record key '%s' is not known", k)
+			return errors.New(msg)
+		}
+
 		if m, ok := s.Map[k]; ok {
 			// check key name
 			if m.Key != k {
@@ -138,7 +173,22 @@ func (s *Schema) Validate(rec Record) error {
 				msg := fmt.Sprintf("invalid data type for key=%s, value=%v, type=%T, expect=%s", k, v, v, m.Type)
 				return errors.New(msg)
 			}
+			// collect mandatory keys
+			if !m.Optional {
+				mkeys = append(mkeys, k)
+			}
 		}
+	}
+
+	// check that we collected all mandatory keys
+	smkeys, err := s.MandatoryKeys()
+	if err != nil {
+		return err
+	}
+	if len(mkeys) != len(smkeys) {
+		sort.Sort(StringList(mkeys))
+		msg := fmt.Sprintf("Unable to collect all mandatory keys %v, found %v", smkeys, mkeys)
+		return errors.New(msg)
 	}
 	return nil
 }
@@ -165,6 +215,23 @@ func (s *Schema) OptionalKeys() ([]string, error) {
 	for k, _ := range s.Map {
 		if m, ok := s.Map[k]; ok {
 			if m.Optional {
+				keys = append(keys, k)
+			}
+		}
+	}
+	sort.Sort(StringList(keys))
+	return keys, nil
+}
+
+// MandatoryKeys provide list of madatory keys of the schema
+func (s *Schema) MandatoryKeys() ([]string, error) {
+	var keys []string
+	if err := s.Load(); err != nil {
+		return keys, err
+	}
+	for k, _ := range s.Map {
+		if m, ok := s.Map[k]; ok {
+			if !m.Optional {
 				keys = append(keys, k)
 			}
 		}
@@ -230,6 +297,8 @@ func validSchemaType(stype string, v interface{}) bool {
 		etype = "string"
 	case []string:
 		etype = "[]string"
+	case []any:
+		etype = "list"
 	case []int:
 		etype = "[]int"
 	case []float64:
