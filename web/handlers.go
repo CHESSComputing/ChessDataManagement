@@ -300,6 +300,7 @@ func formEntry(smap map[string]SchemaRecord, k, s, required string) string {
 	if required != "" {
 		tmplData["Class"] = "is-req"
 	}
+	tmplData["Type"] = "text"
 	if r, ok := smap[k]; ok {
 		if r.Section == s {
 			if r.Type == "list" {
@@ -310,6 +311,8 @@ func formEntry(smap map[string]SchemaRecord, k, s, required string) string {
 				default:
 					tmplData["Value"] = []string{}
 				}
+			} else if r.Type == "bool" || r.Type == "boolean" {
+				tmplData["Type"] = "checkbox"
 			} else {
 				if r.Value != nil {
 					tmplData["Value"] = fmt.Sprintf("%v", r.Value)

@@ -13,6 +13,10 @@
 {{else}}
 <div class="form-item">
     <label class="{{.Class}}">{{.Key}}</label>
+{{if eq .Type "checkbox" }}
+    <input type="checkbox" name={{.Key}} value={{.Value}}>
+{{else}}
     <input name="{{.Key}}" type="text" class="is-90" value="{{.Value}}" placeholder="{{.Placeholder}}" {{.Required}}>
+{{end}}
 </div>
 {{end}}
