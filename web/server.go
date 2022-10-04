@@ -28,6 +28,7 @@ import (
 
 // global variables
 var _top, _bottom, _search string
+var _beamlines []string
 var _smgr SchemaManager
 
 // Time0 represents initial time when we started the server
@@ -79,8 +80,8 @@ func Server(configFile string) {
 			log.SetFlags(log.LstdFlags)
 		}
 	}
-	if Config.SchemaFile == "" {
-		log.Fatal("Configuration does not have schema file")
+	if len(Config.SchemaFiles) == 0 {
+		log.Fatal("Configuration does not have schema files")
 	}
 
 	log.Println("Configuration:", Config.String())
@@ -93,7 +94,10 @@ func Server(configFile string) {
 	}
 	// initialize schema manager
 	_smgr := SchemaManager{}
-	_smgr.Load(Config.SchemaFile)
+	for _, fname := range Config.SchemaFiles {
+		_smgr.Load(fname)
+		_beamlines = append(_beamlines, fileName(fname))
+	}
 	log.Println("Schema", _smgr.String())
 
 	var templates Templates
