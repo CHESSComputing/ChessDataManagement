@@ -223,9 +223,12 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // helper function to generate input form
-func genForm() (string, error) {
+func genForm(fname string) (string, error) {
 	var out []string
-	schema, err := _smgr.Load(Config.SchemaFile)
+	val := fmt.Sprintf("<h3>Web form submission</h3><br/>")
+	out = append(out, val)
+	val = fmt.Sprintf("<input name=\"beamline\" type=\"hidden\" value=\"\"/>%s", fileName(fname))
+	schema, err := _smgr.Load(fname)
 	if err != nil {
 		return strings.Join(out, ""), err
 	}
@@ -292,6 +295,7 @@ func formEntry(smap map[string]SchemaRecord, k, s, required string) string {
 	tmplData["Key"] = k
 	tmplData["Value"] = ""
 	tmplData["Placeholder"] = ""
+	tmplData["Description"] = ""
 	tmplData["Required"] = required
 	if required != "" {
 		tmplData["Class"] = "is-req"
@@ -307,13 +311,16 @@ func formEntry(smap map[string]SchemaRecord, k, s, required string) string {
 					tmplData["Value"] = []string{}
 				}
 			} else {
-				tmplData["Value"] = fmt.Sprintf("%v", r.Value)
+				if r.Value != nil {
+					tmplData["Value"] = fmt.Sprintf("%v", r.Value)
+				}
 			}
-			desc := fmt.Sprintf("%s", r.Placeholder)
+			desc := fmt.Sprintf("%s", r.Description)
 			if desc == "" {
 				desc = "Not Available"
 			}
-			tmplData["Placeholder"] = desc
+			tmplData["Description"] = desc
+			tmplData["Placeholder"] = r.Placeholder
 		}
 	}
 	var templates Templates
@@ -331,13 +338,23 @@ func DataHandler(w http.ResponseWriter, r *http.Request) {
 	tmplData := make(map[string]interface{})
 	tmplData["User"] = user
 	tmplData["Date"] = time.Now().Unix()
-	form, err := genForm()
-	if err != nil {
-		log.Println("ERROR", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+	tmplData["Beamlines"] = _beamlines
+	var forms []string
+	for idx, fname := range Config.SchemaFiles {
+		cls := "hide"
+		if idx == 0 {
+			cls = ""
+		}
+		form, err := genForm(fname)
+		if err != nil {
+			log.Println("ERROR", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		formEntry := fmt.Sprintf("<div id=\"%s\" class=\"%s\">%s</div>", fileName(fname), cls, form)
+		forms = append(forms, formEntry)
 	}
-	tmplData["Form"] = template.HTML(form)
+	tmplData["Form"] = template.HTML(strings.Join(forms, "\n"))
 	page := templates.Tmpl(Config.Templates, "keys.tmpl", tmplData)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(_top + page + _bottom))
@@ -561,34 +578,41 @@ func APIHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
-	user, err := username(r)
-	if err != nil {
-		creds, err := getUserCredentials(r)
+
+	var user string
+	var err error
+	if Config.TestMode {
+		user = "test"
+	} else {
+		user, err = username(r)
 		if err != nil {
-			msg := "unable to get user credentials"
-			handleError(w, r, msg, err)
+			creds, err := getUserCredentials(r)
+			if err != nil {
+				msg := "unable to get user credentials"
+				handleError(w, r, msg, err)
+				return
+			}
+			user = creds.UserName()
+			config := r.FormValue("config")
+			var data = Record{}
+			data["user"] = user
+			err = json.Unmarshal([]byte(config), &data)
+			if err != nil {
+				msg := "unable to unmarshal configuration data"
+				handleError(w, r, msg, err)
+				return
+			}
+			err = insertData(data)
+			if err != nil {
+				msg := "unable to insert data"
+				handleError(w, r, msg, err)
+				return
+			}
+			msg := fmt.Sprintf("Successfully inserted:\n%v", data.ToString())
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte(msg))
 			return
 		}
-		user = creds.UserName()
-		config := r.FormValue("config")
-		var data = Record{}
-		data["user"] = user
-		err = json.Unmarshal([]byte(config), &data)
-		if err != nil {
-			msg := "unable to unmarshal configuration data"
-			handleError(w, r, msg, err)
-			return
-		}
-		err = insertData(data)
-		if err != nil {
-			msg := "unable to insert data"
-			handleError(w, r, msg, err)
-			return
-		}
-		msg := fmt.Sprintf("Successfully inserted:\n%v", data.ToString())
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(msg))
-		return
 	}
 
 	// process web form
