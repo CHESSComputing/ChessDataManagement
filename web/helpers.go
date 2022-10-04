@@ -119,6 +119,28 @@ func getUserCredentials(r *http.Request) (*credentials.Credentials, error) {
 	return creds, nil
 }
 
+// helper function to validate input data record against schema
+func validateRecordSchema(rec Record) error {
+	var errs []string
+	for _, smgr := range _smgr.Map {
+		schema := smgr.Schema
+		err := schema.Validate(rec)
+		if err != nil {
+			e := fmt.Sprintf("%s, error=%v", schema.String(), err)
+			errs = append(errs, e)
+		} else {
+			log.Printf("Record %+v pass schema %s", rec, schema.String())
+			return nil
+		}
+	}
+	if len(errs) == len(_smgr.Map) {
+		// we checked all schemas and all of them returned the error
+		msg := fmt.Sprintf("Unable to find schema for this records\n%s", strings.Join(errs, "\n"))
+		return errors.New(msg)
+	}
+	return nil
+}
+
 // helper function to validate input data record
 func validateData(rec Record) error {
 	keys := MapKeys(rec)
@@ -180,16 +202,38 @@ func preprocess(rec Record) Record {
 
 // helper function to insert data into backend DB
 func insertData(rec Record) error {
-	if err := validateData(rec); err != nil {
+	// check if data satisfies to one of the schema
+	if err := validateRecordSchema(rec); err != nil {
 		return err
 	}
+	// validate data according to configuration attributes
+	// TODO: I will need to disable it once we enable schema
+	//     if err := validateData(rec); err != nil {
+	//         return err
+	//     }
 	if _, ok := rec["Date"]; !ok {
 		rec["Date"] = time.Now().Unix()
 	}
 	// main attributes to work with
-	path := rec["RawDataDirectory"].(string)
-	experiment := rec["AbbreviatedName"].(string)
-	processing := rec["Processing"].(string)
+	// TODO: I need to decide if CHESS need experiment, processing, tier
+	// and then a dataset
+	// if not, then I will need to modify InsertFiles API to not use them
+	var path, experiment, processing string
+	if v, ok := rec["RawDataDirectory"]; ok {
+		path = v.(string)
+	} else {
+		path = "test"
+	}
+	if v, ok := rec["AbbreviatedName"]; ok {
+		experiment = v.(string)
+	} else {
+		experiment = "CHESS"
+	}
+	if v, ok := rec["Processing"]; ok {
+		processing = v.(string)
+	} else {
+		processing = "processing"
+	}
 	tier := "raw"
 	dataset := fmt.Sprintf("/%s/%s/%s", experiment, processing, tier)
 	rec["dataset"] = dataset
