@@ -37,7 +37,7 @@ type Configuration struct {
 	AdjustableAttrs     []string `json:"adjustableAttributes"` // list of adjustable attributes
 	TestMode            bool     `json:"testMode"`             // test mode to bypass auth
 	LogFile             string   `json:"logFile"`              // location of service log file
-	SchemaFile          string   `json:"schemaFile"`           // location of MetaData schema file
+	SchemaFiles         []string `json:"schemaFiles"`          // schema files
 	SchemaRenewInterval int      `json:"schemaRenewInterval"`  // schema renew interval
 	SchemaSections      []string `json:"schemaSections"`       // logical schema section list
 }
