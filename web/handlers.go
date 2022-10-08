@@ -247,8 +247,18 @@ func genForm(fname string) (string, error) {
 	// loop over all defined sections
 	var rec string
 	for _, s := range sections {
-		out = append(out, fmt.Sprintf("<fieldset id=\"%s\">", s))
-		out = append(out, fmt.Sprintf("<legend>%s</legend>", s))
+		showSection := false
+		for _, k := range allKeys {
+			if r, ok := schema.Map[k]; ok {
+				if r.Section == s {
+					showSection = true
+				}
+			}
+		}
+		if showSection {
+			out = append(out, fmt.Sprintf("<fieldset id=\"%s\">", s))
+			out = append(out, fmt.Sprintf("<legend>%s</legend>", s))
+		}
 		for _, k := range allKeys {
 			if r, ok := schema.Map[k]; ok {
 				if r.Section == s {
@@ -261,7 +271,9 @@ func genForm(fname string) (string, error) {
 				}
 			}
 		}
-		out = append(out, "</fieldset>")
+		if showSection {
+			out = append(out, "</fieldset>")
+		}
 	}
 	// loop over all keys which do not have sections
 	var nOut []string
@@ -301,6 +313,7 @@ func formEntry(smap map[string]SchemaRecord, k, s, required string) string {
 		tmplData["Class"] = "is-req"
 	}
 	tmplData["Type"] = "text"
+	tmplData["Multiple"] = ""
 	if r, ok := smap[k]; ok {
 		if r.Section == s {
 			if r.Type == "list" {
@@ -317,6 +330,9 @@ func formEntry(smap map[string]SchemaRecord, k, s, required string) string {
 				if r.Value != nil {
 					tmplData["Value"] = fmt.Sprintf("%v", r.Value)
 				}
+			}
+			if r.Multiple {
+				tmplData["Multiple"] = "multiple"
 			}
 			desc := fmt.Sprintf("%s", r.Description)
 			if desc == "" {
@@ -546,19 +562,6 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 			msg = fmt.Sprintf("Web processing error: %v", err)
 			class = "alert is-error"
 			// redirect users to update their record
-			rKeys := MapKeys(rec)
-			for _, k := range Config.MandatoryAttrs {
-				k = strings.ToLower(k)
-				if !InList(k, rKeys) {
-					rec[k] = "ERROR fill out this value"
-				}
-			}
-			for _, k := range Config.AdjustableAttrs {
-				k = strings.ToLower(k)
-				if !InList(k, rKeys) {
-					rec[k] = "ERROR fill out this value"
-				}
-			}
 			inputs := htmlInputs(rec)
 			tmplData["Inputs"] = inputs
 			tmplData["Id"] = ""
@@ -664,10 +667,9 @@ func APIHandler(w http.ResponseWriter, r *http.Request) {
 
 func htmlInputs(rec Record) []template.HTML {
 	var inputs []template.HTML
+	// use attrs to adjust html form
+	// it was user for adjustable attributes
 	var attrs []string
-	for _, a := range Config.AdjustableAttrs {
-		attrs = append(attrs, strings.ToLower(a))
-	}
 	for _, k := range MapKeys(rec) {
 		var v string
 		switch vvv := rec[k].(type) {
