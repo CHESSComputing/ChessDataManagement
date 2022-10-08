@@ -15,28 +15,29 @@ import (
 
 // Configuration stores server configuration parameters
 type Configuration struct {
-	Port                int      `json:"port"`                // server port number
-	URI                 string   `json:"uri"`                 // server mongodb URI
-	DBName              string   `json:"dbname"`              // mongo db name
-	DBColl              string   `json:"dbcoll"`              // mongo db name
-	FilesDBUri          string   `json:"filesdburi"`          // server FilesDB URI
-	Templates           string   `json:"templates"`           // location of server templates
-	Jscripts            string   `json:"jscripts"`            // location of server JavaScript files
-	Images              string   `json:"images"`              // location of server images
-	Styles              string   `json:"styles"`              // location of server CSS styles
-	LogFormatter        string   `json:"logFormatter"`        // LogFormatter type
-	Verbose             int      `json:"verbose"`             // verbosity level
-	Realm               string   `json:"realm"`               // kerberos realm
-	Keytab              string   `json:"keytab"`              // kerberos keytab
-	Krb5Conf            string   `json:"krb5Conf"`            // kerberos krb5.conf
-	ServerKey           string   `json:"ckey"`                // tls.key file
-	ServerCrt           string   `json:"cert"`                // tls.cert file
-	RootCA              string   `json:"rootCA"`              // RootCA file
-	TestMode            bool     `json:"testMode"`            // test mode to bypass auth
-	LogFile             string   `json:"logFile"`             // location of service log file
-	SchemaFiles         []string `json:"schemaFiles"`         // schema files
-	SchemaRenewInterval int      `json:"schemaRenewInterval"` // schema renew interval
-	SchemaSections      []string `json:"schemaSections"`      // logical schema section list
+	Port                int                 `json:"port"`                // server port number
+	URI                 string              `json:"uri"`                 // server mongodb URI
+	DBName              string              `json:"dbname"`              // mongo db name
+	DBColl              string              `json:"dbcoll"`              // mongo db name
+	FilesDBUri          string              `json:"filesdburi"`          // server FilesDB URI
+	Templates           string              `json:"templates"`           // location of server templates
+	Jscripts            string              `json:"jscripts"`            // location of server JavaScript files
+	Images              string              `json:"images"`              // location of server images
+	Styles              string              `json:"styles"`              // location of server CSS styles
+	LogFormatter        string              `json:"logFormatter"`        // LogFormatter type
+	Verbose             int                 `json:"verbose"`             // verbosity level
+	Realm               string              `json:"realm"`               // kerberos realm
+	Keytab              string              `json:"keytab"`              // kerberos keytab
+	Krb5Conf            string              `json:"krb5Conf"`            // kerberos krb5.conf
+	ServerKey           string              `json:"ckey"`                // tls.key file
+	ServerCrt           string              `json:"cert"`                // tls.cert file
+	RootCA              string              `json:"rootCA"`              // RootCA file
+	TestMode            bool                `json:"testMode"`            // test mode to bypass auth
+	LogFile             string              `json:"logFile"`             // location of service log file
+	SchemaFiles         []string            `json:"schemaFiles"`         // schema files
+	SchemaRenewInterval int                 `json:"schemaRenewInterval"` // schema renew interval
+	SchemaSections      []string            `json:"schemaSections"`      // logical schema section list
+	WebSectionKeys      map[string][]string `json:"webSectionKeys"`      // section order dict
 }
 
 // Config variable represents configuration object
