@@ -65,6 +65,7 @@ type SchemaRecord struct {
 	Key         string `json:"key"`
 	Type        string `json:"type"`
 	Optional    bool   `json:"optional"`
+	Multiple    bool   `json:"multiple"`
 	Section     string `json:"section"`
 	Value       any    `json:"value"`
 	Placeholder string `json:"placeholder"`

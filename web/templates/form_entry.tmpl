@@ -3,7 +3,7 @@
     <legend>{{.Key}}</legend>
     <label>Description: {{.Description}}</label>
     <div name="{{.Key}}" class="form-item">
-    <select class="is-50">
+        <select class="is-50" {{.Multiple}}>
 {{range $val := .Value}}
      <option value="{{$val}}">{{$val}}</option>
 {{end}}
