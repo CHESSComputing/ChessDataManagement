@@ -240,36 +240,29 @@ func genForm(fname string) (string, error) {
 	if err != nil {
 		return strings.Join(out, ""), err
 	}
-	sections, err := schema.Sections()
+	sectionKeys, err := schema.SectionKeys()
 	if err != nil {
 		return strings.Join(out, ""), err
 	}
+
 	// loop over all defined sections
 	var rec string
-	for _, s := range sections {
+	for s, skeys := range sectionKeys {
 		showSection := false
-		for _, k := range allKeys {
-			if r, ok := schema.Map[k]; ok {
-				if r.Section == s {
-					showSection = true
-				}
-			}
+		if len(skeys) != 0 {
+			showSection = true
 		}
 		if showSection {
 			out = append(out, fmt.Sprintf("<fieldset id=\"%s\">", s))
 			out = append(out, fmt.Sprintf("<legend>%s</legend>", s))
 		}
-		for _, k := range allKeys {
-			if r, ok := schema.Map[k]; ok {
-				if r.Section == s {
-					if InList(k, optKeys) {
-						rec = formEntry(schema.Map, k, s, "required")
-					} else {
-						rec = formEntry(schema.Map, k, s, "")
-					}
-					out = append(out, rec)
-				}
+		for _, k := range skeys {
+			if InList(k, optKeys) {
+				rec = formEntry(schema.Map, k, s, "required")
+			} else {
+				rec = formEntry(schema.Map, k, s, "")
 			}
+			out = append(out, rec)
 		}
 		if showSection {
 			out = append(out, "</fieldset>")
@@ -297,7 +290,6 @@ func genForm(fname string) (string, error) {
 		}
 		out = append(out, "</fieldset>")
 	}
-
 	return strings.Join(out, "\n"), nil
 }
 
