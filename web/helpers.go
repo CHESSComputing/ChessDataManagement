@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"sort"
 	"strings"
 	"time"
 
@@ -120,7 +119,7 @@ func getUserCredentials(r *http.Request) (*credentials.Credentials, error) {
 }
 
 // helper function to validate input data record against schema
-func validateRecordSchema(rec Record) error {
+func validateData(rec Record) error {
 	var errs []string
 	for _, smgr := range _smgr.Map {
 		schema := smgr.Schema
@@ -136,38 +135,6 @@ func validateRecordSchema(rec Record) error {
 	if len(errs) == len(_smgr.Map) {
 		// we checked all schemas and all of them returned the error
 		msg := fmt.Sprintf("Unable to find schema for this records\n%s", strings.Join(errs, "\n"))
-		return errors.New(msg)
-	}
-	return nil
-}
-
-// helper function to validate input data record
-func validateData(rec Record) error {
-	keys := MapKeys(rec)
-	var mKeys, aKeys []string
-	for k := range rec {
-		if InList(k, Config.MandatoryAttrs) {
-			mKeys = append(mKeys, k)
-		}
-		if InList(k, Config.AdjustableAttrs) {
-			aKeys = append(aKeys, k)
-		}
-	}
-	sort.Sort(StringList(keys))
-	sort.Sort(StringList(mKeys))
-	sort.Sort(StringList(aKeys))
-	if len(mKeys) != len(Config.MandatoryAttrs) {
-		msg := fmt.Sprintf("record does not have all mandatory attributes")
-		msg = fmt.Sprintf("%s\nExisting records keys :\n%v", msg, keys)
-		msg = fmt.Sprintf("%s\nPassed mandatory attrs:\n%v", msg, mKeys)
-		msg = fmt.Sprintf("%s\nConfig mandatory attrs:\n%v", msg, Config.MandatoryAttrs)
-		return errors.New(msg)
-	}
-	if len(aKeys) != len(Config.AdjustableAttrs) {
-		msg := fmt.Sprintf("record does not have all adjustable attributes")
-		msg = fmt.Sprintf("%s\nExisting records keys  :\n%v", msg, keys)
-		msg = fmt.Sprintf("%s\nPassed adjustable attrs:\n%v", msg, aKeys)
-		msg = fmt.Sprintf("%s\nConfig adjustable attrs:\n%v", msg, Config.AdjustableAttrs)
 		return errors.New(msg)
 	}
 	return nil
@@ -203,14 +170,9 @@ func preprocess(rec Record) Record {
 // helper function to insert data into backend DB
 func insertData(rec Record) error {
 	// check if data satisfies to one of the schema
-	if err := validateRecordSchema(rec); err != nil {
+	if err := validateData(rec); err != nil {
 		return err
 	}
-	// validate data according to configuration attributes
-	// TODO: I will need to disable it once we enable schema
-	//     if err := validateData(rec); err != nil {
-	//         return err
-	//     }
 	if _, ok := rec["Date"]; !ok {
 		rec["Date"] = time.Now().Unix()
 	}
