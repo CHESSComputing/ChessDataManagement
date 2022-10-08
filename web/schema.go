@@ -194,7 +194,7 @@ func (s *Schema) Validate(rec Record) error {
 	return nil
 }
 
-// Keys provide list of keys of the schema
+// Keys provides list of keys of the schema
 func (s *Schema) Keys() ([]string, error) {
 	var keys []string
 	if err := s.Load(); err != nil {
@@ -207,7 +207,7 @@ func (s *Schema) Keys() ([]string, error) {
 	return keys, nil
 }
 
-// OptionalKeys provide list of optional keys of the schema
+// OptionalKeys provides list of optional keys of the schema
 func (s *Schema) OptionalKeys() ([]string, error) {
 	var keys []string
 	if err := s.Load(); err != nil {
@@ -224,7 +224,7 @@ func (s *Schema) OptionalKeys() ([]string, error) {
 	return keys, nil
 }
 
-// MandatoryKeys provide list of madatory keys of the schema
+// MandatoryKeys provides list of madatory keys of the schema
 func (s *Schema) MandatoryKeys() ([]string, error) {
 	var keys []string
 	if err := s.Load(); err != nil {
@@ -241,7 +241,7 @@ func (s *Schema) MandatoryKeys() ([]string, error) {
 	return keys, nil
 }
 
-// Sections provide list of schema sections
+// Sections provides list of schema sections
 func (s *Schema) Sections() ([]string, error) {
 	var sections []string
 	if err := s.Load(); err != nil {
@@ -255,7 +255,7 @@ func (s *Schema) Sections() ([]string, error) {
 		}
 	}
 	if len(Config.SchemaSections) > 0 {
-		// we will return sections according to logical SchemaSection order
+		// we will return sections according to order in SchemaSections
 		var out []string
 		out = Config.SchemaSections
 		// add other section to the output
@@ -268,6 +268,41 @@ func (s *Schema) Sections() ([]string, error) {
 		return out, nil
 	}
 	return sections, nil
+}
+
+// SectionKeys provides map of section keys
+func (s *Schema) SectionKeys() (map[string][]string, error) {
+	smap := make(map[string][]string)
+	sections, err := s.Sections()
+	if err != nil {
+		return smap, err
+	}
+	allKeys, err := s.Keys()
+	if err != nil {
+		return smap, err
+	}
+	// populate section map with keys defined in webSectionKeys
+	if Config.WebSectionKeys != nil {
+		smap = Config.WebSectionKeys
+	}
+	// loop over all sections and add section keys to the map
+	for _, sect := range sections {
+		for _, k := range allKeys {
+			if r, ok := s.Map[k]; ok {
+				if r.Section == sect {
+					if skeys, ok := smap[sect]; ok {
+						if !InList(k, skeys) {
+							skeys = append(skeys, k)
+							smap[sect] = skeys
+						}
+					} else {
+						smap[sect] = []string{k}
+					}
+				}
+			}
+		}
+	}
+	return smap, nil
 }
 
 // helper function to validate schema type of given value with respect to schema
