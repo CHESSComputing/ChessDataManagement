@@ -18,7 +18,7 @@ func TestSchemaYaml(t *testing.T) {
   type: string
 - key: BeamEnergy
   optional: false
-  type: string
+  type: int
 `
 	tmpFile.Write([]byte(yamlData))
 	tmpFile.Close()
@@ -26,19 +26,26 @@ func TestSchemaYaml(t *testing.T) {
 
 	// load json data
 	fname := tmpFile.Name()
-	s := Schema{}
-	err = s.Load(fname)
+	s := &Schema{FileName: fname}
+	err = s.Load()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	keys := s.Keys()
+	keys, err := s.Keys()
+	if err != nil {
+		t.Fatal(err)
+	}
 	fmt.Println("Schema keys", keys)
-	okeys := s.OptionalKeys()
+	okeys, err := s.OptionalKeys()
+	if err != nil {
+		t.Fatal(err)
+	}
 	fmt.Println("Schema optional keys", okeys)
 
 	rec := make(Record)
-	rec["pi"] = "person"
+	rec["Pi"] = "person"
+	rec["BeamEnergy"] = 123
 	err = s.Validate(rec)
 	if err != nil {
 		t.Fatal(err)
@@ -53,7 +60,7 @@ func TestSchemaJson(t *testing.T) {
 	}
 	jsonData := `[
     {"key": "Pi", "type": "string", "optional": true},
-    {"key": "BeamEnergy", "type": "string", "optional": false}
+    {"key": "BeamEnergy", "type": "int", "optional": false}
 ]`
 	tmpFile.Write([]byte(jsonData))
 	tmpFile.Close()
@@ -61,19 +68,26 @@ func TestSchemaJson(t *testing.T) {
 
 	// load json data
 	fname := tmpFile.Name()
-	s := Schema{}
-	err = s.Load(fname)
+	s := &Schema{FileName: fname}
+	err = s.Load()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	keys := s.Keys()
+	keys, err := s.Keys()
+	if err != nil {
+		t.Fatal(err)
+	}
 	fmt.Println("Schema keys", keys)
-	okeys := s.OptionalKeys()
+	okeys, err := s.OptionalKeys()
+	if err != nil {
+		t.Fatal(err)
+	}
 	fmt.Println("Schema optional keys", okeys)
 
 	rec := make(Record)
-	rec["pi"] = "person"
+	rec["Pi"] = "person"
+	rec["BeamEnergy"] = 123
 	err = s.Validate(rec)
 	if err != nil {
 		t.Fatal(err)
