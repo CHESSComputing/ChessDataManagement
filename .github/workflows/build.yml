@@ -1,0 +1,74 @@
+name: Build
+
+on:
+  push:
+    tags:
+      - '*.*.*'
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ^1.19
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+
+    - name: Build
+      run: |
+        cd web
+        echo "Darwin build AMD64"
+        make build_darwin_amd64
+
+        echo "Darwin build ARM64"
+        make build_darwin_arm64
+
+        echo "Linux build AMD64"
+        make build_amd64
+
+        echo "Linux build Power8"
+        make build_power8
+
+        echo "Linux build ARM64"
+        make build_arm64
+
+        echo "Windows build AMD64"
+        make build_windows
+
+        echo "Tar all builds"
+        tar cfz web.tar.gz web_amd64 web_darwin_amd64 web_darwin_arm64 web_power8 web_arm64 web.exe
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+
+    - name: Upload binaries
+      id: upload-web
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./web.tar.gz
+        asset_name: web.tar.gz
+        asset_content_type: application/octet-stream
+
+    - name: Get the Ref
+      id: get-ref
+      uses: ankitvgupta/ref-to-tag-action@master
+      with:
+        ref: ${{ github.ref }}
+        head_ref: ${{ github.head_ref }}
