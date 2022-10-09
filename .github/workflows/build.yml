@@ -42,7 +42,7 @@ jobs:
         make build_windows
 
         echo "Tar all builds"
-        tar cfz web.tar.gz web_amd64 web_darwin_amd64 web_darwin_arm64 web_power8 web_arm64 web.exe
+        tar cfz ../web.tar.gz web_amd64 web_darwin_amd64 web_darwin_arm64 web_power8 web_arm64 web.exe
 
     - name: Create Release
       id: create_release
