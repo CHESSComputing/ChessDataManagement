@@ -11,18 +11,24 @@ build:
 	go clean; rm -rf pkg; go build -o web ${flags}
 	sed -i -e "s,$(TAG),{{VERSION}},g" main.go
 
-build_all: build_osx build_linux build
+build_all: build_darwin_amd64 build_darwin_arm64 build_amd64 build_arm64 build_power8 build_windows
 
-build_osx:
+build_darwin_amd64:
 	sed -i -e "s,{{VERSION}},$(TAG),g" main.go
-	go clean; rm -rf pkg web_osx; GOOS=darwin go build -o web ${flags}
-	mv web web_osx
+	go clean; rm -rf pkg web_darwin; GOOS=darwin go build -o web ${flags}
+	mv web web_darwin_amd64
 	sed -i -e "s,$(TAG),{{VERSION}},g" main.go
 
-build_linux:
+build_darwin_arm64:
+	sed -i -e "s,{{VERSION}},$(TAG),g" main.go
+	go clean; rm -rf pkg web_darwin; GOARCH=arm64 GOOS=darwin go build -o web ${flags}
+	mv web web_darwin_arm64
+	sed -i -e "s,$(TAG),{{VERSION}},g" main.go
+
+build_amd64:
 	sed -i -e "s,{{VERSION}},$(TAG),g" main.go
 	go clean; rm -rf pkg web_linux; GOOS=linux go build -o web ${flags}
-	mv web web_linux
+	mv web web_amd64
 	sed -i -e "s,$(TAG),{{VERSION}},g" main.go
 
 build_power8:
@@ -39,7 +45,7 @@ build_arm64:
 
 build_windows:
 	sed -i -e "s,{{VERSION}},$(TAG),g" main.go
-	go clean; rm -rf pkg web.exe; GOARCH=amd64 GOOS=windows go build -o web ${flags}
+	go clean; rm -rf pkg web.exe; GOARCH=amd64 GOOS=windows go build -o web.exe ${flags}
 	sed -i -e "s,$(TAG),{{VERSION}},g" main.go
 
 install:
