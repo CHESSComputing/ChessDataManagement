@@ -247,7 +247,38 @@ func genForm(fname string) (string, error) {
 
 	// loop over all defined sections
 	var rec string
+	sections, err := schema.Sections()
+	if err != nil {
+		return strings.Join(out, ""), err
+	}
+	for _, s := range sections {
+		if skeys, ok := sectionKeys[s]; ok {
+			showSection := false
+			if len(skeys) != 0 {
+				showSection = true
+			}
+			if showSection {
+				out = append(out, fmt.Sprintf("<fieldset id=\"%s\">", s))
+				out = append(out, fmt.Sprintf("<legend>%s</legend>", s))
+			}
+			for _, k := range skeys {
+				if InList(k, optKeys) {
+					rec = formEntry(schema.Map, k, s, "required")
+				} else {
+					rec = formEntry(schema.Map, k, s, "")
+				}
+				out = append(out, rec)
+			}
+			if showSection {
+				out = append(out, "</fieldset>")
+			}
+		}
+	}
+	// loop over the rest of section keys which did not show up in sections
 	for s, skeys := range sectionKeys {
+		if InList(s, sections) {
+			continue
+		}
 		showSection := false
 		if len(skeys) != 0 {
 			showSection = true
