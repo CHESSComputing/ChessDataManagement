@@ -1,6 +1,11 @@
 {{if .List }}
 <div class="form-item">
+{{if eq .Class  "is-req"}}
+    <label class="{{.Class}}">{{.Key}} (&#42;)</label>
+{{else}}
     <label class="{{.Class}}">{{.Key}}</label>
+{{end}}
+
 {{if eq .Description "Not Available"}}
 {{else}}
     <label>Description: {{.Description}}</label>
@@ -19,7 +24,12 @@
 </div>
 {{else}}
 <div class="form-item">
+{{if eq .Class  "is-req"}}
+    <label class="{{.Class}}">{{.Key}} (&#42;)</label>
+{{else}}
     <label class="{{.Class}}">{{.Key}}</label>
+{{end}}
+
 {{if eq .Type "checkbox" }}
     <input type="checkbox" name={{.Key}} value={{.Value}}>
 {{else}}
