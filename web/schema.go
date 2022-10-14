@@ -138,6 +138,7 @@ func (s *Schema) Load() error {
 	for _, r := range records {
 		smap[r.Key] = r
 	}
+	// update schema map
 	s.Map = smap
 	return nil
 }
@@ -151,10 +152,12 @@ func (s *Schema) Validate(rec Record) error {
 	if err != nil {
 		return err
 	}
+	// hidden mandatory keys we add to each form
+	skipKeys := []string{"User", "Date", "Description", "SchemaName"}
 	var mkeys []string
 	for k, v := range rec {
 		// skip user key
-		if k == "user" {
+		if InList(k, skipKeys) {
 			continue
 		}
 		// check if our record key belong to the schema keys
