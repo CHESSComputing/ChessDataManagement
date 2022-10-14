@@ -6,9 +6,13 @@
     <label>Description: {{.Description}}</label>
 {{end}}
     <div name="{{.Key}}" class="form-item">
-        <select class="is-50" {{.Multiple}}>
+{{if eq .Multiple "multiple"}}
+        <select class="is-50" name="{{.Key}}" multiple>
+{{else}}
+        <select class="is-50" name="{{.Key}}">
+{{end}}
 {{range $val := .Value}}
-     <option value="{{$val}}">{{$val}}</option>
+        <option value="{{$val}}">{{$val}}</option>
 {{end}}
     </select>
     </div>
