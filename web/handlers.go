@@ -7,6 +7,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -263,9 +264,9 @@ func genForm(fname string) (string, error) {
 			}
 			for _, k := range skeys {
 				if InList(k, optKeys) {
-					rec = formEntry(schema.Map, k, s, "required")
-				} else {
 					rec = formEntry(schema.Map, k, s, "")
+				} else {
+					rec = formEntry(schema.Map, k, s, "required")
 				}
 				out = append(out, rec)
 			}
@@ -305,9 +306,9 @@ func genForm(fname string) (string, error) {
 		if r, ok := schema.Map[k]; ok {
 			if r.Section == "" {
 				if InList(k, optKeys) {
-					rec = formEntry(schema.Map, k, "", "required")
-				} else {
 					rec = formEntry(schema.Map, k, "", "")
+				} else {
+					rec = formEntry(schema.Map, k, "", "required")
 				}
 				nOut = append(nOut, rec)
 			}
@@ -339,7 +340,7 @@ func formEntry(smap map[string]SchemaRecord, k, s, required string) string {
 	tmplData["Multiple"] = ""
 	if r, ok := smap[k]; ok {
 		if r.Section == s {
-			if r.Type == "list" {
+			if r.Type == "list_str" || r.Type == "list_int" || r.Type == "list_float" || r.Type == "list" {
 				tmplData["List"] = true
 				switch values := r.Value.(type) {
 				case []any:
@@ -348,7 +349,12 @@ func formEntry(smap map[string]SchemaRecord, k, s, required string) string {
 					tmplData["Value"] = []string{}
 				}
 			} else if r.Type == "bool" || r.Type == "boolean" {
-				tmplData["Type"] = "checkbox"
+				tmplData["List"] = true
+				if r.Value == true {
+					tmplData["Value"] = []string{"true", "false"}
+				} else {
+					tmplData["Value"] = []string{"false", "true"}
+				}
 			} else {
 				if r.Value != nil {
 					tmplData["Value"] = fmt.Sprintf("%v", r.Value)
@@ -512,54 +518,78 @@ func SettingsHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// helper function to parser form values
+func parseValue(schema *Schema, key string, items []string) (any, error) {
+	r, ok := schema.Map[key]
+	if !ok {
+		msg := fmt.Sprintf("No key %s found in schema map", key)
+		return false, errors.New(msg)
+	} else if r.Type == "list_str" {
+		return items, nil
+	} else if r.Type == "list_int" {
+		return items, nil
+	} else if r.Type == "list_float" {
+		return items, nil
+	} else if r.Type == "string" {
+		return items[0], nil
+	} else if r.Type == "bool" {
+		v, err := strconv.ParseBool(items[0])
+		if err == nil {
+			return v, nil
+		}
+		return false, err
+	} else if r.Type == "int" {
+		v, err := strconv.ParseInt(items[0], 10, 64)
+		if err == nil {
+			return v, nil
+		}
+		return 0, err
+	} else if r.Type == "float" {
+		v, err := strconv.ParseFloat(items[0], 64)
+		if err == nil {
+			return v, nil
+		}
+		return 0, err
+	}
+	return 0, errors.New("Unable to parse form value")
+}
+
 // helper function to process input form
 func processForm(r *http.Request) Record {
 	rec := make(Record)
-	rec["date"] = time.Now().Unix()
+	rec["Date"] = time.Now().Unix()
+	// read schemaName from form itself
+	var sname string
+	for k, items := range r.PostForm {
+		if k == "SchemaName" {
+			sname = items[0]
+			break
+		}
+	}
+	var fname string
+	for _, f := range Config.SchemaFiles {
+		if strings.Contains(f, sname) {
+			fname = f
+			break
+		}
+	}
+	schema, err := _smgr.Load(fname)
+	if err != nil {
+		log.Println("ERROR", err)
+		return rec
+	}
 	// r.PostForm provides url.Values which is map[string][]string type
 	// we convert it to Record
-	arr := []string{"constituentelements", "phases", "experimenttype", "supplementarymeasurements", "xraytechnique", "loadframe", "detectors"}
 	for k, items := range r.PostForm {
-		k = strings.ToLower(k)
-		if k == "proposal" || k == "btr" || k == "date" || k == "did" {
-			if len(items) > 0 {
-				v, e := strconv.ParseInt(items[0], 10, 64)
-				if e == nil {
-					rec[k] = v
-				}
-			}
-		} else if k == "energy" {
-			if len(items) > 0 {
-				v, e := strconv.ParseFloat(items[0], 64)
-				if e == nil {
-					rec[k] = v
-				}
-			}
-		} else if InList(k, arr) {
-			if len(items) > 0 {
-				arr := strings.Split(items[0], ",")
-				rec[k] = arr
-			}
-		} else {
-			if strings.Contains(k, "-") {
-				kkk := strings.Split(k, "-")
-				k := kkk[0]
-				if vals, ok := rec[k]; ok {
-					values := vals.([]string)
-					for _, v := range items {
-						values = append(values, v)
-					}
-					rec[k] = values
-				} else {
-					rec[k] = items
-				}
-			} else {
-				for _, v := range items {
-					rec[k] = v
-					break
-				}
-			}
+		log.Println("### PostForm", k, items)
+		if k == "SchemaName" {
+			continue
 		}
+		val, err := parseValue(schema, k, items)
+		if err != nil {
+			log.Println("ERROR", err)
+		}
+		rec[k] = val
 	}
 	log.Printf("process form, record %v\n", rec)
 	return rec
@@ -580,15 +610,20 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 		err := insertData(rec)
 		if err == nil {
 			msg = fmt.Sprintf("Your meta-data is inserted successfully")
+			log.Println("INFO", msg)
 			class = "alert is-success"
 		} else {
 			msg = fmt.Sprintf("Web processing error: %v", err)
 			class = "alert is-error"
+			log.Println("WARNING", msg)
+			tmplData["Message"] = msg
+			tmplData["Class"] = class
+			page := templates.Tmpl(Config.Templates, "confirm.tmpl", tmplData)
 			// redirect users to update their record
 			inputs := htmlInputs(rec)
 			tmplData["Inputs"] = inputs
 			tmplData["Id"] = ""
-			page := templates.Tmpl(Config.Templates, "update.tmpl", tmplData)
+			page += templates.Tmpl(Config.Templates, "update.tmpl", tmplData)
 			w.WriteHeader(http.StatusOK)
 			w.Write([]byte(_top + page + _bottom))
 			return
