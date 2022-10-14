@@ -1,15 +1,18 @@
 {{if .List }}
-<fieldset>
-    <legend>{{.Key}}</legend>
+<div class="form-item">
+    <label class="{{.Class}}">{{.Key}}</label>
+{{if eq .Description "Not Available"}}
+{{else}}
     <label>Description: {{.Description}}</label>
+{{end}}
     <div name="{{.Key}}" class="form-item">
         <select class="is-50" {{.Multiple}}>
 {{range $val := .Value}}
      <option value="{{$val}}">{{$val}}</option>
 {{end}}
     </select>
+    </div>
 </div>
-</fieldset>
 {{else}}
 <div class="form-item">
     <label class="{{.Class}}">{{.Key}}</label>
