@@ -177,27 +177,28 @@ func insertData(rec Record) error {
 		rec["Date"] = time.Now().Unix()
 	}
 	// main attributes to work with
-	// TODO: I need to decide if CHESS need experiment, processing, tier
-	// and then a dataset
-	// if not, then I will need to modify InsertFiles API to not use them
-	var path, experiment, processing string
-	if v, ok := rec["RawDataDirectory"]; ok {
+	var path, experiment, sample string
+	if v, ok := rec["DataLocationRaw"]; ok {
 		path = v.(string)
 	} else {
 		path = "test"
 	}
-	if v, ok := rec["AbbreviatedName"]; ok {
+	if v, ok := rec["Facility"]; ok {
 		experiment = v.(string)
 	} else {
 		experiment = "CHESS"
 	}
-	if v, ok := rec["Processing"]; ok {
-		processing = v.(string)
+	if v, ok := rec["SampleName"]; ok {
+		sample = v.(string)
 	} else {
-		processing = "processing"
+		sample = "sample"
 	}
 	tier := "raw"
-	dataset := fmt.Sprintf("/%s/%s/%s", experiment, processing, tier)
+	if v, ok := rec["Detectors"]; ok {
+		dets := v.([]string)
+		tier = strings.Join(dets, "-")
+	}
+	dataset := fmt.Sprintf("/%s/%s/%s", experiment, sample, tier)
 	rec["dataset"] = dataset
 	rec = preprocess(rec)
 	// check if given path exist on file system
@@ -207,7 +208,7 @@ func insertData(rec Record) error {
 		rec["path"] = path
 		// we generate unique id by using time stamp
 		did := time.Now().UnixNano()
-		go InsertFiles(did, experiment, processing, tier, path)
+		go InsertFiles(did, experiment, sample, tier, path)
 		rec["did"] = did
 		records := []Record{rec}
 		MongoUpsert(Config.DBName, Config.DBColl, records)
