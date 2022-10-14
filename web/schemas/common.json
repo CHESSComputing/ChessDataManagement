@@ -41,7 +41,7 @@
     },
   {
         "key": "Beamline",
-        "type": "list",
+        "type": "list_str",
         "optional": false,
         "section": "User",
         "value": ["2A", "3A", "3B", "4B", "7A", "7B2"]
@@ -56,7 +56,7 @@
     },
 {
         "key": "BeamlineFundingPartner",
-        "type": "list",
+        "type": "list_str",
         "optional": false,
         "section": "User",
         "value": ["MSNC_AFRL", "MACCHESS_NSF_NIH", "CHESS_internal", "CHEXS_NSF"]
@@ -77,35 +77,35 @@
     },
 {
         "key": "Detectors",
-        "type": "list",
+        "type": "list_str",
         "optional": false,
         "section": "Experiment",
         "value": ["Vortex", "Pilatus6M", "DualDexelas", "GE2", "Manta", "Retiga", "Eiger216M", "Eiger1M", "Pilatus200K", "Pilatus300K", "CanberraSingleElement"]
     },
 {
         "key": "CESRCondtions",
-        "type": "list",
+        "type": "list_str",
         "optional": false,
         "section": "Beam",
         "value": ["21BunchMode", "9x5BunchMode"]
     },
 {
         "key": "ExperimentType",
-        "type": "list",
+        "type": "list_str",
         "optional": false,
         "section": "Experiment",
         "value": ["Imaging", "Spectroscopy", "Crystallography", "Scattering/Diffraction"]
     },
 {
         "key": "Technique",
-        "type": "list",
+        "type": "list_str",
         "optional": false,
         "section": "Experiment",
         "value": ["HighEnergyDiffractionMicroscopyNearField", "HighEnergyDiffractionMicroscopyFarField", "HighEnergyDiffractionMicroscopyMidField", "PowderDiffraction", "ResonantElasticX-rayScattering", "3DPDF", "DiffuseScattering", "SAXS+WAXS", "SAXS", "XRayFluorescence", "Tomography"]
     },
 {
         "key": "SampleType",
-        "type": "list",
+        "type": "list_str",
         "optional": true,
         "section": "Sample",
         "value": ["sample+can", "can", "sample+butter", "buffer", "calibration sample", "normalisation sample", "simulated data", "none", "sample environment"]
