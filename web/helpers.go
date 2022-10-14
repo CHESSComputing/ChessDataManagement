@@ -214,6 +214,6 @@ func insertData(rec Record) error {
 		MongoUpsert(Config.DBName, Config.DBColl, records)
 		return nil
 	}
-	msg := fmt.Sprintf("No files found associated with path=%s", path)
+	msg := fmt.Sprintf("No files found associated with DataLocationRaw=%s", path)
 	return errors.New(msg)
 }
