@@ -312,6 +312,8 @@ func (s *Schema) SectionKeys() (map[string][]string, error) {
 func validSchemaType(stype string, v interface{}) bool {
 	var etype string
 	switch v.(type) {
+	case bool:
+		etype = "bool"
 	case int:
 		etype = "int"
 	case int8:
@@ -335,15 +337,15 @@ func validSchemaType(stype string, v interface{}) bool {
 	case string:
 		etype = "string"
 	case []string:
-		etype = "[]string"
+		etype = "list_str"
 	case []any:
-		etype = "list"
+		etype = "list_str"
 	case []int:
-		etype = "[]int"
+		etype = "list_int"
 	case []float64:
-		etype = "[]float64"
+		etype = "list_float"
 	case []float32:
-		etype = "[]float32"
+		etype = "list_float"
 	}
 	if stype != etype {
 		return false
