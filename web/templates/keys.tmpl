@@ -26,6 +26,7 @@
         <div class="form-item">
             <div class="is-append is-push-right is-right">
                 <div class="is-80">
+                    <input type="hidden" id="Form1SchemaName" name="SchemaName" value=""/>
                     <input type="hidden" name="User" value="{{.User}}"/>
                 </div>
                 <button class="button is-small">Submit</button>
@@ -53,6 +54,7 @@
         <div class="form-item">
             <div class="is-append is-push-right is-right">
                 <div class="is-80">
+                    <input type="hidden" id="Form2SchemaName" name="SchemaName" value=""/>
                     <input type="hidden" name="User" value="{{.User}}"/>
                 </div>
                 <button class="button">Submit</button>
@@ -109,7 +111,17 @@ function selectBeamline()
     for(var i=0; i<docs.length; i++) {
         HideTag(docs[i].value);
     }
-    ShowTag(docs.value)
+    ShowTag(docs.value);
+    setSchemaName();
 }
+function setSchemaName()
+{
+    var docs=document.getElementById("beamlines");
+    var sdoc=document.getElementById("Form1SchemaName");
+    sdoc.value=docs.value;
+    var sdoc=document.getElementById("Form2SchemaName");
+    sdoc.value=docs.value;
+}
+setSchemaName();
 </script>
 <!-- end of keys.tmpl -->
