@@ -195,7 +195,15 @@ func insertData(rec Record) error {
 	}
 	tier := "raw"
 	if v, ok := rec["Detectors"]; ok {
-		dets := v.([]string)
+		var dets []string
+		switch t := v.(type) {
+		case []any:
+			for _, d := range t {
+				dets = append(dets, d.(string))
+			}
+		case []string:
+			dets = t
+		}
 		tier = strings.Join(dets, "-")
 	}
 	dataset := fmt.Sprintf("/%s/%s/%s", experiment, sample, tier)

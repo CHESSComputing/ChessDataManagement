@@ -659,7 +659,7 @@ func APIHandler(w http.ResponseWriter, r *http.Request) {
 			user = creds.UserName()
 			config := r.FormValue("config")
 			var data = Record{}
-			data["user"] = user
+			data["User"] = user
 			err = json.Unmarshal([]byte(config), &data)
 			if err != nil {
 				msg := "unable to unmarshal configuration data"
@@ -697,7 +697,7 @@ func APIHandler(w http.ResponseWriter, r *http.Request) {
 		class = "alert is-error"
 	} else {
 		var data = Record{}
-		data["user"] = user
+		data["User"] = user
 		log.Println("body", string(body))
 		err := json.Unmarshal(body, &data)
 		if err != nil {
