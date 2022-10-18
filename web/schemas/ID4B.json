@@ -1,61 +1,58 @@
 [
     {
-        "Key ": "Facility",
-        "Datatype ": "string",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "User",
-        "Descriptor": "Facility where the experiment to be performed, e.g. CHESS",
-        "Placeholder": "CHESS",
-        "Values": [
-            "CHESS"
-        ]
+        "key": "Facility",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "User",
+        "description": "Facility where the experiment to be performed, e.g. CHESS",
+        "placeholder": "CHESS"
     },
     {
-        "Key ": "Cycle",
-        "Datatype ": "string",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "User",
-        "Descriptor": "YYYY-<cycle_number>",
-        "Placeholder": "2022-3"
+        "key": "Cycle",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "User",
+        "description": "YYYY-<cycle_number>",
+        "placeholder": "2022-3"
     },
     {
-        "Key ": "PI",
-        "Datatype ": "string",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "User",
-        "Descriptor": "Last name of the Principle Investigator",
-        "Placeholder": "sarker"
+        "key": "PI",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "User",
+        "description": "Last name of the Principle Investigator",
+        "placeholder": "sarker"
     },
     {
-        "Key ": "BTR",
-        "Datatype ": "string",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "User",
-        "Descriptor": "Beamtime request ID",
-        "Placeholder": "sarker-1800-A"
+        "key": "BTR",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "User",
+        "description": "Beamtime request ID",
+        "placeholder": "sarker-1800-A"
     },
     {
-        "Key ": "Experimenters",
-        "Datatype ": "string",
-        "Optional": true,
-        "Multiple": true,
-        "Section": "User",
-        "Descriptor": "Include all the names who are collecting the data in the beamline",
-        "Placeholder": "lastname1, lastname2, ....."
+        "key": "Experimenters",
+        "type": "string",
+        "optional": true,
+        "multiple": true,
+        "section": "User",
+        "description": "Include all the names who are collecting the data in the beamline",
+        "placeholder": "lastname1, lastname2, ....."
     },
     {
-        "Key ": "Beamline",
-        "Datatype ": "list_str",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "User",
-        "Descriptor": "Specify beamline",
-        "Placeholder": "4B",
-        "Values": [
+        "key": "Beamline",
+        "type": "list_str",
+        "optional": false,
+        "multiple": false,
+        "section": "User",
+        "description": "Specify beamline",
+        "placeholder": "4B",
+        "value": [
             "1A3",
             "2A",
             "3A",
@@ -66,23 +63,23 @@
         ]
     },
     {
-        "Key ": "StaffScientist",
-        "Datatype ": "string",
-        "Optional": false,
-        "Multiple": true,
-        "Section": "User",
-        "Descriptor": "List of staff scientists",
-        "Placeholder": "lastname1, lastname2,"
+        "key": "StaffScientist",
+        "type": "string",
+        "optional": false,
+        "multiple": true,
+        "section": "User",
+        "description": "List of staff scientists",
+        "placeholder": "lastname1, lastname2,"
     },
     {
-        "Key ": "BeamlineFundingPartner",
-        "Datatype ": "list_str",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "User",
-        "Descriptor": "Select a funding partner",
-        "Placeholder": "CHEXS_NSF",
-        "Values": [
+        "key": "BeamlineFundingPartner",
+        "type": "list_str",
+        "optional": false,
+        "multiple": false,
+        "section": "User",
+        "description": "Select a funding partner",
+        "placeholder": "CHEXS_NSF",
+        "value": [
             "CHEXS_NSF",
             "MSNC_AFRL",
             "MACCHESS_NSF_NIH",
@@ -91,144 +88,144 @@
         ]
     },
     {
-        "Key ": "Alignment",
-        "Datatype ": "bool",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Alignment",
-        "Descriptor": "Do you have final alignment?",
-        "Placeholder": "Yes/No",
-        "Values": [
+        "key": "Alignment",
+        "type": "bool",
+        "optional": false,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "Do you have final alignment?",
+        "placeholder": "Yes/No",
+        "value": [
             "Yes",
             "No"
         ]
     },
     {
-        "Key ": "EnergyScan",
-        "Datatype ": "bool",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Alignment",
-        "Descriptor": "Do you have energy scan?",
-        "Placeholder": "Yes/No",
-        "Values": [
+        "key": "EnergyScan",
+        "type": "bool",
+        "optional": false,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "Do you have energy scan?",
+        "placeholder": "Yes/No",
+        "value": [
             "Yes",
             "No"
         ]
     },
     {
-        "Key ": "UndulatorScan",
-        "Datatype ": "bool",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Alignment",
-        "Descriptor": "Do you have the undulator scan?",
-        "Placeholder": "Yes/No",
-        "Values": [
+        "key": "UndulatorScan",
+        "type": "bool",
+        "optional": false,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "Do you have the undulator scan?",
+        "placeholder": "Yes/No",
+        "value": [
             "Yes",
             "No"
         ]
     },
     {
-        "Key ": "SpotSize",
-        "Datatype ": "float64",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Alignment",
-        "Descriptor": "What is the spot size of the sample?",
-        "Placeholder": "200 micron X 500 micron"
+        "key": "SpotSize",
+        "type": "float64",
+        "optional": false,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "What is the spot size of the sample?",
+        "placeholder": "200 micron X 500 micron"
     },
     {
-        "Key ": "DataLocationRaw",
-        "Datatype ": "string",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "DataLocations",
-        "Descriptor": "Location of the raw data",
-        "Placeholder": "/nfs/chess/id4b/2021-3/ruff-2972-d/samplename"
+        "key": "DataLocationRaw",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "DataLocations",
+        "description": "Location of the raw data",
+        "placeholder": "/nfs/chess/id4b/2021-3/ruff-2972-d/samplename"
     },
     {
-        "Key ": "DataLocationMeta",
-        "Datatype ": "string",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "DataLocations",
-        "Descriptor": "Location of the metadata",
-        "Placeholder": "/nfs/chess/id4b/2021-3/ruff-2972-d/samplename"
+        "key": "DataLocationMeta",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "DataLocations",
+        "description": "Location of the metadata",
+        "placeholder": "/nfs/chess/id4b/2021-3/ruff-2972-d/samplename"
     },
     {
-        "Key ": "DataLocationReduced",
-        "Datatype ": "string",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "DataLocations",
-        "Descriptor": "Location of the reduced data",
-        "Placeholder": "/nfs/chess/id4baux/2021-3/ruff-2972-d/sample1"
+        "key": "DataLocationReduced",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "DataLocations",
+        "description": "Location of the reduced data",
+        "placeholder": "/nfs/chess/id4baux/2021-3/ruff-2972-d/sample1"
     },
     {
-        "Key ": "DataLocationBeamtimeNotes",
-        "Datatype ": "string",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "DataLocations",
-        "Descriptor": "Location of the beamline notes",
-        "Placeholder": "/nfs/chess/id4b/2021-3/ruff-2972-d/samplename"
+        "key": "DataLocationBeamtimeNotes",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "DataLocations",
+        "description": "Location of the beamline notes",
+        "placeholder": "/nfs/chess/id4b/2021-3/ruff-2972-d/samplename"
     },
     {
-        "Key ": "DataLocationScientificData",
-        "Datatype ": "string",
-        "Optional": true,
-        "Multiple": false,
-        "Section": "DataLocations",
-        "Descriptor": "Link for the other scientific data related to your research (if you want to share related papers/ calculations etc), insert N/A if None",
-        "Placeholder": "Insert the link"
+        "key": "DataLocationScientificData",
+        "type": "string",
+        "optional": true,
+        "multiple": false,
+        "section": "DataLocations",
+        "description": "Link for the other scientific data related to your research (if you want to share related papers/ calculations etc), insert N/A if None",
+        "placeholder": "Insert the link"
     },
     {
-        "Key ": "CESRCondtions",
-        "Datatype ": "list_str",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Beam",
-        "Descriptor": "CESR bunch mode",
-        "Placeholder": "9x5BunchMode",
-        "Values": [
+        "key": "CESRCondtions",
+        "type": "list_str",
+        "optional": false,
+        "multiple": false,
+        "section": "Beam",
+        "description": "CESR bunch mode",
+        "placeholder": "9x5BunchMode",
+        "value": [
             "9BunchMode",
             "21BunchMode",
             "9x5BunchMode"
         ]
     },
     {
-        "Key ": "BeamEnergy",
-        "Datatype ": "float64",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Beam",
-        "Descriptor": "What is beam energy (e.g. 58 KeV )?",
-        "Placeholder": "58 KeV"
+        "key": "BeamEnergy",
+        "type": "float64",
+        "optional": false,
+        "multiple": false,
+        "section": "Beam",
+        "description": "What is beam energy (e.g. 58 KeV )?",
+        "placeholder": "58 KeV"
     },
     {
-        "Key ": "InsertionDevice",
-        "Datatype ": "list_str",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Beam",
-        "Descriptor": "Include the insertion device ",
-        "Placeholder": "CCU",
-        "Values": [
+        "key": "InsertionDevice",
+        "type": "list_str",
+        "optional": false,
+        "multiple": false,
+        "section": "Beam",
+        "description": "Include the insertion device ",
+        "placeholder": "CCU",
+        "value": [
             "CCU",
             "Wiggler",
             "CCU"
         ]
     },
     {
-        "Key ": "Monochromator",
-        "Datatype ": "list_str",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Beam",
-        "Descriptor": "Include the monochromator",
-        "Placeholder": "DoubleCrystalMono",
-        "Values": [
+        "key": "Monochromator",
+        "type": "list_str",
+        "optional": false,
+        "multiple": false,
+        "section": "Beam",
+        "description": "Include the monochromator",
+        "placeholder": "DoubleCrystalMono",
+        "value": [
             "MultiLayer",
             "DoubleCrystalMono",
             "SiLaueMono",
@@ -237,14 +234,14 @@
         ]
     },
     {
-        "Key ": "EnergyFoil",
-        "Datatype ": "list_str",
-        "Optional": true,
-        "Multiple": true,
-        "Section": "Beam",
-        "Descriptor": "Are you using any energy foil?",
-        "Placeholder": "black1",
-        "Values": [
+        "key": "EnergyFoil",
+        "type": "list_str",
+        "optional": true,
+        "multiple": true,
+        "section": "Beam",
+        "description": "Are you using any energy foil?",
+        "placeholder": "black1",
+        "value": [
             "scrn",
             "blank1",
             "Au",
@@ -260,14 +257,14 @@
         ]
     },
     {
-        "Key ": "Detectors",
-        "Datatype ": "list_str",
-        "Optional": false,
-        "Multiple": true,
-        "Section": "Experiment",
-        "Descriptor": "Detectors used",
-        "Placeholder": "Pilatus6M",
-        "Values": [
+        "key": "Detectors",
+        "type": "list_str",
+        "optional": false,
+        "multiple": true,
+        "section": "Experiment",
+        "description": "Detectors used",
+        "placeholder": "Pilatus6M",
+        "value": [
             "Eiger500",
             "Vortex",
             "Pilatus6M",
@@ -284,14 +281,14 @@
         ]
     },
     {
-        "Key ": "ExperimentType",
-        "Datatype ": "string",
-        "Optional": false,
-        "Multiple": true,
-        "Section": "Experiment",
-        "Descriptor": "Experiment type(s) (e.g. scattering,diffraction)",
-        "Placeholder": "Diffraction",
-        "Values": [
+        "key": "ExperimentType",
+        "type": "string",
+        "optional": false,
+        "multiple": true,
+        "section": "Experiment",
+        "description": "Experiment type(s) (e.g. scattering,diffraction)",
+        "placeholder": "Diffraction",
+        "value": [
             "Scattering/Diffraction",
             "Imaging",
             "Spectroscopy",
@@ -300,27 +297,27 @@
         ]
     },
     {
-        "Key ": "InSitu",
-        "Datatype ": "bool",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Experiment",
-        "Descriptor": "Is the experiment an in-situ test?",
-        "Placeholder": "Yes/No",
-        "Values": [
+        "key": "InSitu",
+        "type": "bool",
+        "optional": false,
+        "multiple": false,
+        "section": "Experiment",
+        "description": "Is the experiment an in-situ test?",
+        "placeholder": "Yes/No",
+        "value": [
             "Yes",
             "No"
         ]
     },
     {
-        "Key ": "Technique",
-        "Datatype ": "string",
-        "Optional": false,
-        "Multiple": true,
-        "Section": "Experiment",
-        "Descriptor": "Experimental technique(s) (e.g HDRM/ DS/ 3DPDF)",
-        "Placeholder": "3DPDF",
-        "Values": [
+        "key": "Technique",
+        "type": "string",
+        "optional": false,
+        "multiple": true,
+        "section": "Experiment",
+        "description": "Experimental technique(s) (e.g HDRM/ DS/ 3DPDF)",
+        "placeholder": "3DPDF",
+        "value": [
             "PowderDiffraction",
             "ResonantElasticX-rayScattering",
             "3DPDF",
@@ -335,81 +332,81 @@
         ]
     },
     {
-        "Key ": "CryoCooler",
-        "Datatype ": "bool",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Experiment",
-        "Descriptor": "Are you using cryocooler?",
-        "Placeholder": "Yes/No"
+        "key": "CryoCooler",
+        "type": "bool",
+        "optional": false,
+        "multiple": false,
+        "section": "Experiment",
+        "description": "Are you using cryocooler?",
+        "placeholder": "Yes/No"
     },
     {
-        "Key ": "Cryostream11Kto500K",
-        "Datatype ": "string",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Experiment",
-        "Descriptor": "Please provide the temperatures of the experiment (e.g. 298.15K)",
-        "Placeholder": "50K, 100K, 323K"
+        "key": "Cryostream11Kto500K",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "Experiment",
+        "description": "Please provide the temperatures of the experiment (e.g. 298.15K)",
+        "placeholder": "50K, 100K, 323K"
     },
     {
-        "Key ": "Cryostat3.5Kto300K",
-        "Datatype ": "string",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Experiment",
-        "Descriptor": "Please provide the temperatures of the experiment",
-        "Placeholder": "5K, 10K, 25K"
+        "key": "Cryostat3.5Kto300K",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "Experiment",
+        "description": "Please provide the temperatures of the experiment",
+        "placeholder": "5K, 10K, 25K"
     },
     {
-        "Key ": "ScanEdgeK",
-        "Datatype ": "float64",
-        "Optional": true,
-        "Multiple": false,
-        "Section": "Experiment",
-        "Descriptor": "Specify the sample scan K edge, insert \"N/A\" if none",
-        "Placeholder": "Mn- K"
+        "key": "ScanEdgeK",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Experiment",
+        "description": "Specify the sample scan K edge, insert \"N/A\" if none",
+        "placeholder": "Mn- K"
     },
     {
-        "Key ": "ScanEdgeL",
-        "Datatype ": "float64",
-        "Optional": true,
-        "Multiple": false,
-        "Section": "Experiment",
-        "Descriptor": "Specify the sample scan L edge, insert \"N/A\" if none",
-        "Placeholder": "Ir - L3"
+        "key": "ScanEdgeL",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Experiment",
+        "description": "Specify the sample scan L edge, insert \"N/A\" if none",
+        "placeholder": "Ir - L3"
     },
     {
-        "Key ": "Calibration",
-        "Datatype ": "bool",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Sample",
-        "Descriptor": "Specify your calibration sample (e.g. CeO2, LaB6)?",
-        "Placeholder": "CeO2",
-        "Values": [
+        "key": "Calibration",
+        "type": "bool",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Specify your calibration sample (e.g. CeO2, LaB6)?",
+        "placeholder": "CeO2",
+        "value": [
             "Yes",
             "No"
         ]
     },
     {
-        "Key ": "ReferenceCalibrantSampleName",
-        "Datatype ": "string",
-        "Optional": true,
-        "Multiple": false,
-        "Section": "Sample",
-        "Descriptor": "If this is not a calibration sample: enter the sample name (used in new sample) for the relevant calibration sample dataset",
-        "Placeholder": "N/A"
+        "key": "ReferenceCalibrantSampleName",
+        "type": "string",
+        "optional": true,
+        "multiple": false,
+        "section": "Sample",
+        "description": "If this is not a calibration sample: enter the sample name (used in new sample) for the relevant calibration sample dataset",
+        "placeholder": "N/A"
     },
     {
-        "Key ": "SampleType",
-        "Datatype ": "list_str",
-        "Optional": false,
-        "Multiple": true,
-        "Section": "Sample",
-        "Descriptor": "Specify the type of sample",
-        "Placeholder": "sample",
-        "Values": [
+        "key": "SampleType",
+        "type": "list_str",
+        "optional": false,
+        "multiple": true,
+        "section": "Sample",
+        "description": "Specify the type of sample",
+        "placeholder": "sample",
+        "value": [
             "sample",
             "sample+can",
             "can",
@@ -423,95 +420,95 @@
         ]
     },
     {
-        "Key ": "SampleName",
-        "Datatype ": "string",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Sample",
-        "Descriptor": "Common name of sample material (e,g Kagome superconductor)",
-        "Placeholder": "Kagome superconductor"
+        "key": "SampleName",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Common name of sample material (e,g Kagome superconductor)",
+        "placeholder": "Kagome superconductor"
     },
     {
-        "Key ": "SampleChemicalFormula",
-        "Datatype ": "float64",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Sample",
-        "Descriptor": "Provide chemical formula of the sample (e.g AV3Sb5)",
-        "Placeholder": "AV3Sb5"
+        "key": "SampleChemicalFormula",
+        "type": "float64",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Provide chemical formula of the sample (e.g AV3Sb5)",
+        "placeholder": "AV3Sb5"
     },
     {
-        "Key ": "SampleThermalGradient",
-        "Datatype ": "bool",
-        "Optional": true,
-        "Multiple": false,
-        "Section": "Sample",
-        "Descriptor": "Are you using thermal gradient?",
-        "Placeholder": "Yes/No"
+        "key": "SampleThermalGradient",
+        "type": "bool",
+        "optional": true,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Are you using thermal gradient?",
+        "placeholder": "Yes/No"
     },
     {
-        "Key ": "SampleUnitCell",
-        "Datatype ": "float (6 dim)",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Sample",
-        "Descriptor": "Unit cell dimensions (Angstrom)",
-        "Placeholder": "5.43 Angstrom"
+        "key": "SampleUnitCell",
+        "type": "float (6 dim)",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Unit cell dimensions (Angstrom)",
+        "placeholder": "5.43 Angstrom"
     },
     {
-        "Key ": "SampleDSpacing",
-        "Datatype ": "float64",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Sample",
-        "Descriptor": "Provide the sample d spacing (nm)",
-        "Placeholder": "0.132 nm"
+        "key": "SampleDSpacing",
+        "type": "float64",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Provide the sample d spacing (nm)",
+        "placeholder": "0.132 nm"
     },
     {
-        "Key ": "SampleMass",
-        "Datatype ": "float64",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Sample",
-        "Descriptor": "Provide the sample mass ",
-        "Placeholder": "5 gram"
+        "key": "SampleMass",
+        "type": "float64",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Provide the sample mass ",
+        "placeholder": "5 gram"
     },
     {
-        "Key ": "SampleSpaceGroup",
-        "Datatype ": "UTF-8",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Sample",
-        "Descriptor": "Provide the sample space group",
-        "Placeholder": "F-43m"
+        "key": "SampleSpaceGroup",
+        "type": "UTF-8",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Provide the sample space group",
+        "placeholder": "F-43m"
     },
     {
-        "Key ": "SampleMatPedHeatTreatment",
-        "Datatype ": "string",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Sample",
-        "Descriptor": "Sample heat-treated (if any)? insert \"N/A\" if none",
-        "Placeholder": "N/A"
+        "key": "SampleMatPedHeatTreatment",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Sample heat-treated (if any)? insert \"N/A\" if none",
+        "placeholder": "N/A"
     },
     {
-        "Key ": "SampleMatPedProcessingRoute",
-        "Datatype ": "string",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Sample",
-        "Descriptor": "Write down shortly the sample processing route ",
-        "Placeholder": null
+        "key": "SampleMatPedProcessingRoute",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Write down shortly the sample processing route ",
+        "placeholder": null
     },
     {
-        "Key ": "SampleState",
-        "Datatype ": "list_str",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Sample",
-        "Descriptor": "Specify the sample state (e.g. Single Crystal, Thin-film )",
-        "Placeholder": "SingleCrystal",
-        "Values": [
+        "key": "SampleState",
+        "type": "list_str",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Specify the sample state (e.g. Single Crystal, Thin-film )",
+        "placeholder": "SingleCrystal",
+        "value": [
             "Powder ",
             "ThinFilm",
             "SingleCrystal",
@@ -520,34 +517,34 @@
         ]
     },
     {
-        "Key ": "SamplePreparationDate",
-        "Datatype ": "ISO8601 date/time stamp",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Sample",
-        "Descriptor": "Provide the sample preparation date",
-        "Placeholder": "DD-MM-YYYY"
+        "key": "SamplePreparationDate",
+        "type": "ISO8601 date/time stamp",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Provide the sample preparation date",
+        "placeholder": "DD-MM-YYYY"
     },
     {
-        "Key ": "MaterialSafetyHazardousSamples",
-        "Datatype ": "bool",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Sample",
-        "Descriptor": "Is the sample hazardous?",
-        "Placeholder": "Yes/No",
-        "Values": [
+        "key": "MaterialSafetyHazardousSamples",
+        "type": "bool",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Is the sample hazardous?",
+        "placeholder": "Yes/No",
+        "value": [
             "Yes",
             "No"
         ]
     },
     {
-        "Key ": "HolderLabel",
-        "Datatype ": "string",
-        "Optional": false,
-        "Multiple": false,
-        "Section": "Sample",
-        "Descriptor": "Does the sample holder have a label? Iinsert \"N/A\" if none",
-        "Placeholder": "N/A"
+        "key": "HolderLabel",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Does the sample holder have a label? Iinsert \"N/A\" if none",
+        "placeholder": "N/A"
     }
 ]
