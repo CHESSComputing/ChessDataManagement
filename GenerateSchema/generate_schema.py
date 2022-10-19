@@ -10,7 +10,7 @@ if __name__ == '__main__':
     # Run preprocessor
     parser = argparse.ArgumentParser(description="Create schema json from master excel spreadsheet")
     parser.add_argument('xlsx_file', metavar='xlsx', type=str, help='Path to excel file with current metadata fields')
-    parser.add_argument('beamline', metavar='beamline', help='Beamline name with capitals (e.g. 1A3, 4B, etc.)', type=str)
+    parser.add_argument('beamline', metavar='beamline', help='Beamline name with capitals (e.g. ID1A3, ID4B, etc.)', type=str)
     parser.add_argument('outputjson_name', metavar='outputjson', help='Name of json output without extension', type=str)
 
     args = parser.parse_args()
