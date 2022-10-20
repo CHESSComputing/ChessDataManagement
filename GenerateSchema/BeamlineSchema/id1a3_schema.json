@@ -13,7 +13,7 @@
         "optional": false,
         "multiple": false,
         "section": "User",
-        "description ": "Specify cycle (e.g. 2022-3)",
+        "description": "Specify cycle (e.g. 2022-3)",
         "placeholder": "2022-3"
     },
     {
@@ -22,7 +22,7 @@
         "optional": false,
         "multiple": false,
         "section": "User",
-        "description ": "Last name of the PI",
+        "description": "Last name of the PI",
         "placeholder": "batterman"
     },
     {
@@ -31,7 +31,7 @@
         "optional": false,
         "multiple": false,
         "section": "User",
-        "description ": "BTR ID",
+        "description": "BTR ID",
         "placeholder": "batterman-1111-c"
     },
     {
@@ -40,7 +40,7 @@
         "optional": true,
         "multiple": true,
         "section": "User",
-        "description ": "List experimenters",
+        "description": "List experimenters",
         "placeholder": "Lastname1Initials, Lastname2Initials"
     },
     {
@@ -49,7 +49,7 @@
         "optional": false,
         "multiple": false,
         "section": "User",
-        "description ": "Specify beamline",
+        "description": "Specify beamline",
         "placeholder": "1A3",
         "value": [
             "",
@@ -68,7 +68,7 @@
         "optional": false,
         "multiple": true,
         "section": "User",
-        "description ": "List staff scientists",
+        "description": "List staff scientists",
         "placeholder": "KoJYP, NygrenKE"
     },
     {
@@ -77,7 +77,7 @@
         "optional": false,
         "multiple": false,
         "section": "User",
-        "description ": "Select a funding partner",
+        "description": "Select a funding partner",
         "placeholder": "MSNC_AFRL",
         "value": [
             "",
@@ -94,7 +94,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description ": "Are scans related to alignment?",
+        "description": "Are scans related to alignment?",
         "placeholder": "false",
         "value": [
             "",
@@ -108,7 +108,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description ": "Are scans related to energy scans?",
+        "description": "Are scans related to energy scans?",
         "placeholder": "false",
         "value": [
             "",
@@ -122,7 +122,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description ": "Energy scan document location",
+        "description": "Energy scan document location",
         "placeholder": "/"
     },
     {
@@ -131,7 +131,7 @@
         "optional": false,
         "multiple": false,
         "section": "DataLocations",
-        "description ": "Raw data location (do not input \"current\" in the path directory. Instead, specify the actual cycle, e.g. 2022-3)",
+        "description": "Raw data location (do not input \"current\" in the path directory. Instead, specify the actual cycle, e.g. 2022-3)",
         "placeholder": "/nfs/chess/aux/cycles/2022-2/id1a3/batterman-1111-c/raw_data/test-1"
     },
     {
@@ -140,7 +140,7 @@
         "optional": false,
         "multiple": false,
         "section": "DataLocations",
-        "description ": "Metadata location (do not input \"current\" in the path directory. Instead, specify the actual cycle, e.g. 2022-3)",
+        "description": "Metadata location (do not input \"current\" in the path directory. Instead, specify the actual cycle, e.g. 2022-3)",
         "placeholder": "/nfs/chess/aux/cycles/2022-2/id1a3/batterman-1111-c/metadata/test-1"
     },
     {
@@ -149,7 +149,7 @@
         "optional": false,
         "multiple": false,
         "section": "DataLocations",
-        "description ": "Reduced data location (do not input \"current\" in the path directory. Instead, specify the actual cycle, e.g. 2022-3)",
+        "description": "Reduced data location (do not input \"current\" in the path directory. Instead, specify the actual cycle, e.g. 2022-3)",
         "placeholder": "/nfs/chess/aux/cycles/2022-2/id1a3/batterman-1111-c/reduced_data/test-1"
     },
     {
@@ -158,7 +158,7 @@
         "optional": false,
         "multiple": false,
         "section": "DataLocations",
-        "description ": "Scartch data location (do not input \"current\" in the path directory. Instead, specify the actual cycle, e.g. 2022-3)",
+        "description": "Scartch data location (do not input \"current\" in the path directory. Instead, specify the actual cycle, e.g. 2022-3)",
         "placeholder": "/nfs/chess/aux/cycles/2022-2/id1a3/batterman-1111-c/scratch_data/test-1"
     },
     {
@@ -167,7 +167,7 @@
         "optional": false,
         "multiple": false,
         "section": "DataLocations",
-        "description ": "Beam time notes location (do not input \"current\" in the path directory. Instead, specify the actual cycle, e.g. 2022-3)",
+        "description": "Beam time notes location (do not input \"current\" in the path directory. Instead, specify the actual cycle, e.g. 2022-3)",
         "placeholder": "/nfs/chess/aux/cycles/2022-2/id1a3/batterman-1111-c/metadata/batterman-1111-c_notebook.txt"
     },
     {
@@ -176,7 +176,7 @@
         "optional": false,
         "multiple": false,
         "section": "Beam",
-        "description ": "CESR bunch mode",
+        "description": "CESR bunch mode",
         "value": [
             "",
             "9BunchMode",
@@ -190,7 +190,7 @@
         "optional": false,
         "multiple": false,
         "section": "Beam",
-        "description ": "Insertion device",
+        "description": "Insertion device",
         "placeholder": "Wiggler",
         "value": [
             "",
@@ -205,7 +205,7 @@
         "optional": false,
         "multiple": false,
         "section": "Beam",
-        "description ": "Specify monochromator",
+        "description": "Specify monochromator",
         "placeholder": "SiLaueMono",
         "value": [
             "",
@@ -222,7 +222,7 @@
         "optional": true,
         "multiple": false,
         "section": "Beam",
-        "description ": "Sagittal",
+        "description": "Sagittal",
         "placeholder": "Sagittal",
         "value": [
             "",
@@ -239,7 +239,7 @@
         "optional": false,
         "multiple": false,
         "section": "Beam",
-        "description ": "Beam mode",
+        "description": "Beam mode",
         "placeholder": "White",
         "value": [
             "",
@@ -253,7 +253,7 @@
         "optional": true,
         "multiple": false,
         "section": "Beam",
-        "description ": "Beam energy",
+        "description": "Beam energy",
         "placeholder": 80.725
     },
     {
@@ -262,7 +262,7 @@
         "optional": true,
         "multiple": false,
         "section": "Beam",
-        "description ": "Beamline setup document location",
+        "description": "Beamline setup document location",
         "placeholder": "/"
     },
     {
@@ -271,7 +271,7 @@
         "optional": false,
         "multiple": false,
         "section": "Experiment",
-        "description ": "Indicate detector(s) being used",
+        "description": "Indicate detector(s) being used",
         "placeholder": "GE2, Manta",
         "value": [
             "",
@@ -296,7 +296,7 @@
         "optional": false,
         "multiple": false,
         "section": "Experiment",
-        "description ": "Specify experiment type",
+        "description": "Specify experiment type",
         "placeholder": "Scattering/Diffraction",
         "value": [
             "",
@@ -313,7 +313,7 @@
         "optional": false,
         "multiple": false,
         "section": "Experiment",
-        "description ": "Specify technique",
+        "description": "Specify technique",
         "placeholder": "EDD",
         "value": [
             "",
@@ -338,7 +338,7 @@
         "optional": false,
         "multiple": false,
         "section": "Experiment",
-        "description ": "In situ experiments?",
+        "description": "In situ experiments?",
         "placeholder": "false",
         "value": [
             "",
@@ -352,7 +352,7 @@
         "optional": false,
         "multiple": false,
         "section": "Experiment",
-        "description ": "Do scans contain mechanical tests?",
+        "description": "Do scans contain mechanical tests?",
         "placeholder": "false",
         "value": [
             "",
@@ -366,7 +366,7 @@
         "optional": true,
         "multiple": false,
         "section": "Experiment",
-        "description ": "What kind of mechnical test?",
+        "description": "What kind of mechnical test?",
         "placeholder": "Tension",
         "value": [
             "",
@@ -385,7 +385,7 @@
         "optional": true,
         "multiple": false,
         "section": "Experiment",
-        "description ": "Specify load frame",
+        "description": "Specify load frame",
         "placeholder": "RAMSIV",
         "value": [
             "",
@@ -402,7 +402,7 @@
         "optional": true,
         "multiple": false,
         "section": "Experiment",
-        "description ": "Specify grips",
+        "description": "Specify grips",
         "placeholder": "RAMS",
         "value": [
             "",
@@ -418,7 +418,7 @@
         "optional": true,
         "multiple": true,
         "section": "Experiment",
-        "description ": "Specify supplimentary techniques, if applicable",
+        "description": "Specify supplimentary techniques, if applicable",
         "placeholder": "DigitalImageCorrelation",
         "value": [
             "",
@@ -433,7 +433,7 @@
         "optional": true,
         "multiple": false,
         "section": "Experiment",
-        "description ": "Specify furnace",
+        "description": "Specify furnace",
         "value": [
             "",
             "RAMSII",
@@ -447,7 +447,7 @@
         "optional": false,
         "multiple": false,
         "section": "Sample",
-        "description ": "Specify sample name",
+        "description": "Specify sample name",
         "placeholder": "alloy1"
     },
     {
@@ -456,7 +456,7 @@
         "optional": false,
         "multiple": false,
         "section": "Sample",
-        "description ": "Are scans related to calibration?",
+        "description": "Are scans related to calibration?",
         "placeholder": "false",
         "value": [
             "",
@@ -470,7 +470,7 @@
         "optional": true,
         "multiple": true,
         "section": "Sample",
-        "description ": "Specify sample space group"
+        "description": "Specify sample space group"
     },
     {
         "key": "SampleGeometry",
@@ -478,7 +478,7 @@
         "optional": true,
         "multiple": false,
         "section": "Sample",
-        "description ": "Specify sample geometry"
+        "description": "Specify sample geometry"
     },
     {
         "key": "SampleMatPedHeatTreatment",
@@ -486,7 +486,7 @@
         "optional": true,
         "multiple": false,
         "section": "Sample",
-        "description ": "Specify sample material pedigree (heat treatment)"
+        "description": "Specify sample material pedigree (heat treatment)"
     },
     {
         "key": "SampleMatPedProcessingRoute",
@@ -494,7 +494,7 @@
         "optional": true,
         "multiple": false,
         "section": "Sample",
-        "description ": "Specify sample material pedigree (processing)"
+        "description": "Specify sample material pedigree (processing)"
     },
     {
         "key": "MaterialSafetyHazardousSamples",
@@ -502,7 +502,7 @@
         "optional": true,
         "multiple": false,
         "section": "Sample",
-        "description ": "Hazardous sample?",
+        "description": "Hazardous sample?",
         "value": [
             "",
             "true",
@@ -515,6 +515,6 @@
         "optional": true,
         "multiple": false,
         "section": "Sample",
-        "description ": "Sample state"
+        "description": "Sample state"
     }
 ]
