@@ -10,7 +10,7 @@ if __name__ == '__main__':
     # Run preprocessor
     parser = argparse.ArgumentParser(description="Create schema json from master excel spreadsheet")
     parser.add_argument('xlsx_file', metavar='xlsx', type=str, help='Path to excel file with current metadata fields')
-    parser.add_argument('beamline', metavar='beamline', help='Beamline name with capitals (e.g. ID1A3, ID4B, etc.)', type=str)
+    parser.add_argument('beamline', metavar='beamline', help='Beamline name with capitals (e.g. 1A3, 4B, etc.)', type=str)
     parser.add_argument('outputjson_name', metavar='outputjson', help='Name of json output without extension', type=str)
 
     args = parser.parse_args()
@@ -37,7 +37,7 @@ def clean_nones(value):
         return value
 
 def add_value_lists(initial_json, df_clean):
-    df_keys_w_values = df_clean.dropna(subset=['Values']) #remove rows from dataframe without value lists
+    df_keys_w_values = df_clean.dropna(subset=['value']) #remove rows from dataframe without value lists
     df_idx = df_keys_w_values.index.values.tolist()
     value_lists = df_clean.iloc[:,7:].values.tolist() #hardcoded for value position column in df
 
@@ -45,21 +45,21 @@ def add_value_lists(initial_json, df_clean):
         if ii in df_idx:
             cleanedvalues = [x for x in value_lists[ii-1] if x == x] #remove nan values
             cleanedvalues.insert(0,'') #add blank field at beginning of list (per valentin request)
-            initial_json[ii-1]["Values"] = cleanedvalues
+            initial_json[ii-1]["value"] = cleanedvalues
         else:
-            initial_json[ii-1]["Values"] = None
+            initial_json[ii-1]["value"] = None
 
     return initial_json
 
 def intermediate_dataframe(df):
     df_inter = df.iloc[:, :8] #select fields for creating json
-    df_inter.rename(columns={'MetaKey':'Key'}, inplace=True) #make dictionary key "key". Doing this earlier will break pandas functions.
+    df_inter.rename(columns={'metakey':'key'}, inplace=True) #make dictionary key "key". Doing this earlier will break pandas functions.
 
     return df_inter
 
 def clean_dataframe(df):
-    df_clean = df.dropna(subset=['MetaKey']).reset_index(drop=True) #remove nan keys
-    df_clean.rename(columns={'MetaKey':'Key'}, inplace=True)
+    df_clean = df.dropna(subset=['metakey']).reset_index(drop=True) #remove nan keys
+    df_clean.rename(columns={'metakey':'key'}, inplace=True)
     df_clean = df_clean.iloc[1:,:]
     return df_clean
 
