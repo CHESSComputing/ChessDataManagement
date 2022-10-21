@@ -254,7 +254,7 @@
         "multiple": false,
         "section": "Beam",
         "description": "Beam energy",
-        "placeholder": 80.725
+        "placeholder": "80.725"
     },
     {
         "key": "BeamlineSetupDocument",

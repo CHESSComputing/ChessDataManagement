@@ -18,7 +18,7 @@ if __name__ == '__main__':
     beamline = args.beamline
     outputjson_name = args.outputjson_name
 
-
+#%%
 def clean_nones(value):
     """
     Recursively remove all None values from dictionaries and lists, and returns
@@ -30,7 +30,7 @@ def clean_nones(value):
         return {
             key: clean_nones(val)
             for key, val in value.items()
-            if val is not None
+            if val is not None 
         }
     else:
         return value
@@ -72,6 +72,7 @@ def create_intermediate_json(df_inter):
     return json_format
 
 def generate_schema_from_dataframe(df_clean):
+    df_clean = check_dataypes(df_clean)
     df_inter = intermediate_dataframe(df_clean)
     json_initial = create_intermediate_json(df_inter)
     json_with_values = add_value_lists(json_initial, df_clean)
@@ -79,24 +80,31 @@ def generate_schema_from_dataframe(df_clean):
 
     return clean_json
 
+def check_dataypes(df):
+    #check descriptor
+    df['description'] = df['description'].apply(str) 
+    df['placeholder'] = df['placeholder'].notna().apply(str) 
+    return df
+    
+
 #%%
 '''
 #####If not using argparse (CLI)#######
 
-xlsx_file = 'Metadata_Schema_102022.xlsx'
+xlsx_file = 'metadata_excel_102022.xlsx'
 beamline = 'ID1A3'
-outputjson_name = 'BeamlineSchema/id1a3_schema'
+outputjson_name = 'BeamlineSchema/id1a3_new_schema'
+
 '''
 #%%
 # Make Pandas Dataframe from Beamline Specific sheet
 sheet_id = beamline + '_schema'
 df = pd.read_excel(xlsx_file, sheet_id)
-#%%
 df_clean = clean_dataframe(df)
 #%%
 # Generate json_schema
 json_schema = generate_schema_from_dataframe(df_clean)
-print (json.dumps(json_schema, indent=4))
+#print (json.dumps(json_schema, indent=4))
 #%%
 # Save json_schema
 if outputjson_name:
