@@ -515,6 +515,14 @@
         "optional": true,
         "multiple": false,
         "section": "Sample",
-        "description": "Sample state"
+        "description": "Sample state",
+        "value": [
+            "",
+            "Powder ",
+            "ThinFilm",
+            "SingleCrystal",
+            "Foil",
+            "Solution"
+        ]
     }
 ]
