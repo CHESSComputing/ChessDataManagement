@@ -6,9 +6,8 @@
     <label class="{{.Class}}">{{.Key}}</label>
 {{end}}
 
-{{if eq .Description "Not Available"}}
-{{else}}
-    <label>Description: {{.Description}}</label>
+{{if ne .Description "Not Available"}}
+    <label>{{.Description}}</label>
 {{end}}
     <div name="{{.Key}}" class="form-item">
 {{if eq .Multiple "multiple"}}
@@ -28,6 +27,9 @@
     <label class="{{.Class}}">{{.Key}} (&#42;)</label>
 {{else}}
     <label class="{{.Class}}">{{.Key}}</label>
+{{end}}
+{{if ne .Description "Not Available"}}
+    <label>{{.Description}}</label>
 {{end}}
 
 {{if eq .Type "checkbox" }}
