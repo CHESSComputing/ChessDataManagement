@@ -20,7 +20,7 @@
         "type": "string",
         "optional": false,
         "section": "User",
-        "descriptor": "Principal Investigator",
+        "description": "Principal Investigator",
         "placeholder": "wilson"
     },
   {
@@ -28,7 +28,7 @@
         "type": "string",
         "optional": false,
         "section": "User",
-        "descriptor": "Beamtime Request ID",
+        "description": "Beamtime Request ID",
         "placeholder": "wilson-161-a"
     },
   {
@@ -36,7 +36,7 @@
         "type": "string",
         "optional": true,
         "section": "User",
-        "descriptor": "Please list the experimenters who performed this data collection",
+        "description": "Please list the experimenters who performed this data collection",
         "placeholder": "lastname 1, lastname 2"
     },
   {
@@ -51,7 +51,7 @@
         "type": "string",
         "optional": false,
         "section": "User",
-        "descriptor": "Please list the staff scientists supporting this beamline",
+        "description": "Please list the staff scientists supporting this beamline",
         "placeholder": "staffsci-lastname 1, staffsci-lastname 2"
     },
 {
@@ -66,7 +66,7 @@
         "type": "bool",
         "optional": false,
         "section": "Alignment",
-        "descriptor": "Is this data collection part of an alignment series?"
+        "description": "Is this data collection part of an alignment series?"
     },
   {
         "key": "DataLocationRaw",
