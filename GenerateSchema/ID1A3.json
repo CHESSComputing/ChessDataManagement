@@ -292,7 +292,7 @@
     },
     {
         "key": "ExperimentType",
-        "type": "string",
+        "type": "list_str",
         "optional": false,
         "multiple": false,
         "section": "Experiment",
@@ -309,7 +309,7 @@
     },
     {
         "key": "Technique",
-        "type": "string",
+        "type": "list_str",
         "optional": false,
         "multiple": false,
         "section": "Experiment",
