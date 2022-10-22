@@ -1,0 +1,247 @@
+[
+    {
+        "key": "Facility",
+        "type": "string",
+        "optional": false,
+        "section": "User",
+        "placeholder": "CHESS",
+        "value": [
+            ""
+        ]
+    },
+    {
+        "key": "Cycle",
+        "type": "string",
+        "optional": false,
+        "section": "User",
+        "placeholder": "2022-3",
+        "value": [
+            "",
+            "2022-2"
+        ],
+        "values.1": "2022-2"
+    },
+    {
+        "key": "PI",
+        "type": "string",
+        "optional": false,
+        "section": "User",
+        "description": "Principal Investigator",
+        "placeholder": "wilson"
+    },
+    {
+        "key": "BTR",
+        "type": "string",
+        "optional": false,
+        "section": "User",
+        "description": "Beamtime Request ID",
+        "placeholder": "wilson-161-a"
+    },
+    {
+        "key": "Experimenters",
+        "type": "string",
+        "optional": true,
+        "section": "User",
+        "description": "Please list the experimenters who performed this data collection",
+        "placeholder": "lastname 1, lastname 2"
+    },
+    {
+        "key": "Beamline",
+        "type": "list_str",
+        "optional": false,
+        "section": "User",
+        "placeholder": "dropdown or checklist",
+        "value": [
+            "",
+            "2A",
+            "3A",
+            "3B",
+            "4B",
+            "7A",
+            "7B2"
+        ],
+        "values.1": "2A"
+    },
+    {
+        "key": "StaffScientist",
+        "type": "string",
+        "optional": false,
+        "section": "User",
+        "description": "Please list the staff scientists supporting this beamline",
+        "placeholder": "staffsci-lastname 1, staffsci-lastname 2"
+    },
+    {
+        "key": "BeamlineFundingPartner",
+        "type": "list_str",
+        "optional": false,
+        "section": "User",
+        "placeholder": "dropdown or checklist",
+        "value": [
+            "",
+            "MSNC_AFRL",
+            "MACCHESS_NSF_NIH",
+            "CHESS_internal",
+            "CHEXS_NSF"
+        ],
+        "values.1": "MSNC_AFRL"
+    },
+    {
+        "key": "Alignment",
+        "type": "bool",
+        "optional": false,
+        "section": "Alignment",
+        "description": "Is this data collection part of an alignment series?",
+        "placeholder": "checkmark for true/false",
+        "value": [
+            "",
+            "false"
+        ],
+        "values.1": "false"
+    },
+    {
+        "key": "DataLocationRaw",
+        "type": "string",
+        "optional": false,
+        "section": "DataLocations",
+        "placeholder": "/nfs/chess/raw/2022-3/id1a3/wilson-161-a"
+    },
+    {
+        "key": "Detectors",
+        "type": "list_str",
+        "optional": false,
+        "section": "Experiment",
+        "placeholder": "dropdown or checklist",
+        "value": [
+            "",
+            "Vortex",
+            "Pilatus6M",
+            "DualDexelas",
+            "GE2",
+            "Manta",
+            "Retiga",
+            "Eiger216M",
+            "Eiger1M",
+            "Pilatus200K",
+            "Pilatus300K",
+            "CanberraSingleElement"
+        ],
+        "values.1": "Vortex"
+    },
+    {
+        "key": "CESRCondtions",
+        "type": "list_str",
+        "optional": false,
+        "section": "Beam",
+        "placeholder": "dropdown or checklist",
+        "value": [
+            "",
+            "21BunchMode",
+            "9x5BunchMode"
+        ],
+        "values.1": "21BunchMode"
+    },
+    {
+        "key": "ExperimentType",
+        "type": "list_str",
+        "optional": false,
+        "section": "Experiment",
+        "placeholder": "dropdown or checklist",
+        "value": [
+            "",
+            "Imaging",
+            "Spectroscopy",
+            "Crystallography",
+            "Scattering/Diffraction"
+        ],
+        "values.1": "Imaging"
+    },
+    {
+        "key": "Technique",
+        "type": "list_str",
+        "optional": false,
+        "section": "Experiment",
+        "placeholder": "dropdown or checklist",
+        "value": [
+            "",
+            "HighEnergyDiffractionMicroscopyNearField",
+            "HighEnergyDiffractionMicroscopyFarField",
+            "HighEnergyDiffractionMicroscopyMidField",
+            "PowderDiffraction",
+            "ResonantElasticX-rayScattering",
+            "3DPDF",
+            "DiffuseScattering",
+            "SAXS+WAXS",
+            "SAXS",
+            "XRayFluorescence",
+            "Tomography"
+        ],
+        "values.1": "HighEnergyDiffractionMicroscopyNearField"
+    },
+    {
+        "key": "SampleType",
+        "type": "list_str",
+        "optional": true,
+        "section": "Sample",
+        "placeholder": "dropdown or checklist",
+        "value": [
+            "",
+            "sample+can",
+            "can",
+            "sample+butter",
+            "buffer",
+            "calibration sample",
+            "normalisation sample",
+            "simulated data",
+            "none",
+            "sample environment"
+        ],
+        "values.1": "sample+can"
+    },
+    {
+        "key": "SampleName",
+        "type": "string",
+        "optional": true,
+        "section": "Sample",
+        "placeholder": "TitaniumDioxide-samp2"
+    },
+    {
+        "key": "Calibration",
+        "type": "bool",
+        "optional": true,
+        "section": "Sample",
+        "placeholder": "checkmark for true/false",
+        "value": [
+            "",
+            "false"
+        ],
+        "values.1": "false"
+    },
+    {
+        "key": "DataLocationMeta",
+        "type": "string",
+        "optional": true,
+        "section": "DataLocations",
+        "placeholder": "/nfs/chess/metadata/2022-3/id1a3/wilson-161-a"
+    },
+    {
+        "key": "DataLocationReduced",
+        "type": "string",
+        "optional": true,
+        "section": "DataLocations",
+        "placeholder": "/nfs/chess/reduced/2022-3/id1a3/wilson-161-a"
+    },
+    {
+        "key": "DataLocationScratch",
+        "type": "string",
+        "optional": true,
+        "section": "DataLocations",
+        "placeholder": "/nfs/chess/scratch/2022-3/id1a3/wilson-161-a"
+    },
+    {
+        "key": "DataLocationBeamtimeNotes",
+        "type": "string",
+        "optional": true,
+        "section": "DataLocations",
+        "placeholder": "/nfs/chess/metadata/2022-3/id1a3/wilson-161-a/samplename"
+    }
+]

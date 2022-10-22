@@ -13,6 +13,7 @@ import argparse
 from math import isnan
 import numpy as np
 
+'''
 if __name__ == '__main__':
 
     # Run preprocessor
@@ -26,6 +27,8 @@ if __name__ == '__main__':
     beamline = args.beamline
     outputjson_name = args.outputjson_name
 
+'''
+
 def clean_dataframe(df):
     df_clean = df.dropna(subset=['metakey']).reset_index(drop=True) #remove nan keys
     df_clean.rename(columns={'metakey':'key'}, inplace=True)
@@ -36,13 +39,13 @@ def Convert(a):
     it = iter(a)
     res_dct = dict(zip(it, it))
     return res_dct
-'''
+
 #####If not using argparse (CLI)#######
 
 xlsx_file = 'Metadata_Schema_102022.xlsx'
 beamline = 'ID1A3'
-outputjson_name = 'id1a3_schema'
-'''
+outputjson_name = 'BeamlineSchema/empty_id1a3'
+
 #%%
 # Make Pandas Dataframe from Beamline Specific sheet
 sheet_id = beamline + '_schema'
@@ -60,4 +63,4 @@ print (json_format)
 # Save json_schema
 if outputjson_name:
     with open(outputjson_name + '.json', 'w', encoding='utf-8') as f:
-        json.dump(json_schema, f, ensure_ascii=False, indent=4)
+        json.dump(json_format, f, ensure_ascii=False, indent=4)

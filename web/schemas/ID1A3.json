@@ -254,7 +254,7 @@
         "multiple": false,
         "section": "Beam",
         "description": "Beam energy",
-        "placeholder": 80.725
+        "placeholder": "80.725"
     },
     {
         "key": "BeamlineSetupDocument",
@@ -515,6 +515,14 @@
         "optional": true,
         "multiple": false,
         "section": "Sample",
-        "description": "Sample state"
+        "description": "Sample state",
+        "value": [
+            "",
+            "Powder ",
+            "ThinFilm",
+            "SingleCrystal",
+            "Foil",
+            "Solution"
+        ]
     }
 ]
