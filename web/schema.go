@@ -286,7 +286,9 @@ func (s *Schema) SectionKeys() (map[string][]string, error) {
 	}
 	// populate section map with keys defined in webSectionKeys
 	if Config.WebSectionKeys != nil {
-		smap = Config.WebSectionKeys
+		for k, v := range Config.WebSectionKeys {
+			smap[k] = v
+		}
 	}
 	// loop over all sections and add section keys to the map
 	for _, sect := range sections {
