@@ -8,6 +8,7 @@ package main
 import (
 	"bytes"
 	"html/template"
+	"log"
 	"path/filepath"
 )
 
@@ -64,6 +65,9 @@ func (q Templates) Tmpl(tdir, tfile string, tmplData map[string]interface{}) str
 	if q.html != "" {
 		return q.html
 	}
-	q.html = parseTmpl(Config.Templates, tfile, tmplData)
+	if Config.Verbose > 0 {
+		log.Println("template.Tmpl load", tdir, tfile)
+	}
+	q.html = parseTmpl(tdir, tfile, tmplData)
 	return q.html
 }
