@@ -40,29 +40,7 @@
     </div>
     <div class="is-col is-80">
 
-<div class="form-container center-70">
-<form class="form-content" method="post" action="process">
     {{.Form}}
-
-    <fieldset id="Final" class="">
-        <legend>Description meta-data ({{.User}})</legend>
-        <div class="form-item">
-            <label class="is-req">Beamline Notes (&#42;)</label>
-            <textarea name="Description" rows="3" class="is-90" required></textarea>
-        </div>
-
-        <div class="form-item">
-            <div class="is-append is-push-right is-right">
-                <div class="is-80">
-                    <input type="hidden" id="Form2SchemaName" name="SchemaName" value=""/>
-                    <input type="hidden" name="User" value="{{.User}}"/>
-                </div>
-                <button class="button">Submit</button>
-            </div>
-        </div>
-    </fieldset>
-</form>
-</div>
 
     </div>
 </div>
