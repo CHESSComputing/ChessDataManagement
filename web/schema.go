@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"sort"
 	"strings"
@@ -57,6 +58,7 @@ func (m *SchemaManager) Load(fname string) (*Schema, error) {
 		m.Map = make(map[string]*SchemaObject)
 	}
 	m.Map[fname] = &SchemaObject{Schema: schema, LoadTime: time.Now()}
+
 	return schema, nil
 }
 
@@ -74,8 +76,9 @@ type SchemaRecord struct {
 
 // Schema provides structure of schema file
 type Schema struct {
-	FileName string                  `json:"fileName`
-	Map      map[string]SchemaRecord `json:"map"`
+	FileName       string                  `json:"fileName`
+	Map            map[string]SchemaRecord `json:"map"`
+	WebSectionKeys map[string][]string     `json:"webSectionKeys"`
 }
 
 // Load loads given schema file
@@ -140,6 +143,29 @@ func (s *Schema) Load() error {
 	}
 	// update schema map
 	s.Map = smap
+
+	// either load web section schema file or use default web section keys
+	base := strings.Split(fname, ".")[0]
+	filepath := fmt.Sprintf("%s_web.json", base)
+	if _, err := os.Stat(filepath); err == nil {
+		file, err := os.Open(filepath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer file.Close()
+		data, err := io.ReadAll(file)
+		if err != nil {
+			log.Fatal(err)
+		}
+		var rec map[string][]string
+		err = json.Unmarshal(data, &rec)
+		if err != nil {
+			log.Fatal(err)
+		}
+		s.WebSectionKeys = rec
+	} else {
+		s.WebSectionKeys = Config.WebSectionKeys
+	}
 	return nil
 }
 
@@ -285,8 +311,10 @@ func (s *Schema) SectionKeys() (map[string][]string, error) {
 		return smap, err
 	}
 	// populate section map with keys defined in webSectionKeys
-	if Config.WebSectionKeys != nil {
-		smap = Config.WebSectionKeys
+	if s.WebSectionKeys != nil {
+		for k, v := range s.WebSectionKeys {
+			smap[k] = v
+		}
 	}
 	// loop over all sections and add section keys to the map
 	for _, sect := range sections {

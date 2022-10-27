@@ -228,7 +228,8 @@ func genForm(fname string) (string, error) {
 	var out []string
 	val := fmt.Sprintf("<h3>Web form submission</h3><br/>")
 	out = append(out, val)
-	val = fmt.Sprintf("<input name=\"beamline\" type=\"hidden\" value=\"\"/>%s", fileName(fname))
+	beamline := fileName(fname)
+	val = fmt.Sprintf("<input name=\"beamline\" type=\"hidden\" value=\"\"/>%s", beamline)
 	schema, err := _smgr.Load(fname)
 	if err != nil {
 		return strings.Join(out, ""), err
@@ -322,7 +323,12 @@ func genForm(fname string) (string, error) {
 		}
 		out = append(out, "</fieldset>")
 	}
-	return strings.Join(out, "\n"), nil
+	form := strings.Join(out, "\n")
+	tmplData := make(map[string]interface{})
+	tmplData["Beamline"] = beamline
+	tmplData["Form"] = template.HTML(form)
+	var templates Templates
+	return templates.Tmpl(Config.Templates, "form_beamline.tmpl", tmplData), nil
 }
 
 // helper function to create form entry
@@ -399,8 +405,8 @@ func DataHandler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		formEntry := fmt.Sprintf("<div id=\"%s\" class=\"%s\">%s</div>", fileName(fname), cls, form)
-		forms = append(forms, formEntry)
+		beamlineForm := fmt.Sprintf("<div id=\"%s\" class=\"%s\">%s</div>", fileName(fname), cls, form)
+		forms = append(forms, beamlineForm)
 	}
 	tmplData["Form"] = template.HTML(strings.Join(forms, "\n"))
 	page := templates.Tmpl(Config.Templates, "keys.tmpl", tmplData)
