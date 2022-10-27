@@ -6,7 +6,11 @@
         "multiple": false,
         "section": "User",
         "description": "Facility where the experiment to be performed, e.g. CHESS",
-        "placeholder": "CHESS"
+        "placeholder": "CHESS",
+        "value": [
+            "",
+            "CHESS"
+        ]
     },
     {
         "key": "Cycle",
@@ -53,6 +57,7 @@
         "description": "Specify beamline",
         "placeholder": "4B",
         "value": [
+            "",
             "1A3",
             "2A",
             "3A",
@@ -80,6 +85,7 @@
         "description": "Select a funding partner",
         "placeholder": "CHEXS_NSF",
         "value": [
+            "",
             "CHEXS_NSF",
             "MSNC_AFRL",
             "MACCHESS_NSF_NIH",
@@ -96,8 +102,9 @@
         "description": "Do you have final alignment?",
         "placeholder": "Yes/No",
         "value": [
-            "Yes",
-            "No"
+            "",
+            "true",
+            "false"
         ]
     },
     {
@@ -109,8 +116,9 @@
         "description": "Do you have energy scan?",
         "placeholder": "Yes/No",
         "value": [
-            "Yes",
-            "No"
+            "",
+            "true",
+            "false"
         ]
     },
     {
@@ -122,8 +130,9 @@
         "description": "Do you have the undulator scan?",
         "placeholder": "Yes/No",
         "value": [
-            "Yes",
-            "No"
+            "",
+            "true",
+            "false"
         ]
     },
     {
@@ -189,6 +198,7 @@
         "description": "CESR bunch mode",
         "placeholder": "9x5BunchMode",
         "value": [
+            "",
             "9BunchMode",
             "21BunchMode",
             "9x5BunchMode"
@@ -212,6 +222,7 @@
         "description": "Include the insertion device ",
         "placeholder": "CCU",
         "value": [
+            "",
             "CCU",
             "Wiggler",
             "CCU"
@@ -226,6 +237,7 @@
         "description": "Include the monochromator",
         "placeholder": "DoubleCrystalMono",
         "value": [
+            "",
             "MultiLayer",
             "DoubleCrystalMono",
             "SiLaueMono",
@@ -240,8 +252,9 @@
         "multiple": true,
         "section": "Beam",
         "description": "Are you using any energy foil?",
-        "placeholder": "black1",
+        "placeholder": "blank1",
         "value": [
+            "",
             "scrn",
             "blank1",
             "Au",
@@ -265,6 +278,7 @@
         "description": "Detectors used",
         "placeholder": "Pilatus6M",
         "value": [
+            "",
             "Eiger500",
             "Vortex",
             "Pilatus6M",
@@ -282,13 +296,14 @@
     },
     {
         "key": "ExperimentType",
-        "type": "string",
+        "type": "list_str",
         "optional": false,
         "multiple": true,
         "section": "Experiment",
         "description": "Experiment type(s) (e.g. scattering,diffraction)",
         "placeholder": "Diffraction",
         "value": [
+            "",
             "Scattering/Diffraction",
             "Imaging",
             "Spectroscopy",
@@ -305,19 +320,21 @@
         "description": "Is the experiment an in-situ test?",
         "placeholder": "Yes/No",
         "value": [
-            "Yes",
-            "No"
+            "",
+            "true",
+            "false"
         ]
     },
     {
         "key": "Technique",
-        "type": "string",
+        "type": "list_str",
         "optional": false,
         "multiple": true,
         "section": "Experiment",
         "description": "Experimental technique(s) (e.g HDRM/ DS/ 3DPDF)",
         "placeholder": "3DPDF",
         "value": [
+            "",
             "PowderDiffraction",
             "ResonantElasticX-rayScattering",
             "3DPDF",
@@ -385,8 +402,9 @@
         "description": "Specify your calibration sample (e.g. CeO2, LaB6)?",
         "placeholder": "CeO2",
         "value": [
-            "Yes",
-            "No"
+            "",
+            "true",
+            "false"
         ]
     },
     {
@@ -395,8 +413,7 @@
         "optional": true,
         "multiple": false,
         "section": "Sample",
-        "description": "If this is not a calibration sample: enter the sample name (used in new sample) for the relevant calibration sample dataset",
-        "placeholder": "N/A"
+        "description": "If this is not a calibration sample: enter the sample name (used in new sample) for the relevant calibration sample dataset"
     },
     {
         "key": "SampleType",
@@ -407,6 +424,7 @@
         "description": "Specify the type of sample",
         "placeholder": "sample",
         "value": [
+            "",
             "sample",
             "sample+can",
             "can",
@@ -471,7 +489,7 @@
         "multiple": false,
         "section": "Sample",
         "description": "Provide the sample mass ",
-        "placeholder": "5 gram"
+        "placeholder": "5 gm"
     },
     {
         "key": "SampleSpaceGroup",
@@ -488,8 +506,7 @@
         "optional": false,
         "multiple": false,
         "section": "Sample",
-        "description": "Sample heat-treated (if any)? insert \"N/A\" if none",
-        "placeholder": "N/A"
+        "description": "Sample heat-treated (if any)? insert \"N/A\" if none"
     },
     {
         "key": "SampleMatPedProcessingRoute",
@@ -497,8 +514,7 @@
         "optional": false,
         "multiple": false,
         "section": "Sample",
-        "description": "Write down shortly the sample processing route ",
-        "placeholder": null
+        "description": "Write down shortly the sample processing route "
     },
     {
         "key": "SampleState",
@@ -509,6 +525,7 @@
         "description": "Specify the sample state (e.g. Single Crystal, Thin-film )",
         "placeholder": "SingleCrystal",
         "value": [
+            "",
             "Powder ",
             "ThinFilm",
             "SingleCrystal",
@@ -534,8 +551,9 @@
         "description": "Is the sample hazardous?",
         "placeholder": "Yes/No",
         "value": [
-            "Yes",
-            "No"
+            "",
+            "true",
+            "false"
         ]
     },
     {
@@ -544,7 +562,6 @@
         "optional": false,
         "multiple": false,
         "section": "Sample",
-        "description": "Does the sample holder have a label? Iinsert \"N/A\" if none",
-        "placeholder": "N/A"
+        "description": "Does the sample holder have a label? Iinsert \"N/A\" if none"
     }
 ]
