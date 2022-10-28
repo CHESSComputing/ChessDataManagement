@@ -548,13 +548,16 @@ func SettingsHandler(w http.ResponseWriter, r *http.Request) {
 func parseValue(schema *Schema, key string, items []string) (any, error) {
 	r, ok := schema.Map[key]
 	if !ok {
+		if Config.TestMode && InList(key, _skipKeys) {
+			return "", nil
+		}
 		msg := fmt.Sprintf("No key %s found in schema map", key)
 		return false, errors.New(msg)
 	} else if r.Type == "list_str" {
 		return items, nil
-	} else if r.Type == "list_int" {
+	} else if strings.HasPrefix(r.Type, "list_int") {
 		return items, nil
-	} else if r.Type == "list_float" {
+	} else if strings.HasPrefix(r.Type, "list_float") {
 		return items, nil
 	} else if r.Type == "string" {
 		return items[0], nil
@@ -563,15 +566,15 @@ func parseValue(schema *Schema, key string, items []string) (any, error) {
 		if err == nil {
 			return v, nil
 		}
-		msg := fmt.Sprintf("Unable to parse boolean value for key=%s, please comeback to web form and choose either true or false", key)
+		msg := fmt.Sprintf("Unable to parse boolean value for key=%s, please come back to web form and choose either true or false", key)
 		return false, errors.New(msg)
-	} else if r.Type == "int" {
+	} else if strings.HasPrefix(r.Type, "int") {
 		v, err := strconv.ParseInt(items[0], 10, 64)
 		if err == nil {
 			return v, nil
 		}
 		return 0, err
-	} else if r.Type == "float" {
+	} else if strings.HasPrefix(r.Type, "float") {
 		v, err := strconv.ParseFloat(items[0], 64)
 		if err == nil {
 			return v, nil
