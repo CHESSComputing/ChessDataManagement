@@ -96,12 +96,7 @@
         "multiple": false,
         "section": "Alignment",
         "description": "Is this data collection part of an alignment series?",
-        "placeholder": "Y/N",
-        "value": [
-            "",
-            "true",
-            "false"
-        ]
+        "placeholder": "Y/N"
     },
     {
         "key": "EnergyScan",
@@ -110,12 +105,7 @@
         "multiple": false,
         "section": "Alignment",
         "description": "Is this an energy scan?",
-        "placeholder": "Y/N",
-        "value": [
-            "",
-            "true",
-            "false"
-        ]
+        "placeholder": "Y/N"
     },
     {
         "key": "UndulatorScan",
@@ -124,12 +114,7 @@
         "multiple": false,
         "section": "Alignment",
         "description": "Is this an undulator scan?",
-        "placeholder": "Y/N",
-        "value": [
-            "",
-            "true",
-            "false"
-        ]
+        "placeholder": "Y/N"
     },
     {
         "key": "BeamSlitHorizontalSize",
@@ -456,12 +441,7 @@
         "multiple": false,
         "section": "Experiment",
         "description": "Is this an in-situ experiment?",
-        "placeholder": "Y/N",
-        "value": [
-            "",
-            "true",
-            "false"
-        ]
+        "placeholder": "Y/N"
     },
     {
         "key": "MechanicalTest",
@@ -470,12 +450,7 @@
         "multiple": false,
         "section": "Experiment",
         "description": "Is this a mechanical test?",
-        "placeholder": "Y/N",
-        "value": [
-            "",
-            "true",
-            "false"
-        ]
+        "placeholder": "Y/N"
     },
     {
         "key": "MechanicalTestType",
@@ -580,12 +555,7 @@
         "multiple": false,
         "section": "Sample",
         "description": "Is this a calibration sample (e.g. CeO2, multiruby)?",
-        "placeholder": "Y/N",
-        "value": [
-            "",
-            "true",
-            "false"
-        ]
+        "placeholder": "Y/N"
     },
     {
         "key": "ReferenceCalibrantSampleName",
@@ -649,10 +619,7 @@
         "section": "Sample",
         "description": "Chemical formula of sample",
         "placeholder": "Ti6Al4V",
-        "value": [
-            "",
-            "freetext"
-        ]
+        "value": "freetext"
     },
     {
         "key": "SampleUnitCell",
