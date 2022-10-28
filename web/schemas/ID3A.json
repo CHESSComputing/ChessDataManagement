@@ -1,0 +1,711 @@
+[
+    {
+        "key": "Facility",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "User",
+        "description": "Facility where the experiment was performed, e.g. CHESS, APS, ESRF",
+        "placeholder": "CHESS"
+    },
+    {
+        "key": "Cycle",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "User",
+        "description": "Specify the run cycle (e.g. 2022-3)",
+        "placeholder": "2022-3"
+    },
+    {
+        "key": "PI",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "User",
+        "description": "Last name of principle investigator",
+        "placeholder": "wilson"
+    },
+    {
+        "key": "BTR",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "User",
+        "description": "Beamtime request ID",
+        "placeholder": "wilson-1234-a"
+    },
+    {
+        "key": "Experimenters",
+        "type": "string",
+        "optional": true,
+        "multiple": true,
+        "section": "User",
+        "description": "Please list the experimenter(s) who performed this data collection",
+        "placeholder": "lastname1, lastname2"
+    },
+    {
+        "key": "Beamline",
+        "type": "list_str",
+        "optional": false,
+        "multiple": false,
+        "section": "User",
+        "description": "Specify beamline",
+        "placeholder": "3A",
+        "value": [
+            "",
+            "1A3",
+            "2A",
+            "3A",
+            "3B",
+            "4B",
+            "7A",
+            "7B2"
+        ]
+    },
+    {
+        "key": "StaffScientist",
+        "type": "string",
+        "optional": false,
+        "multiple": true,
+        "section": "User",
+        "description": "Please list the staff scientist(s) supporting this experiment",
+        "placeholder": "lastname1, lastname2"
+    },
+    {
+        "key": "BeamlineFundingPartner",
+        "type": "list_str",
+        "optional": false,
+        "multiple": false,
+        "section": "User",
+        "description": "Please list the beamline funding partner",
+        "placeholder": "CHEXS_NSF",
+        "value": [
+            "",
+            "CHEXS_NSF",
+            "MSNC_AFRL",
+            "MACCHESS_NSF_NIH",
+            "CHESS_internal",
+            "CHEXS_NSF"
+        ]
+    },
+    {
+        "key": "Alignment",
+        "type": "bool",
+        "optional": false,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "Is this data collection part of an alignment series?",
+        "placeholder": "Y/N",
+        "value": [
+            "",
+            "true",
+            "false"
+        ]
+    },
+    {
+        "key": "EnergyScan",
+        "type": "bool",
+        "optional": false,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "Is this an energy scan?",
+        "placeholder": "Y/N",
+        "value": [
+            "",
+            "true",
+            "false"
+        ]
+    },
+    {
+        "key": "UndulatorScan",
+        "type": "bool",
+        "optional": false,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "Is this an undulator scan?",
+        "placeholder": "Y/N",
+        "value": [
+            "",
+            "true",
+            "false"
+        ]
+    },
+    {
+        "key": "BeamSlitHorizontalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "horizontal beam-defining slit size - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "BeamSlitVerticalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "vertical beam-defining slit size - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "BeamSlitHorizontalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "horizontal beam-defining slit position - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "BeamSlitVerticalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "vertical beam-defining slit position - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "PreSlitHorizontalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "horizontal pre-slit size - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "PreSlitVerticalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "vertical pre-slit size - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "PreSlitHorizontalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "horizontal pre-slit position - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "PreSlitVerticalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "vertical pre-slit position - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "GuardSlitHorizontalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "horizontal guard slit size - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "GuardSlitVerticalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "vertical guard slit size - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "GuardSlitHorizontalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "horizontal guard slit position - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "GuardSlitVerticalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "verticall guard slit position - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "DataLocationRaw",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "DataLocations",
+        "description": "Location of the raw data ",
+        "placeholder": "/nfs/chess/raw/2022-3/id3a/wilson-1234-a"
+    },
+    {
+        "key": "DataLocationMeta",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "DataLocations",
+        "description": "Location of the metadata",
+        "placeholder": "/nfs/chess/aux/cycles/2022-3/id3a/wilson-1234-a/metadata"
+    },
+    {
+        "key": "DataLocationReduced",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "DataLocations",
+        "description": "Location of the reduced data",
+        "placeholder": "/nfs/chess/aux/cycles/2022-3/id3a/wilson-1234-a/reduced"
+    },
+    {
+        "key": "DataLocationScratch",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "DataLocations",
+        "description": "Location of the scratch data/analysis files",
+        "placeholder": "/nfs/chess/aux/cycles/2022-3/id3a/wilson-1234-a/scratch"
+    },
+    {
+        "key": "DataLocationBeamtimeNotes",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "DataLocations",
+        "description": "Location of the scratch data/analysis files",
+        "placeholder": "/nfs/chess/aux/cycles/2022-3/id3a/wilson-1234-a/beamtime_log.txt"
+    },
+    {
+        "key": "CESRCondtions",
+        "type": "list_str",
+        "optional": false,
+        "multiple": false,
+        "section": "Beam",
+        "description": "CESR fill pattern",
+        "placeholder": "9x5BunchMode",
+        "value": [
+            "",
+            "9BunchMode",
+            "21BunchMode",
+            "9x5BunchMode"
+        ]
+    },
+    {
+        "key": "BeamEnergy",
+        "type": "float64",
+        "optional": false,
+        "multiple": false,
+        "section": "Beam",
+        "description": "Beam energy [keV]",
+        "placeholder": "41.991"
+    },
+    {
+        "key": "Monochromator",
+        "type": "list_str",
+        "optional": false,
+        "multiple": false,
+        "section": "Beam",
+        "description": "Monochromator type used",
+        "placeholder": "DoubleCrystalMonochromator",
+        "value": [
+            "",
+            "MultiLayer",
+            "DoubleCrystalMono"
+        ]
+    },
+    {
+        "key": "Focusing",
+        "type": "list_str",
+        "optional": true,
+        "multiple": false,
+        "section": "Beam",
+        "description": "Focusing optic used, if any",
+        "placeholder": "None",
+        "value": [
+            "",
+            "Collimator",
+            "CRL",
+            "KB",
+            "Capillary",
+            "Sagittal",
+            "None"
+        ]
+    },
+    {
+        "key": "AttenMaterial",
+        "type": "list_str",
+        "optional": true,
+        "multiple": true,
+        "section": "Beam",
+        "description": "List of attenuator materials used - skip this field if this metadata record is for multiple scans with different attenuators",
+        "placeholder": "steel, aluminum",
+        "value": [
+            "",
+            "Steel",
+            "Aluminum"
+        ]
+    },
+    {
+        "key": "AttenThickness",
+        "type": "float64",
+        "optional": true,
+        "multiple": true,
+        "section": "Beam",
+        "description": "Thickness [mm] of attenuator(s) - enter one value for each attenutor material -  skip this field if this metadata record is for multiple scans with different attenuators",
+        "placeholder": "0.25, 3.0"
+    },
+    {
+        "key": "EnergyFoil",
+        "type": "list_str",
+        "optional": true,
+        "multiple": false,
+        "section": "Beam",
+        "description": "Energy foil used, if any -  skip this field if this metadata record is for multiple scans with different energy foils",
+        "placeholder": "Pr",
+        "value": [
+            "",
+            "scrn",
+            "blank1",
+            "Au",
+            "Pt",
+            "Ir",
+            "W",
+            "Hf",
+            "Yb",
+            "Ho",
+            "Tb",
+            "Sm",
+            "Pr",
+            "Sn",
+            "value",
+            "blank2",
+            "Yb",
+            "other"
+        ]
+    },
+    {
+        "key": "Detectors",
+        "type": "list_str",
+        "optional": false,
+        "multiple": true,
+        "section": "Experiment",
+        "description": "Detectors used",
+        "placeholder": "DualDexelas, Retiga",
+        "value": [
+            "",
+            "Eiger500",
+            "Vortex",
+            "Pilatus6M",
+            "DualDexelas",
+            "GE2",
+            "Manta",
+            "Retiga",
+            "Eiger216M",
+            "Eiger1M",
+            "Pilatus200K",
+            "Pilatus300K",
+            "CanberraSingleElement",
+            "CanberraMultielement",
+            "value",
+            "Pilatus100K",
+            "Others"
+        ]
+    },
+    {
+        "key": "ExperimentType",
+        "type": "list_str",
+        "optional": false,
+        "multiple": true,
+        "section": "Experiment",
+        "description": "Experiment type(s) (e.g. scattering, imaging)",
+        "placeholder": "Scattering/Diffraction, Imaging",
+        "value": [
+            "",
+            "Scattering/Diffraction",
+            "Imaging",
+            "Spectroscopy",
+            "Crystallography",
+            "Scattering/Diffraction"
+        ]
+    },
+    {
+        "key": "Technique",
+        "type": "list_str",
+        "optional": false,
+        "multiple": true,
+        "section": "Experiment",
+        "description": "Experimental technique(s) (e.g. powder, HEDM)",
+        "placeholder": "HighEnergyDiffractionMicroscopyFarField, Tomography",
+        "value": [
+            "",
+            "SingleCrystalDiffraction",
+            "HighEnergyDiffractionMicroscopyNearField",
+            "HighEnergyDiffractionMicroscopyFarField",
+            "HighEnergyDiffractionMicroscopyMidField",
+            "PowderDiffraction",
+            "ResonantElasticX-rayScattering",
+            "3DPDF",
+            "DiffuseScattering",
+            "SAXS+WAXS",
+            "SAXS",
+            "XRayFluorescence",
+            "Tomography"
+        ]
+    },
+    {
+        "key": "InSitu",
+        "type": "bool",
+        "optional": false,
+        "multiple": false,
+        "section": "Experiment",
+        "description": "Is this an in-situ experiment?",
+        "placeholder": "Y/N",
+        "value": [
+            "",
+            "true",
+            "false"
+        ]
+    },
+    {
+        "key": "MechanicalTest",
+        "type": "bool",
+        "optional": false,
+        "multiple": false,
+        "section": "Experiment",
+        "description": "Is this a mechanical test?",
+        "placeholder": "Y/N",
+        "value": [
+            "",
+            "true",
+            "false"
+        ]
+    },
+    {
+        "key": "MechanicalTestType",
+        "type": "list_str",
+        "optional": true,
+        "multiple": true,
+        "section": "Experiment",
+        "description": "Type of mechanical test",
+        "placeholder": "Tension",
+        "value": [
+            "",
+            "Tension",
+            "Compression",
+            "Cyclic",
+            "Torsion",
+            "4PtBend",
+            "3PtBend",
+            "LinkamTensile"
+        ]
+    },
+    {
+        "key": "MechanicalLoadFrame",
+        "type": "list_str",
+        "optional": true,
+        "multiple": false,
+        "section": "Experiment",
+        "description": "Mechanical load frame used",
+        "placeholder": "RAMSII",
+        "value": [
+            "",
+            "RAMSII",
+            "RAMSIV",
+            "Bose",
+            "CCLF",
+            "Other"
+        ]
+    },
+    {
+        "key": "MechanicalGrips",
+        "type": "list_str",
+        "optional": true,
+        "multiple": false,
+        "section": "Experiment",
+        "description": "Grip type used",
+        "placeholder": "RAMS",
+        "value": [
+            "",
+            "Wedge",
+            "RAMS",
+            "PinGrips",
+            "Other"
+        ]
+    },
+    {
+        "key": "SupplementaryTechnique",
+        "type": "list_str",
+        "optional": true,
+        "multiple": true,
+        "section": "Experiment",
+        "description": "Supplementary technique(s), if any",
+        "placeholder": "DigitalImageCorrelation",
+        "value": [
+            "",
+            "DigitalImageCorrelation",
+            "Raman",
+            "OpticalImaging"
+        ]
+    },
+    {
+        "key": "Furnace",
+        "type": "list_str",
+        "optional": true,
+        "multiple": false,
+        "section": "Experiment",
+        "description": "Furnace used, if any",
+        "placeholder": "RAMSII",
+        "value": [
+            "",
+            "RAMSII",
+            "LinkamHFS600",
+            "Other"
+        ]
+    },
+    {
+        "key": "Processing",
+        "type": "string",
+        "optional": true,
+        "multiple": false,
+        "section": "Experiment",
+        "description": "In-situ processing environment used, if any",
+        "value": [
+            "",
+            "NISTTestBed",
+            "Stratasys3DPrinter",
+            "Other"
+        ]
+    },
+    {
+        "key": "Calibration",
+        "type": "bool",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Is this a calibration sample (e.g. CeO2, multiruby)?",
+        "placeholder": "Y/N",
+        "value": [
+            "",
+            "true",
+            "false"
+        ]
+    },
+    {
+        "key": "ReferenceCalibrantSampleName",
+        "type": "string",
+        "optional": true,
+        "multiple": false,
+        "section": "Sample",
+        "description": "If this is not a calibration sample: enter the sample name (used in newsample) for the relevant calibration sample dataset. FOR MULTIRUBY CALIBRANTS: enter the sample name for the corresponding CeO2 scan",
+        "placeholder": "ceo2-0101"
+    },
+    {
+        "key": "ReferenceCalibrantScanNumber",
+        "type": "int32",
+        "optional": true,
+        "multiple": false,
+        "section": "Sample",
+        "description": "If this is not a calibration sample: enter the scan number for the relevant calibration sample dataset",
+        "placeholder": "3"
+    },
+    {
+        "key": "ReferenceEnergyScanSampleName",
+        "type": "string",
+        "optional": true,
+        "multiple": false,
+        "section": "Sample",
+        "description": "If this is not an energy scan: enter the sample name (used in newsample) for the relevant master energy scan",
+        "placeholder": "lineup-1"
+    },
+    {
+        "key": "ReferenceEnergyScanNumber",
+        "type": "int32",
+        "optional": true,
+        "multiple": false,
+        "section": "Sample",
+        "description": "If this is not an energy scan: enter the scan number for the relevant master energy scan",
+        "placeholder": "7"
+    },
+    {
+        "key": "SampleName",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Sample name/ID that you used in newsample",
+        "placeholder": "ti64-1"
+    },
+    {
+        "key": "SampleCommonName",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Common name of sample material",
+        "placeholder": "Ti64"
+    },
+    {
+        "key": "SampleChemicalFormula",
+        "type": "float64",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Chemical formula of sample",
+        "placeholder": "Ti6Al4V",
+        "value": [
+            "",
+            "freetext"
+        ]
+    },
+    {
+        "key": "SampleUnitCell",
+        "type": "float (6 dim)",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Unit cell dimensions [Angstrom]",
+        "placeholder": "2.511, 2.9511, 4.6843"
+    },
+    {
+        "key": "SampleSpaceGroup",
+        "type": "UTF-8",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Sample space group",
+        "placeholder": "194"
+    },
+    {
+        "key": "SampleGeometry",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Sample geometry",
+        "placeholder": "RAMSII tensile sample, button, cylinder"
+    },
+    {
+        "key": "SampleMatPedHeatTreatment",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Sample heat treatment, if any - input \"None\" if none",
+        "placeholder": "None"
+    },
+    {
+        "key": "SampleMatPedProcessingRoute",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Sample processing route, if any - input \"None\" if none",
+        "placeholder": "None"
+    },
+    {
+        "key": "MaterialSafetyHazardousSamples",
+        "type": "bool",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Is the sample hazardous?",
+        "placeholder": "Y/N"
+    }
+]
