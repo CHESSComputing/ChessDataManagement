@@ -19,6 +19,9 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
+// skip keys
+var _skipKeys = []string{"User", "Date", "Description", "SchemaName"}
+
 // SchemaRenewInterval setup interal to update schema cache
 var SchemaRenewInterval time.Duration
 
@@ -196,11 +199,10 @@ func (s *Schema) Validate(rec Record) error {
 		return err
 	}
 	// hidden mandatory keys we add to each form
-	skipKeys := []string{"User", "Date", "Description", "SchemaName"}
 	var mkeys []string
 	for k, v := range rec {
 		// skip user key
-		if InList(k, skipKeys) {
+		if InList(k, _skipKeys) {
 			continue
 		}
 		// check if our record key belong to the schema keys
@@ -399,12 +401,9 @@ func validSchemaType(stype string, v interface{}) bool {
 	case []float32:
 		etype = "list_float"
 	}
-	// by default we assign schema type int to be int32
-	if stype == "int" && etype == "int32" {
-		return true
-	}
-	if stype == "int32" && etype == "int" {
-		return true
+	sv := fmt.Sprintf("%v", v)
+	if sv == "" && etype != "string" {
+		return false
 	}
 	if stype != etype {
 		return false
