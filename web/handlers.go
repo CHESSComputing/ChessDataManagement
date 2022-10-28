@@ -373,14 +373,13 @@ func formEntry(smap map[string]SchemaRecord, k, s, required string) string {
 				}
 			} else {
 				if r.Value != nil {
-					//                     tmplData["Value"] = fmt.Sprintf("%v", r.Value)
 					switch values := r.Value.(type) {
 					case []any:
 						var vals []string
 						for _, v := range values {
 							vals = append(vals, fmt.Sprintf("%v", v))
 						}
-						tmplData["Value"] = vals
+						tmplData["Value"] = strings.Join(vals, ",")
 					default:
 						tmplData["Value"] = fmt.Sprintf("%v", r.Value)
 					}
