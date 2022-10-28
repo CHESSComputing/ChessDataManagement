@@ -232,18 +232,22 @@ func genForm(fname string) (string, error) {
 	val = fmt.Sprintf("<input name=\"beamline\" type=\"hidden\" value=\"\"/>%s", beamline)
 	schema, err := _smgr.Load(fname)
 	if err != nil {
+		log.Println("unable to load", fname, "error", err)
 		return strings.Join(out, ""), err
 	}
 	optKeys, err := schema.OptionalKeys()
 	if err != nil {
+		log.Println("unable to get optional keys, error", err)
 		return strings.Join(out, ""), err
 	}
 	allKeys, err := schema.Keys()
 	if err != nil {
+		log.Println("unable to get keys, error", err)
 		return strings.Join(out, ""), err
 	}
 	sectionKeys, err := schema.SectionKeys()
 	if err != nil {
+		log.Println("unable to get section keys, error", err)
 		return strings.Join(out, ""), err
 	}
 
@@ -251,6 +255,7 @@ func genForm(fname string) (string, error) {
 	var rec string
 	sections, err := schema.Sections()
 	if err != nil {
+		log.Println("unable to get sections, error", err)
 		return strings.Join(out, ""), err
 	}
 	for _, s := range sections {
