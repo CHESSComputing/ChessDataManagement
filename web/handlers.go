@@ -355,20 +355,35 @@ func formEntry(smap map[string]SchemaRecord, k, s, required string) string {
 				tmplData["List"] = true
 				switch values := r.Value.(type) {
 				case []any:
-					tmplData["Value"] = values
+					var vals []string
+					for _, v := range values {
+						vals = append(vals, fmt.Sprintf("%v", v))
+					}
+					tmplData["Value"] = vals
+					//                     tmplData["Value"] = values
 				default:
 					tmplData["Value"] = []string{}
 				}
 			} else if r.Type == "bool" || r.Type == "boolean" {
 				tmplData["List"] = true
 				if r.Value == true {
-					tmplData["Value"] = []string{"true", "false"}
+					tmplData["Value"] = []string{"", "true", "false"}
 				} else {
-					tmplData["Value"] = []string{"false", "true"}
+					tmplData["Value"] = []string{"", "false", "true"}
 				}
 			} else {
 				if r.Value != nil {
-					tmplData["Value"] = fmt.Sprintf("%v", r.Value)
+					//                     tmplData["Value"] = fmt.Sprintf("%v", r.Value)
+					switch values := r.Value.(type) {
+					case []any:
+						var vals []string
+						for _, v := range values {
+							vals = append(vals, fmt.Sprintf("%v", v))
+						}
+						tmplData["Value"] = vals
+					default:
+						tmplData["Value"] = fmt.Sprintf("%v", r.Value)
+					}
 				}
 			}
 			if r.Multiple {
@@ -548,7 +563,8 @@ func parseValue(schema *Schema, key string, items []string) (any, error) {
 		if err == nil {
 			return v, nil
 		}
-		return false, err
+		msg := fmt.Sprintf("Unable to parse boolean value for key=%s, please comeback to web form and choose either true or false", key)
+		return false, errors.New(msg)
 	} else if r.Type == "int" {
 		v, err := strconv.ParseInt(items[0], 10, 64)
 		if err == nil {
@@ -562,11 +578,12 @@ func parseValue(schema *Schema, key string, items []string) (any, error) {
 		}
 		return 0, err
 	}
-	return 0, errors.New("Unable to parse form value")
+	msg := fmt.Sprintf("Unable to parse form value for key %s", key)
+	return 0, errors.New(msg)
 }
 
 // helper function to process input form
-func processForm(r *http.Request) Record {
+func processForm(r *http.Request) (Record, error) {
 	rec := make(Record)
 	rec["Date"] = time.Now().Unix()
 	// read schemaName from form itself
@@ -587,23 +604,37 @@ func processForm(r *http.Request) Record {
 	schema, err := _smgr.Load(fname)
 	if err != nil {
 		log.Println("ERROR", err)
-		return rec
+		return rec, err
 	}
 	// r.PostForm provides url.Values which is map[string][]string type
 	// we convert it to Record
 	for k, items := range r.PostForm {
-		log.Println("### PostForm", k, items)
+		if Config.Verbose > 0 {
+			log.Println("### PostForm", k, items)
+		}
 		if k == "SchemaName" {
 			continue
 		}
 		val, err := parseValue(schema, k, items)
 		if err != nil {
-			log.Println("ERROR", err)
+			// check if given key is mandatory or optional
+			srec, ok := schema.Map[k]
+			if ok {
+				if srec.Optional {
+					log.Println("WARNING: unable to parse optional key", k)
+				} else {
+					log.Println("ERROR: unable to parse mandatory key", k, "error", err)
+					return rec, err
+				}
+			} else {
+				log.Println("ERROR: no key", k, "found in schema map, error", err)
+				return rec, err
+			}
 		}
 		rec[k] = val
 	}
 	log.Printf("process form, record %v\n", rec)
-	return rec
+	return rec, nil
 }
 
 // ProcessHandler handlers Process requests
@@ -617,8 +648,18 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 	var templates Templates
 	tmplData := make(map[string]interface{})
 	if err := r.ParseForm(); err == nil {
-		rec := processForm(r)
-		err := insertData(rec)
+		rec, err := processForm(r)
+		if err != nil {
+			msg = fmt.Sprintf("Web processing error: %v", err)
+			class = "alert is-error"
+			tmplData["Message"] = msg
+			tmplData["Class"] = class
+			page := templates.Tmpl(Config.Templates, "confirm.tmpl", tmplData)
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte(_top + page + _bottom))
+			return
+		}
+		err = insertData(rec)
 		if err == nil {
 			msg = fmt.Sprintf("Your meta-data is inserted successfully")
 			log.Println("INFO", msg)
@@ -814,10 +855,22 @@ func UpdateRecordHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
+	var templates Templates
+	tmplData := make(map[string]interface{})
 	var msg, cls string
 	var rec Record
 	if err := r.ParseForm(); err == nil {
-		rec = processForm(r)
+		rec, err = processForm(r)
+		if err != nil {
+			msg := fmt.Sprintf("Web processing error: %v", err)
+			class := "alert is-error"
+			tmplData["Message"] = msg
+			tmplData["Class"] = class
+			page := templates.Tmpl(Config.Templates, "confirm.tmpl", tmplData)
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte(_top + page + _bottom))
+			return
+		}
 		rid := r.FormValue("_id")
 		// delete record id before the update
 		delete(rec, "_id")
@@ -846,8 +899,6 @@ func UpdateRecordHandler(w http.ResponseWriter, r *http.Request) {
 		msg = fmt.Sprintf("record update failed, reason: %v", err)
 		cls = "is-error"
 	}
-	var templates Templates
-	tmplData := make(map[string]interface{})
 	tmplData["Message"] = strings.ToTitle(msg)
 	tmplData["Class"] = fmt.Sprintf("alert %s is-large is-text-center", cls)
 	page := templates.Tmpl(Config.Templates, "confirm.tmpl", tmplData)
