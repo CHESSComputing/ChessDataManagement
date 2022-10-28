@@ -52,6 +52,7 @@ func (m *SchemaManager) Load(fname string) (*Schema, error) {
 	schema := &Schema{FileName: fname}
 	err := schema.Load()
 	if err != nil {
+		log.Println("unable to load schema from", fname, " error", err)
 		return schema, err
 	}
 	if m.Map == nil {
@@ -150,12 +151,14 @@ func (s *Schema) Load() error {
 	if _, err := os.Stat(filepath); err == nil {
 		file, err := os.Open(filepath)
 		if err != nil {
-			log.Fatal(err)
+			log.Println("unable to open", filepath, "error", err)
+			return err
 		}
 		defer file.Close()
 		data, err := io.ReadAll(file)
 		if err != nil {
-			log.Fatal(err)
+			log.Println("unable to read file, error", err)
+			return err
 		}
 		var rec map[string][]string
 		err = json.Unmarshal(data, &rec)
@@ -164,7 +167,21 @@ func (s *Schema) Load() error {
 		}
 		s.WebSectionKeys = rec
 	} else {
-		s.WebSectionKeys = Config.WebSectionKeys
+		webKeys := make(map[string][]string)
+		var skeys []string
+		for k, _ := range s.Map {
+			skeys = append(skeys, k)
+		}
+		for key, values := range Config.WebSectionKeys {
+			var vals []string
+			for _, v := range values {
+				if InList(v, skeys) {
+					vals = append(vals, v)
+				}
+			}
+			webKeys[key] = vals
+		}
+		s.WebSectionKeys = webKeys
 	}
 	return nil
 }
@@ -338,6 +355,13 @@ func (s *Schema) SectionKeys() (map[string][]string, error) {
 
 // helper function to validate schema type of given value with respect to schema
 func validSchemaType(stype string, v interface{}) bool {
+	// on web form 0 will be int type, but we can allow it for any int's float's
+	if v == 0 {
+		if strings.Contains(stype, "int") || strings.Contains(stype, "float") {
+			return true
+		}
+	}
+	// check actual value type and compare it to given schema type
 	var etype string
 	switch v.(type) {
 	case bool:
@@ -374,6 +398,13 @@ func validSchemaType(stype string, v interface{}) bool {
 		etype = "list_float"
 	case []float32:
 		etype = "list_float"
+	}
+	// by default we assign schema type int to be int32
+	if stype == "int" && etype == "int32" {
+		return true
+	}
+	if stype == "int32" && etype == "int" {
+		return true
 	}
 	if stype != etype {
 		return false
