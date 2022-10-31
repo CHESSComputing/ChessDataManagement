@@ -1,0 +1,58 @@
+[
+    {
+        "key": "StringKey",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "User",
+        "description": "Facility where the experiment was performed, e.g. CHESS, APS, ESRF",
+        "placeholder": "CHESS"
+    },
+    {
+        "key": "StrKeyMultipleValues",
+        "type": "string",
+        "optional": false,
+        "section": "User",
+        "placeholder": "2022-3",
+        "value": [
+            "bla",
+            "2022-2"
+        ]
+    },
+    {
+        "key": "ListKey",
+        "type": "list_str",
+        "optional": false,
+        "multiple": false,
+        "section": "User",
+        "description": "Specify beamline",
+        "placeholder": "3A",
+        "value": [
+            "",
+            "1A3",
+            "2A",
+            "3A",
+            "3B",
+            "4B",
+            "7A",
+            "7B2"
+        ]
+    },
+    {
+        "key": "FloatKey",
+        "type": "float64",
+        "optional": false,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "horizontal beam-defining slit size - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "BoolKey",
+        "type": "bool",
+        "optional": false,
+        "multiple": false,
+        "section": "Experiment",
+        "description": "Is this a mechanical test?",
+        "placeholder": "Y/N"
+    }
+]
