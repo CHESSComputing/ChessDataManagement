@@ -104,3 +104,15 @@ venv.bak/
 .mypy_cache/
 
 Maintenance.md
+TODO.md
+DEMO.md
+validator
+web_amd64
+test.json
+server.json
+*.go-e
+*.db
+krb5*
+files
+*.tar.gz
+kube
