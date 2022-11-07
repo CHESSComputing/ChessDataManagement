@@ -7,10 +7,8 @@
         "section": "User",
         "description": "Facility where the experiment to be performed, e.g. CHESS",
         "placeholder": "CHESS",
-        "value": [
-            "",
-            "CHESS"
-        ]
+        "value":  "CHESS"
+        
     },
     {
         "key": "Cycle",
@@ -101,11 +99,7 @@
         "section": "Alignment",
         "description": "Do you have final alignment?",
         "placeholder": "Yes/No",
-        "value": [
-            "",
-            "true",
-            "false"
-        ]
+        "value": true
     },
     {
         "key": "EnergyScan",
@@ -115,11 +109,7 @@
         "section": "Alignment",
         "description": "Do you have energy scan?",
         "placeholder": "Yes/No",
-        "value": [
-            "",
-            "true",
-            "false"
-        ]
+        "value": true
     },
     {
         "key": "UndulatorScan",
@@ -129,11 +119,7 @@
         "section": "Alignment",
         "description": "Do you have the undulator scan?",
         "placeholder": "Yes/No",
-        "value": [
-            "",
-            "true",
-            "false"
-        ]
+        "value": true
     },
     {
         "key": "SpotSize",
@@ -319,11 +305,7 @@
         "section": "Experiment",
         "description": "Is the experiment an in-situ test?",
         "placeholder": "Yes/No",
-        "value": [
-            "",
-            "true",
-            "false"
-        ]
+        "value": false
     },
     {
         "key": "Technique",
@@ -395,16 +377,16 @@
     },
     {
         "key": "Calibration",
-        "type": "bool",
+        "type": "list_str",
         "optional": false,
         "multiple": false,
         "section": "Sample",
         "description": "Specify your calibration sample (e.g. CeO2, LaB6)?",
         "placeholder": "CeO2",
         "value": [
-            "",
-            "true",
-            "false"
+            "CeO2",
+            "LaB6",
+	    "Others"
         ]
     },
     {
@@ -466,7 +448,7 @@
     },
     {
         "key": "SampleUnitCell",
-        "type": "float (6 dim)",
+        "type": "float64",
         "optional": false,
         "multiple": false,
         "section": "Sample",
@@ -493,7 +475,7 @@
     },
     {
         "key": "SampleSpaceGroup",
-        "type": "UTF-8",
+        "type": "string",
         "optional": false,
         "multiple": false,
         "section": "Sample",
@@ -535,12 +517,12 @@
     },
     {
         "key": "SamplePreparationDate",
-        "type": "ISO8601 date/time stamp",
+        "type": "string",
         "optional": false,
         "multiple": false,
         "section": "Sample",
         "description": "Provide the sample preparation date",
-        "placeholder": "DD-MM-YYYY"
+        "placeholder": "YYYY-MM-DD"
     },
     {
         "key": "MaterialSafetyHazardousSamples",
@@ -550,11 +532,7 @@
         "section": "Sample",
         "description": "Is the sample hazardous?",
         "placeholder": "Yes/No",
-        "value": [
-            "",
-            "true",
-            "false"
-        ]
+        "value": false
     },
     {
         "key": "HolderLabel",
