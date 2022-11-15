@@ -6,9 +6,9 @@
         "multiple": false,
         "section": "User",
         "description": "Facility where the experiment to be performed, e.g. CHESS",
-        "placeholder": "CHESS",
-        "value":  "CHESS"
-        
+        "placeholder": "CHESS"
+
+
     },
     {
         "key": "Cycle",
@@ -44,7 +44,7 @@
         "multiple": true,
         "section": "User",
         "description": "Include all the names who are collecting the data in the beamline",
-        "placeholder": "lastname1, lastname2, ....."
+        "placeholder": "fullname1, fullname2, ....."
     },
     {
         "key": "Beamline",
@@ -72,7 +72,7 @@
         "multiple": true,
         "section": "User",
         "description": "List of staff scientists",
-        "placeholder": "lastname1, lastname2,"
+        "placeholder": "Fullname1, Fullname2,"
     },
     {
         "key": "BeamlineFundingPartner",
@@ -123,7 +123,7 @@
     },
     {
         "key": "SpotSize",
-        "type": "float64",
+        "type": "string",
         "optional": false,
         "multiple": false,
         "section": "Alignment",
@@ -192,7 +192,7 @@
     },
     {
         "key": "BeamEnergy",
-        "type": "float64",
+        "type": "string",
         "optional": false,
         "multiple": false,
         "section": "Beam",
@@ -293,8 +293,7 @@
             "Scattering/Diffraction",
             "Imaging",
             "Spectroscopy",
-            "Crystallography",
-            "Scattering/Diffraction"
+            "Crystallography"
         ]
     },
     {
@@ -354,12 +353,12 @@
         "optional": false,
         "multiple": false,
         "section": "Experiment",
-        "description": "Please provide the temperatures of the experiment",
+        "description": "Please provide the temperatures of the experiment or N/A",
         "placeholder": "5K, 10K, 25K"
     },
     {
         "key": "ScanEdgeK",
-        "type": "float64",
+        "type": "string",
         "optional": true,
         "multiple": false,
         "section": "Experiment",
@@ -368,7 +367,7 @@
     },
     {
         "key": "ScanEdgeL",
-        "type": "float64",
+        "type": "string",
         "optional": true,
         "multiple": false,
         "section": "Experiment",
@@ -430,7 +429,7 @@
     },
     {
         "key": "SampleChemicalFormula",
-        "type": "float64",
+        "type": "string",
         "optional": false,
         "multiple": false,
         "section": "Sample",
@@ -448,29 +447,29 @@
     },
     {
         "key": "SampleUnitCell",
-        "type": "float64",
+        "type": "string",
         "optional": false,
         "multiple": false,
         "section": "Sample",
         "description": "Unit cell dimensions (Angstrom)",
-        "placeholder": "5.43 Angstrom"
+        "placeholder": "a = 5.43, b = 5.43, c = 4.34, alpha = 90, beta = 90, gamma = 90"
     },
     {
         "key": "SampleDSpacing",
-        "type": "float64",
+        "type": "float",
         "optional": false,
         "multiple": false,
         "section": "Sample",
         "description": "Provide the sample d spacing (nm)",
-        "placeholder": "0.132 nm"
+        "placeholder": "0.132"
     },
     {
         "key": "SampleMass",
-        "type": "float64",
+        "type": "string",
         "optional": false,
         "multiple": false,
         "section": "Sample",
-        "description": "Provide the sample mass ",
+        "description": "Provide the sample mass in  ",
         "placeholder": "5 gm"
     },
     {
@@ -496,7 +495,7 @@
         "optional": false,
         "multiple": false,
         "section": "Sample",
-        "description": "Write down shortly the sample processing route "
+        "description": "Write down shortly the sample synthesis route "
     },
     {
         "key": "SampleState",
