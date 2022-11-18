@@ -151,7 +151,7 @@ func KAuthHandler(w http.ResponseWriter, r *http.Request) {
 
 // SearchHandler handlers Search requests
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
-	_, err := username(r)
+	user, err := username(r)
 	if err != nil {
 		_, err := getUserCredentials(r)
 		if err != nil {
@@ -191,6 +191,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	var templates Templates
 	tmplData := make(map[string]interface{})
 	tmplData["Query"] = query
+	tmplData["User"] = user
 	page := templates.Tmpl(Config.Templates, "searchform.tmpl", tmplData)
 
 	// process the query
@@ -859,6 +860,8 @@ func UpdateRecordHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	var templates Templates
 	tmplData := make(map[string]interface{})
+	user, _ := username(r)
+	tmplData["User"] = user
 	var msg, cls string
 	var rec Record
 	if err := r.ParseForm(); err == nil {
