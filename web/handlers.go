@@ -213,6 +213,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 			tmplData["Did"] = rec["did"]
 			tmplData["RecordString"] = rec.ToString()
 			tmplData["Record"] = rec.ToJSON()
+			tmplData["Description"] = fmt.Sprintf("update on %s", time.Now().String())
 			prec := templates.Tmpl(Config.Templates, "record.tmpl", tmplData)
 			page = fmt.Sprintf("%s<br>%s", page, prec)
 		}
@@ -678,6 +679,7 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 			inputs := htmlInputs(rec)
 			tmplData["Inputs"] = inputs
 			tmplData["Id"] = ""
+			tmplData["Description"] = fmt.Sprintf("update on %s", time.Now().String())
 			page += templates.Tmpl(Config.Templates, "update.tmpl", tmplData)
 			w.WriteHeader(http.StatusOK)
 			w.Write([]byte(_top + page + _bottom))
@@ -827,6 +829,7 @@ func htmlInputs(rec Record) []template.HTML {
 
 // UpdateHandler handlers Process requests
 func UpdateHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("UpdateHandler")
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -847,6 +850,7 @@ func UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	inputs := htmlInputs(rec)
 	tmplData["Inputs"] = inputs
 	tmplData["Id"] = r.FormValue("_id")
+	tmplData["Description"] = fmt.Sprintf("update on %s", time.Now().String())
 	page := templates.Tmpl(Config.Templates, "update.tmpl", tmplData)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(_top + page + _bottom))

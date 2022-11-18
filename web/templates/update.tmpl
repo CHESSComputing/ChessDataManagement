@@ -4,6 +4,7 @@
     <div class="form-item">
         <input name="_id" type="hidden" value="{{.Id}}">
         <input type="hidden" name="User" value="{{.User}}"/>
+        <input type="hidden" name="Description" value="{{.Description}}"/>
     </div>
 {{range $i, $input := .Inputs}}
     <div class="form-item">
