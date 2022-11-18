@@ -85,6 +85,7 @@ func Server(configFile string) {
 	}
 
 	log.Println("Configuration:", Config.String())
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	// initialize FilesDB connection
 	FilesDB, err = InitFilesDB()
