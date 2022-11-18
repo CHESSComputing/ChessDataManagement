@@ -456,7 +456,7 @@
     },
     {
         "key": "SampleDSpacing",
-        "type": "float",
+        "type": "float64",
         "optional": false,
         "multiple": false,
         "section": "Sample",
