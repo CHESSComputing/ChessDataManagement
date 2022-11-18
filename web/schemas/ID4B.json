@@ -348,7 +348,7 @@
         "placeholder": "50K, 100K, 323K"
     },
     {
-        "key": "Cryostat3.5Kto300K",
+        "key": "Cryostat3Kto300K",
         "type": "string",
         "optional": false,
         "multiple": false,
