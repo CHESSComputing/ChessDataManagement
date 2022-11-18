@@ -65,7 +65,7 @@ func (q Templates) Tmpl(tdir, tfile string, tmplData map[string]interface{}) str
 	if q.html != "" {
 		return q.html
 	}
-	if Config.Verbose > 0 {
+	if Config.Verbose > 1 {
 		log.Println("template.Tmpl load", tdir, tfile)
 	}
 	q.html = parseTmpl(tdir, tfile, tmplData)
