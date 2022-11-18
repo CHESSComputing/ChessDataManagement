@@ -404,6 +404,7 @@ func formEntry(smap map[string]SchemaRecord, k, s, required string) string {
 
 // DataHandler handlers Data requests
 func DataHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("DataHandler")
 	if r.Method != "GET" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -528,6 +529,7 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 
 // SettingsHandler handlers Settings requests
 func SettingsHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("SettingsHandler")
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -631,8 +633,10 @@ func processForm(r *http.Request) (Record, error) {
 					return rec, err
 				}
 			} else {
-				log.Println("ERROR: no key", k, "found in schema map, error", err)
-				return rec, err
+				if !InList(k, _skipKeys) {
+					log.Println("ERROR: no key", k, "found in schema map, error", err)
+					return rec, err
+				}
 			}
 		}
 		rec[k] = val
@@ -643,6 +647,7 @@ func processForm(r *http.Request) (Record, error) {
 
 // ProcessHandler handlers Process requests
 func ProcessHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("ProcessHandler")
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -651,8 +656,13 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 	var class string
 	var templates Templates
 	tmplData := make(map[string]interface{})
+	user, _ := username(r)
+	tmplData["User"] = user
 	if err := r.ParseForm(); err == nil {
 		rec, err := processForm(r)
+		if _, ok := rec["User"]; !ok {
+			rec["User"] = user
+		}
 		if err != nil {
 			msg = fmt.Sprintf("Web processing error: %v", err)
 			class = "alert is-error"
@@ -695,6 +705,7 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 
 // APIHandler handlers Api requests
 func APIHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("ApiHandler")
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
