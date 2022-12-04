@@ -199,3 +199,14 @@ function ClearFilters() {
     }
     load('/das/request?'+$('das_search').serialize());
 }
+// https://stackoverflow.com/questions/11071473/how-can-javascript-save-to-a-local-file
+function SaveRecord() {
+  type = "text/plain";
+  rec = document.getElementById('json_record').innerHTML;
+  var a = document.createElement("a");
+  var file = new Blob([rec], {type: type});
+  a.href = URL.createObjectURL(file);
+  a.download = 'record.json';
+  a.href = window.URL.createObjectURL(file);
+  a.click();
+}
