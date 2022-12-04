@@ -35,6 +35,25 @@
     </form>
     </div>
 
+    <div>
+    <form class="form-content" method="post" action="json" enctype="multipart/form-data">
+        <h3>Use JSON file</h3>
+        <br/>
+        <div class="form-item">
+            <label> Provided JSON file will fill the web form </label>
+            <input name="file" type="file">
+        </div>
+        <div class="form-item">
+            <div class="is-append is-push-right is-right">
+                <div class="is-80">
+                    <input type="hidden" id="FormSchemaName" name="SchemaName" value=""/>
+                    <input type="hidden" name="User" value="{{.User}}"/>
+                </div>
+                <button class="button is-small">Upload</button>
+            </div>
+        </div>
+    </form>
+    </div>
 </div>
 
     </div>
