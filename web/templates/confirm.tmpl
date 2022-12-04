@@ -1,3 +1,12 @@
 <div class="center-70 {{.Class}}">
 {{.Message}}
 </div>
+{{if .JsonRecord }}
+<div class="center-70">
+    <h3>JSON record</h3>
+    <br/>
+    <pre id="json_record" class="hide">{{.JsonRecord}}</pre>
+    <a href="javascript:FlipTag('json_record')" class="button is-secondary is-small is-gray">Show</a>
+    <a href="javascript:SaveRecord()" class="button is-secondary is-small">Save</a>
+</div>
+{{end}}
