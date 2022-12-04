@@ -89,6 +89,8 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 		UpdateRecordHandler(w, r)
 	case "files":
 		FilesHandler(w, r)
+	case "json":
+		JsonHandler(w, r)
 	default:
 		DataHandler(w, r)
 	}
@@ -402,7 +404,41 @@ func formEntry(smap map[string]SchemaRecord, k, s, required string) string {
 	return templates.Tmpl(Config.Templates, "form_entry.tmpl", tmplData)
 }
 
-// DataHandler handlers Data requests
+// JsonHandler handles upload of JSON file
+func JsonHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("JsonHandler")
+	if r.Method != "GET" {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+	user, _ := username(r)
+	var templates Templates
+	tmplData := make(map[string]interface{})
+	tmplData["User"] = user
+	tmplData["Date"] = time.Now().Unix()
+	tmplData["Beamlines"] = _beamlines
+	var forms []string
+	for idx, fname := range Config.SchemaFiles {
+		cls := "hide"
+		if idx == 0 {
+			cls = ""
+		}
+		form, err := genForm(fname)
+		if err != nil {
+			log.Println("ERROR", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		beamlineForm := fmt.Sprintf("<div id=\"%s\" class=\"%s\">%s</div>", fileName(fname), cls, form)
+		forms = append(forms, beamlineForm)
+	}
+	tmplData["Form"] = template.HTML(strings.Join(forms, "\n"))
+	page := templates.Tmpl(Config.Templates, "keys.tmpl", tmplData)
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(_top + page + _bottom))
+}
+
+// DataHandler handles Data requests
 func DataHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("DataHandler")
 	if r.Method != "GET" {
@@ -641,6 +677,10 @@ func processForm(r *http.Request) (Record, error) {
 		}
 		rec[k] = val
 	}
+	user, err := username(r)
+	if err == nil {
+		rec["User"] = user
+	}
 	log.Printf("process form, record %v\n", rec)
 	return rec, nil
 }
@@ -660,8 +700,9 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 	tmplData["User"] = user
 	if err := r.ParseForm(); err == nil {
 		rec, err := processForm(r)
-		if _, ok := rec["User"]; !ok {
-			rec["User"] = user
+		// save parsed record for later usage
+		if data, e := json.MarshalIndent(rec, "", "   "); e == nil {
+			tmplData["JsonRecord"] = template.HTML(string(data))
 		}
 		if err != nil {
 			msg = fmt.Sprintf("Web processing error: %v", err)
