@@ -406,11 +406,17 @@ func formEntry(smap map[string]SchemaRecord, k, s, required string, record *Reco
 							vals = append(vals, defaultValue)
 						}
 						for _, v := range values {
-							if v != defaultValue {
-								vals = append(vals, fmt.Sprintf("%v", v))
+							vstr := fmt.Sprintf("%v", v)
+							for _, vvv := range strings.Split(vstr, ",") {
+								vals = append(vals, vvv)
 							}
 						}
-						vals = List2Set(vals)
+						var out []string
+						vstr := strings.Join(vals, ",")
+						for _, vvv := range strings.Split(vstr, ",") {
+							out = append(out, vvv)
+						}
+						vals = List2Set(out)
 						tmplData["Value"] = strings.Join(vals, ",")
 					default:
 						tmplData["Value"] = fmt.Sprintf("%v", r.Value)
