@@ -228,7 +228,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // helper function to generate input form
-func genForm(fname string) (string, error) {
+func genForm(fname string, record *Record) (string, error) {
 	var out []string
 	val := fmt.Sprintf("<h3>Web form submission</h3><br/>")
 	out = append(out, val)
@@ -274,9 +274,9 @@ func genForm(fname string) (string, error) {
 			}
 			for _, k := range skeys {
 				if InList(k, optKeys) {
-					rec = formEntry(schema.Map, k, s, "")
+					rec = formEntry(schema.Map, k, s, "", record)
 				} else {
-					rec = formEntry(schema.Map, k, s, "required")
+					rec = formEntry(schema.Map, k, s, "required", record)
 				}
 				out = append(out, rec)
 			}
@@ -300,9 +300,9 @@ func genForm(fname string) (string, error) {
 		}
 		for _, k := range skeys {
 			if InList(k, optKeys) {
-				rec = formEntry(schema.Map, k, s, "required")
+				rec = formEntry(schema.Map, k, s, "required", record)
 			} else {
-				rec = formEntry(schema.Map, k, s, "")
+				rec = formEntry(schema.Map, k, s, "", record)
 			}
 			out = append(out, rec)
 		}
@@ -316,9 +316,9 @@ func genForm(fname string) (string, error) {
 		if r, ok := schema.Map[k]; ok {
 			if r.Section == "" {
 				if InList(k, optKeys) {
-					rec = formEntry(schema.Map, k, "", "")
+					rec = formEntry(schema.Map, k, "", "", record)
 				} else {
-					rec = formEntry(schema.Map, k, "", "required")
+					rec = formEntry(schema.Map, k, "", "required", record)
 				}
 				nOut = append(nOut, rec)
 			}
@@ -341,10 +341,20 @@ func genForm(fname string) (string, error) {
 }
 
 // helper function to create form entry
-func formEntry(smap map[string]SchemaRecord, k, s, required string) string {
+func formEntry(smap map[string]SchemaRecord, k, s, required string, record *Record) string {
+	// check if provided record has value
+	var defaultValue string
+	if record != nil {
+		rmap := *record
+		if v, ok := rmap[k]; ok {
+			defaultValue = fmt.Sprintf("%v", v)
+		}
+		defaultValue = strings.Replace(defaultValue, "[", "", -1)
+		defaultValue = strings.Replace(defaultValue, "]", "", -1)
+	}
 	tmplData := make(map[string]interface{})
 	tmplData["Key"] = k
-	tmplData["Value"] = ""
+	tmplData["Value"] = defaultValue
 	tmplData["Placeholder"] = ""
 	tmplData["Description"] = ""
 	tmplData["Required"] = required
@@ -360,11 +370,16 @@ func formEntry(smap map[string]SchemaRecord, k, s, required string) string {
 				switch values := r.Value.(type) {
 				case []any:
 					var vals []string
-					for _, v := range values {
-						vals = append(vals, fmt.Sprintf("%v", v))
+					if defaultValue != "" {
+						vals = append(vals, defaultValue)
 					}
+					for _, v := range values {
+						if v != defaultValue {
+							vals = append(vals, fmt.Sprintf("%v", v))
+						}
+					}
+					vals = List2Set(vals)
 					tmplData["Value"] = vals
-					//                     tmplData["Value"] = values
 				default:
 					tmplData["Value"] = []string{}
 				}
@@ -375,17 +390,33 @@ func formEntry(smap map[string]SchemaRecord, k, s, required string) string {
 				} else {
 					tmplData["Value"] = []string{"", "false", "true"}
 				}
+				if defaultValue != "" {
+					if defaultValue == "true" {
+						tmplData["Value"] = []string{"true", "false"}
+					} else {
+						tmplData["Value"] = []string{"false", "true"}
+					}
+				}
 			} else {
 				if r.Value != nil {
 					switch values := r.Value.(type) {
 					case []any:
 						var vals []string
-						for _, v := range values {
-							vals = append(vals, fmt.Sprintf("%v", v))
+						if defaultValue != "" {
+							vals = append(vals, defaultValue)
 						}
+						for _, v := range values {
+							if v != defaultValue {
+								vals = append(vals, fmt.Sprintf("%v", v))
+							}
+						}
+						vals = List2Set(vals)
 						tmplData["Value"] = strings.Join(vals, ",")
 					default:
 						tmplData["Value"] = fmt.Sprintf("%v", r.Value)
+						if defaultValue != "" {
+							tmplData["Value"] = fmt.Sprintf("%v", defaultValue)
+						}
 					}
 				}
 			}
@@ -406,10 +437,28 @@ func formEntry(smap map[string]SchemaRecord, k, s, required string) string {
 
 // JsonHandler handles upload of JSON file
 func JsonHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("JsonHandler")
-	if r.Method != "GET" {
+	log.Println("JsonHandler", r.Method)
+	if r.Method != "POST" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
+	}
+
+	file, _, err := r.FormFile("file")
+	if err != nil {
+		msg := "unable to read file form"
+		handleError(w, r, msg, err)
+		return
+	}
+	defer file.Close()
+
+	defer r.Body.Close()
+	body, err := ioutil.ReadAll(file)
+	var rec Record
+	if err == nil {
+		err = json.Unmarshal(body, &rec)
+		if err != nil {
+			log.Println("unable to read HTTP JSON record, error:", err)
+		}
 	}
 	user, _ := username(r)
 	var templates Templates
@@ -423,7 +472,7 @@ func JsonHandler(w http.ResponseWriter, r *http.Request) {
 		if idx == 0 {
 			cls = ""
 		}
-		form, err := genForm(fname)
+		form, err := genForm(fname, &rec)
 		if err != nil {
 			log.Println("ERROR", err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -457,7 +506,7 @@ func DataHandler(w http.ResponseWriter, r *http.Request) {
 		if idx == 0 {
 			cls = ""
 		}
-		form, err := genForm(fname)
+		form, err := genForm(fname, nil)
 		if err != nil {
 			log.Println("ERROR", err)
 			w.WriteHeader(http.StatusInternalServerError)
