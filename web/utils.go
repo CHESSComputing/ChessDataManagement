@@ -485,3 +485,10 @@ func makeURL(url, urlType string, startIdx, limit, nres int) string {
 	out = fmt.Sprintf("%s&amp;idx=%d&&amp;limit=%d", url, idx, limit)
 	return out
 }
+
+// helper function to return current stack of functions calls
+func stack() string {
+	stackSlice := make([]byte, 1024)
+	s := runtime.Stack(stackSlice, false)
+	return fmt.Sprintf("\n%s", stackSlice[0:s])
+}
