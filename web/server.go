@@ -94,9 +94,12 @@ func Server(configFile string) {
 		log.Printf("FilesDB error: %v\n", err)
 	}
 	// initialize schema manager
-	_smgr := SchemaManager{}
+	_smgr = SchemaManager{}
 	for _, fname := range Config.SchemaFiles {
-		_smgr.Load(fname)
+		_, err := _smgr.Load(fname)
+		if err != nil {
+			log.Fatalf("unable to load %s error %v", fname, err)
+		}
 		_beamlines = append(_beamlines, fileName(fname))
 	}
 	log.Println("Schema", _smgr.String())
