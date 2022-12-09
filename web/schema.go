@@ -49,6 +49,7 @@ func (m *SchemaManager) String() string {
 func (m *SchemaManager) Load(fname string) (*Schema, error) {
 	if sobj, ok := m.Map[fname]; ok {
 		if sobj.Schema != nil && time.Since(sobj.LoadTime) < SchemaRenewInterval {
+			log.Println("schema taken from cache", fname)
 			return sobj.Schema, nil
 		}
 	}
@@ -57,6 +58,14 @@ func (m *SchemaManager) Load(fname string) (*Schema, error) {
 	if err != nil {
 		log.Println("unable to load schema from", fname, " error", err)
 		return schema, err
+	}
+	log.Println("renew schema:", fname)
+	// reset map if it is expired
+	if sobj, ok := m.Map[fname]; ok {
+		if sobj.Schema != nil && time.Since(sobj.LoadTime) > SchemaRenewInterval {
+			log.Println("reset schema manager")
+			m.Map = nil
+		}
 	}
 	if m.Map == nil {
 		m.Map = make(map[string]*SchemaObject)
