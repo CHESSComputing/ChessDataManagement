@@ -81,6 +81,13 @@ func Handlers() *mux.Router {
 	router.HandleFunc("/api", APIHandler).Methods("POST")
 	router.HandleFunc("/search", SearchHandler).Methods("GET", "POST")
 	router.HandleFunc("/files", FilesHandler).Methods("GET", "POST")
+	router.HandleFunc("/faq", FAQHandler)
+	router.HandleFunc("/status", StatusHandler)
+	router.HandleFunc("/server", SettingsHandler)
+	router.HandleFunc("/data", DataHandler)
+	router.HandleFunc("/process", ProcessHandler)
+	router.HandleFunc("/updateRecord", UpdateRecordHandler)
+	router.HandleFunc("/json", JsonHandler)
 	router.HandleFunc("/", AuthHandler).Methods("GET", "POST")
 
 	// common middleware
