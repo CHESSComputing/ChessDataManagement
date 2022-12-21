@@ -23,6 +23,7 @@ import (
 	_ "expvar"         // to be used for monitoring, see https://github.com/divan/expvarmon
 	_ "net/http/pprof" // profiler, see https://golang.org/pkg/net/http/pprof/
 
+	"github.com/gorilla/mux"
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 )
 
@@ -51,6 +52,40 @@ func utcMsg(data []byte) string {
 		return v
 	}
 	return s
+}
+
+// loggerMiddleware helper function
+// https://www.thecodersstop.com/golang/simple-http-request-logging-middleware-in-go/
+func loggerMiddleware(r *mux.Router) mux.MiddlewareFunc {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+			defer func() {
+				log.Printf(
+					"[%s] %s %s %s",
+					req.Method,
+					req.Host,
+					req.URL.Path,
+					req.URL.RawQuery,
+				)
+			}()
+			next.ServeHTTP(w, req)
+		})
+	}
+}
+
+// Handlers provides helper function to setup all HTTP routes
+func Handlers() *mux.Router {
+	router := mux.NewRouter()
+	router.StrictSlash(true) // to allow /route and /route/ end-points
+	router.HandleFunc("/auth", KAuthHandler).Methods("GET", "POST")
+	router.HandleFunc("/api", APIHandler).Methods("POST")
+	router.HandleFunc("/search", SearchHandler).Methods("GET", "POST")
+	router.HandleFunc("/files", FilesHandler).Methods("GET", "POST")
+	router.HandleFunc("/", AuthHandler).Methods("GET", "POST")
+
+	// common middleware
+	router.Use(loggerMiddleware(router))
+	return router
 }
 
 // Server code
@@ -122,11 +157,7 @@ func Server(configFile string) {
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir(Config.Styles))))
 	http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir(Config.Jscripts))))
 	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir(Config.Images))))
-	http.HandleFunc("/auth", KAuthHandler)
-	http.HandleFunc("/api", APIHandler)
-	http.HandleFunc("/search", SearchHandler)
-	http.HandleFunc("/files", FilesHandler)
-	http.HandleFunc("/", AuthHandler)
+	http.Handle("/", Handlers())
 
 	// Start server
 	addr := fmt.Sprintf(":%d", Config.Port)
