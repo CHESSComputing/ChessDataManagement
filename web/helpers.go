@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -119,24 +120,39 @@ func getUserCredentials(r *http.Request) (*credentials.Credentials, error) {
 }
 
 // helper function to validate input data record against schema
-func validateData(rec Record) error {
-	var errs []string
-	for _, smgr := range _smgr.Map {
+func validateData(sname string, rec Record) error {
+	if smgr, ok := _smgr.Map[sname]; ok {
 		schema := smgr.Schema
 		err := schema.Validate(rec)
 		if err != nil {
-			e := fmt.Sprintf("%s, error=%v", schema.String(), err)
-			errs = append(errs, e)
-		} else {
-			log.Printf("Record %+v pass schema %s", rec, schema.String())
-			return nil
+			return err
 		}
-	}
-	if len(errs) == len(_smgr.Map) {
-		// we checked all schemas and all of them returned the error
-		msg := fmt.Sprintf("Unable to find schema for this records\n%s", strings.Join(errs, "\n"))
+	} else {
+		msg := "No schema found for your record"
 		return errors.New(msg)
 	}
+	/*
+		var errs []string
+		for _, smgr := range _smgr.Map {
+			schema := smgr.Schema
+			if schema.FileName != sname {
+				continue
+			}
+			err := schema.Validate(rec)
+			if err != nil {
+				e := fmt.Sprintf("%s, error=%v", schema.String(), err)
+				errs = append(errs, e)
+			} else {
+				log.Printf("Record %+v pass schema %s", rec, schema.String())
+				return nil
+			}
+		}
+		if len(errs) > 0 {
+			// we checked all keys within our schema
+			msg := fmt.Sprintf("Invalid record\n%s", strings.Join(errs, "\n"))
+			return errors.New(msg)
+		}
+	*/
 	return nil
 }
 
@@ -168,9 +184,9 @@ func preprocess(rec Record) Record {
 }
 
 // helper function to insert data into backend DB
-func insertData(rec Record) error {
+func insertData(sname string, rec Record) error {
 	// check if data satisfies to one of the schema
-	if err := validateData(rec); err != nil {
+	if err := validateData(sname, rec); err != nil {
 		return err
 	}
 	if _, ok := rec["Date"]; !ok {
@@ -181,7 +197,7 @@ func insertData(rec Record) error {
 	if v, ok := rec["DataLocationRaw"]; ok {
 		path = v.(string)
 	} else {
-		path = "test"
+		path = filepath.Join("/tmp", os.Getenv("USER")) // for testing purposes
 	}
 	if v, ok := rec["Facility"]; ok {
 		experiment = v.(string)
