@@ -123,7 +123,7 @@ func userTicket() []byte {
 	fname := fmt.Sprintf("krb5_%d_%v", os.Getuid(), time.Now().Unix())
 	tmpFile, err := ioutil.TempFile("/tmp", fname)
 	if err != nil {
-		exit("Unabel to get tmp file", err)
+		exit("Unable to get tmp file", err)
 	}
 	defer os.Remove(tmpFile.Name())
 
@@ -163,7 +163,7 @@ func getKerberosTicket(krbFile string) []byte {
 		// read krbFile and check user credentials
 		creds, err := kuserFromCache(krbFile)
 		if err != nil {
-			msg := fmt.Sprintf("unable to read %s", krbFile)
+			msg := fmt.Sprintf("getKerberosTicket unable to read %s", krbFile)
 			exit(msg, err)
 		}
 		if creds.Expired() {
@@ -193,20 +193,22 @@ func getForm(krbFile string) url.Values {
 }
 
 // helper function to place request to chess data management system
-func placeRequest(uri, configFile, krbFile string) error {
+func placeRequest(schemaName, uri, fileName, krbFile string) error {
 
 	// if we'll pass yaml file we'll need to convert it to json
 	// if we'll pass json data we should probably read it via
 	// json.Unmarshal and use appropriate type structure from server
-	config, err := ioutil.ReadFile(configFile)
+	record, err := ioutil.ReadFile(fileName)
 	if err != nil {
 		exit("unable to read config file", err)
 	}
 	form := getForm(krbFile)
-	form.Add("config", string(config))
+	form.Add("record", string(record))
+	form.Add("SchemaName", schemaName)
 	url := fmt.Sprintf("%s/api", uri)
 	req, err := http.NewRequest("POST", url, strings.NewReader(form.Encode()))
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	//     req.Header.Add("Content-Type", "multipart/form-data")
 	servercrt := getCertificate()
 	client := httpClient(servercrt)
 	resp, err := client.Do(req)
@@ -223,6 +225,7 @@ func placeRequest(uri, configFile, krbFile string) error {
 func findRecords(uri, query, krbFile string) {
 	form := getForm(krbFile)
 	form.Add("query", string(query))
+	form.Add("client", "cli")
 	url := fmt.Sprintf("%s/search", uri)
 	req, err := http.NewRequest("POST", url, strings.NewReader(form.Encode()))
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
@@ -237,7 +240,7 @@ func findRecords(uri, query, krbFile string) {
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
-		exit(fmt.Sprintf("requset fails with status: %v", resp.Status), nil)
+		exit(fmt.Sprintf("request fails with status: %v", resp.Status), nil)
 	}
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -264,7 +267,7 @@ func findFiles(uri string, did int64, krbFile string) {
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
-		exit(fmt.Sprintf("requset fails with status: %v", resp.Status), nil)
+		exit(fmt.Sprintf("request fails with status: %v", resp.Status), nil)
 	}
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -274,6 +277,8 @@ func findFiles(uri string, did int64, krbFile string) {
 }
 
 func main() {
+	var schema string
+	flag.StringVar(&schema, "schema", "", "schema name for your data")
 	var query string
 	flag.StringVar(&query, "query", "", "query string to look-up your data")
 	var did int64
@@ -291,8 +296,8 @@ func main() {
 		msg = fmt.Sprintf("%s\nOptions:\n", msg)
 		fmt.Fprintf(os.Stderr, msg)
 		flag.PrintDefaults()
-		fmt.Fprintf(os.Stderr, "\nExamples:\n\n# inject new record into the system")
-		fmt.Fprintf(os.Stderr, "\n%s -krbFile krb5cc_ccache -json record.json", client)
+		fmt.Fprintf(os.Stderr, "\nExamples:\n\n# inject new record into the system using lite schema")
+		fmt.Fprintf(os.Stderr, "\n%s -krbFile krb5cc_ccache -insert record.json -schema lite", client)
 		fmt.Fprintf(os.Stderr, "\n\n# look-up data from the system using free text-search")
 		fmt.Fprintf(os.Stderr, "\n%s -krbFile krb5cc_ccache -query=\"search words\"", client)
 		fmt.Fprintf(os.Stderr, "\n\n# look-up data from the system using keyword search")
@@ -301,6 +306,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "\n%s -krbFile krb5cc_ccache -did=1570563920579312510\n", client)
 	}
 	flag.Parse()
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	if did > 0 {
 		findFiles(uri, did, krbFile)
 		return
@@ -309,5 +315,5 @@ func main() {
 		findRecords(uri, query, krbFile)
 		return
 	}
-	placeRequest(uri, record, krbFile)
+	placeRequest(schema, uri, record, krbFile)
 }
