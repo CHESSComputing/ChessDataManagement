@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -43,6 +44,19 @@ type ServerSettings struct {
 //
 // ### HTTP METHODS
 //
+
+// helper function to write json response
+func jsonResponse(w http.ResponseWriter, err error, status int) {
+	rec := make(Record)
+	if err != nil {
+		rec["error"] = err.Error()
+	}
+	rec["status"] = status
+	w.WriteHeader(status)
+	if body, err := json.Marshal(rec); err == nil {
+		w.Write(body)
+	}
+}
 
 // AuthHandler authenticate incoming requests and route them to appropriate handler
 func AuthHandler(w http.ResponseWriter, r *http.Request) {
@@ -153,7 +167,14 @@ func KAuthHandler(w http.ResponseWriter, r *http.Request) {
 
 // SearchHandler handlers Search requests
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
-	user, err := username(r)
+	var user string
+	var err error
+	if Config.TestMode {
+		user = "test"
+		err = nil
+	} else {
+		user, err = username(r)
+	}
 	if err != nil {
 		_, err := getUserCredentials(r)
 		if err != nil {
@@ -161,6 +182,9 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 			handleError(w, r, msg, err)
 			return
 		}
+	}
+	// check if we use web or cli
+	if client := r.FormValue("client"); client == "cli" {
 		query := r.FormValue("query")
 
 		// process the query
@@ -679,8 +703,26 @@ func parseValue(schema *Schema, key string, items []string) (any, error) {
 	return 0, errors.New(msg)
 }
 
+// helper function to obtain schema file name from schema name
+func schemaFileName(sname string) string {
+	var fname string
+	for _, f := range Config.SchemaFiles {
+		if strings.Contains(f, sname) {
+			fname = f
+			break
+		}
+	}
+	return fname
+}
+
+// helper function to extract schema name from schema file name
+func schemaName(fname string) string {
+	arr := strings.Split(fname, "/")
+	return strings.Split(arr[len(arr)-1], ".")[0]
+}
+
 // helper function to process input form
-func processForm(r *http.Request) (Record, error) {
+func processForm(r *http.Request) (string, Record, error) {
 	rec := make(Record)
 	rec["Date"] = time.Now().Unix()
 	// read schemaName from form itself
@@ -691,17 +733,11 @@ func processForm(r *http.Request) (Record, error) {
 			break
 		}
 	}
-	var fname string
-	for _, f := range Config.SchemaFiles {
-		if strings.Contains(f, sname) {
-			fname = f
-			break
-		}
-	}
+	fname := schemaFileName(sname)
 	schema, err := _smgr.Load(fname)
 	if err != nil {
 		log.Println("ERROR", err)
-		return rec, err
+		return fname, rec, err
 	}
 	// r.PostForm provides url.Values which is map[string][]string type
 	// we convert it to Record
@@ -721,12 +757,12 @@ func processForm(r *http.Request) (Record, error) {
 					log.Println("WARNING: unable to parse optional key", k)
 				} else {
 					log.Println("ERROR: unable to parse mandatory key", k, "error", err)
-					return rec, err
+					return fname, rec, err
 				}
 			} else {
 				if !InList(k, _skipKeys) {
 					log.Println("ERROR: no key", k, "found in schema map, error", err)
-					return rec, err
+					return fname, rec, err
 				}
 			}
 		}
@@ -737,7 +773,7 @@ func processForm(r *http.Request) (Record, error) {
 		rec["User"] = user
 	}
 	log.Printf("process form, record %v\n", rec)
-	return rec, nil
+	return fname, rec, nil
 }
 
 // ProcessHandler handlers Process requests
@@ -754,7 +790,7 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 	user, _ := username(r)
 	tmplData["User"] = user
 	if err := r.ParseForm(); err == nil {
-		rec, err := processForm(r)
+		schema, rec, err := processForm(r)
 		// save parsed record for later usage
 		if data, e := json.MarshalIndent(rec, "", "   "); e == nil {
 			tmplData["JsonRecord"] = template.HTML(string(data))
@@ -769,15 +805,17 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte(_top + page + _bottom))
 			return
 		}
-		err = insertData(rec)
+		err = insertData(schema, rec)
 		if err == nil {
 			msg = fmt.Sprintf("Your meta-data is inserted successfully")
 			log.Println("INFO", msg)
 			class = "alert is-success"
 		} else {
-			msg = fmt.Sprintf("Web processing error: %v", err)
+			//             msg = fmt.Sprintf("Web processing error: %v", err)
+			msg = fmt.Sprintf("ERROR: %v", err)
 			class = "alert is-error"
 			log.Println("WARNING", msg)
+			tmplData["Schema"] = schemaName(schema)
 			tmplData["Message"] = msg
 			tmplData["Class"] = class
 			page := templates.Tmpl(Config.Templates, "confirm.tmpl", tmplData)
@@ -807,6 +845,23 @@ func APIHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// read schema name from web form
+	var schema string
+	sname := r.FormValue("SchemaName")
+	if sname != "" {
+		schema = schemaFileName(sname)
+	} else { // we got CLI request
+		if items, ok := r.URL.Query()["schema"]; ok {
+			sname = items[0]
+		}
+	}
+	if sname == "" {
+		msg := "client does not provide schema name"
+		handleError(w, r, msg, errors.New("Bad request"))
+		return
+	}
+	log.Printf("### ApiHandler schema=%s, file=%s", sname, schema)
+
 	var user string
 	var err error
 	if Config.TestMode {
@@ -830,7 +885,7 @@ func APIHandler(w http.ResponseWriter, r *http.Request) {
 				handleError(w, r, msg, err)
 				return
 			}
-			err = insertData(data)
+			err = insertData(schema, data)
 			if err != nil {
 				msg := "unable to insert data"
 				handleError(w, r, msg, err)
@@ -841,6 +896,27 @@ func APIHandler(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte(msg))
 			return
 		}
+	}
+
+	// our data record
+	var data = Record{}
+	data["User"] = user
+
+	// process cli request
+	record := r.FormValue("record")
+	if record != "" {
+		err := json.Unmarshal([]byte(record), &data)
+		if err != nil {
+			jsonResponse(w, err, http.StatusBadRequest)
+			return
+		}
+		err = insertData(schema, data)
+		if err != nil {
+			jsonResponse(w, err, http.StatusBadRequest)
+			return
+		}
+		jsonResponse(w, nil, http.StatusOK)
+		return
 	}
 
 	// process web form
@@ -854,32 +930,30 @@ func APIHandler(w http.ResponseWriter, r *http.Request) {
 
 	var msg, class string
 	defer r.Body.Close()
-	//     body, err := ioutil.ReadAll(r.Body)
-	body, err := ioutil.ReadAll(file)
+	body, err := io.ReadAll(file)
 	if err != nil {
 		msg = fmt.Sprintf("error: %v, unable to read request data", err)
 		class = "alert is-error"
 	} else {
-		var data = Record{}
-		data["User"] = user
 		log.Println("body", string(body))
 		err := json.Unmarshal(body, &data)
 		if err != nil {
 			msg = fmt.Sprintf("error: %v, unable to parse request data", err)
 			class = "alert is-error"
 		} else {
-			err := insertData(data)
+			err := insertData(schema, data)
 			if err == nil {
 				msg = fmt.Sprintf("meta-data is inserted successfully")
 				class = "alert is-success"
 			} else {
-				msg = fmt.Sprintf("Api web processing error: %v", err)
+				msg = fmt.Sprintf("ERROR: %v", err)
 				class = "alert is-error"
 			}
 		}
 	}
 	var templates Templates
 	tmplData := make(map[string]interface{})
+	tmplData["Schema"] = schemaName(schema)
 	tmplData["Message"] = msg
 	tmplData["Class"] = class
 	page := templates.Tmpl(Config.Templates, "confirm.tmpl", tmplData)
@@ -973,10 +1047,10 @@ func UpdateRecordHandler(w http.ResponseWriter, r *http.Request) {
 	tmplData := make(map[string]interface{})
 	user, _ := username(r)
 	tmplData["User"] = user
-	var msg, cls string
+	var msg, cls, schema string
 	var rec Record
 	if err := r.ParseForm(); err == nil {
-		rec, err = processForm(r)
+		schema, rec, err = processForm(r)
 		if err != nil {
 			msg := fmt.Sprintf("Web processing error: %v", err)
 			class := "alert is-error"
@@ -991,12 +1065,13 @@ func UpdateRecordHandler(w http.ResponseWriter, r *http.Request) {
 		// delete record id before the update
 		delete(rec, "_id")
 		if rid == "" {
-			err := insertData(rec)
+			err := insertData(schema, rec)
 			if err == nil {
 				msg = fmt.Sprintf("Your meta-data is inserted successfully")
 				cls = "alert is-success"
 			} else {
-				msg = fmt.Sprintf("update web processing error: %v", err)
+				//                 msg = fmt.Sprintf("update web processing error: %v", err)
+				msg = fmt.Sprintf("ERROR: %v", err)
 				cls = "alert is-error"
 			}
 		} else {
@@ -1015,6 +1090,7 @@ func UpdateRecordHandler(w http.ResponseWriter, r *http.Request) {
 		msg = fmt.Sprintf("record update failed, reason: %v", err)
 		cls = "is-error"
 	}
+	tmplData["Schema"] = schemaName(schema)
 	tmplData["Message"] = strings.ToTitle(msg)
 	tmplData["Class"] = fmt.Sprintf("alert %s is-large is-text-center", cls)
 	page := templates.Tmpl(Config.Templates, "confirm.tmpl", tmplData)
