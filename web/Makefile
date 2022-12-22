@@ -7,7 +7,9 @@ TAG := $(shell git tag | sed -e "s,v,,g" | sort -r | head -n 1)
 all: build
 
 build:
+ifdef TAG
 	sed -i -e "s,{{VERSION}},$(TAG),g" main.go
+endif
 	go clean; rm -rf pkg; go build -o web ${flags}
 ifdef TAG
 	sed -i -e "s,$(TAG),{{VERSION}},g" main.go
