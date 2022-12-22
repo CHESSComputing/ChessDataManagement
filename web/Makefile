@@ -61,7 +61,10 @@ ifndef MONGO
 	$(error "mongo process not found, please start it to proceed ...")
 endif
 
-test : mongo test1
+testdb:
+	/bin/rm -f /tmp/files.db
 
-test1:
+test : mongo testdb test_code
+
+test_code:
 	go test -test.v .
