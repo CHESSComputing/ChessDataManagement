@@ -62,8 +62,9 @@ ifndef MONGO
 endif
 
 testdb:
-	/bin/rm -f /tmp/files.db
-	mkdir -p /tmp/${USER}
+	/bin/rm -f /tmp/files.db && \
+	sqlite3 /tmp/files.db < ./schemas/sqlite.sql && \
+	mkdir -p /tmp/${USER} && \
 	touch /tmp/${USER}/test
 
 test : mongo testdb test_code
