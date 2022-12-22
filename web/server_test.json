@@ -1,0 +1,33 @@
+{
+    "uri":"mongodb://localhost:8230",
+    "dbname": "chess",
+    "dbcoll": "meta",
+    "filesdburi": "sqlite3:///tmp/files.db",
+    "schemaFiles": [
+        "schemas/test.json",
+        "schemas/lite.json",
+        "schemas/ID4B.json",
+        "schemas/ID3A.json",
+        "schemas/ID1A3.json"
+    ],
+    "port": 8212,
+    "schemaRenewInterval": 60,
+    "templates": "templates",
+    "jscripts":  "js",
+    "styles":    "css",
+    "images":    "images",
+    "keytab":    "../krb5.keytab",
+    "krb5Conf":  "../krb5.conf",
+    "schemaSections": ["User", "Alignment", "DataLocations", "Beam", "Experiment", "Sample"],
+    "webSectionKeys": {
+        "User": ["Facility", "Cycle", "PI", "BTR", "Experimenters", "Beamline", "StaffScientist", "BeamlineFundingPartner"],
+        "Alignment": [],
+        "DataLocations": ["DataLocationRaw", "DataLocationMeta", "DataLocationReduced", "DataLocationScratch", "DataLocationBeamtimeNotes"],
+        "Beam": ["CESRCondtions"],
+        "Experiment": ["Detectors","ExperimentType","Technique"],
+        "Sample": ["SampleType","SampleName","Calibration"]
+    },
+    "realm": "CERN.CH",
+    "testMode": true,
+    "verbose": 0
+}
