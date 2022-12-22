@@ -116,3 +116,7 @@ krb5*
 files
 *.tar.gz
 kube
+web
+web_amd64
+*.patch
+chess_client
