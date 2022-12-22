@@ -25,7 +25,7 @@ jobs:
     - name: Build
       run: |
         cd web
-        go build -v ./...
+        make
 
     - name: Start MongoDB
       uses: MongoCamp/mongodb-github-action@1.0.0
@@ -36,4 +36,4 @@ jobs:
     - name: Test
       run: |
         cd web
-        go test -v ./...
+        make test

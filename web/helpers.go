@@ -175,11 +175,7 @@ func insertData(sname string, rec Record) error {
 	if v, ok := rec["DataLocationRaw"]; ok {
 		path = v.(string)
 	} else {
-		if os.Getenv("USER") == "runner" { // github action user
-			path = "/tmp"
-		} else {
-			path = filepath.Join("/tmp", os.Getenv("USER")) // for testing purposes
-		}
+		path = filepath.Join("/tmp", os.Getenv("USER")) // for testing purposes
 	}
 	if v, ok := rec["Facility"]; ok {
 		experiment = v.(string)

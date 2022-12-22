@@ -26,9 +26,7 @@ func TestFilesDB(t *testing.T) {
 	processing := "processing"
 	tier := "tier"
 	path := "/tmp"
-	if os.Getenv("USER") != "runner" { // github action user
-		path = filepath.Join("/tmp", os.Getenv("USER")) // for testing purposes
-	}
+	path = filepath.Join("/tmp", os.Getenv("USER")) // for testing purposes
 	files := FindFiles(path)
 	if len(files) == 0 {
 		t.Errorf("Unable to find any files in %s", path)
