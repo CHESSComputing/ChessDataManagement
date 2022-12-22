@@ -18,6 +18,11 @@ import (
 	"time"
 )
 
+// ListEntry identifies types used by list's generics function
+type ListEntry interface {
+        int | int64 | float64 | string
+}
+
 // helper function to extract file name
 func fileName(fname string) string {
 	arr := strings.Split(fname, "/")
@@ -95,7 +100,7 @@ func FindInList(a string, arr []string) bool {
 }
 
 // InList helper function to check item in a list
-func InList(a string, list []string) bool {
+func InList[T ListEntry](a T, list []T) bool {
 	check := 0
 	for _, b := range list {
 		if b == a {
@@ -184,8 +189,8 @@ func Unix2Time(ts int64) string {
 }
 
 // List2Set helper function to convert input list into set
-func List2Set(arr []string) []string {
-	var out []string
+func List2Set[T ListEntry](arr []T) []T {
+	var out []T
 	for _, key := range arr {
 		if !InList(key, out) {
 			out = append(out, key)
