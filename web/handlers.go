@@ -712,7 +712,7 @@ func schemaFileName(sname string) string {
 			break
 		}
 	}
-	return fname
+	return fullPath(fname)
 }
 
 // helper function to extract schema name from schema file name
@@ -860,7 +860,9 @@ func APIHandler(w http.ResponseWriter, r *http.Request) {
 		handleError(w, r, msg, errors.New("Bad request"))
 		return
 	}
-	log.Printf("### ApiHandler schema=%s, file=%s", sname, schema)
+	if Config.Verbose > 0 {
+		log.Printf("APIHandler schema=%s, file=%s", sname, schema)
+	}
 
 	var user string
 	var err error
