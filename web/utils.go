@@ -497,3 +497,14 @@ func stack() string {
 	s := runtime.Stack(stackSlice, false)
 	return fmt.Sprintf("\n%s", stackSlice[0:s])
 }
+
+// helper function to return full path of given file name wrt to current location
+func fullPath(fname string) string {
+	if !strings.HasPrefix(fname, "/") {
+		// we got relative path (e.g. server_test.json)
+		if wdir, err := os.Getwd(); err == nil {
+			fname = filepath.Join(wdir, fname)
+		}
+	}
+	return fname
+}
