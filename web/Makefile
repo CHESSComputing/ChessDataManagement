@@ -54,7 +54,14 @@ install:
 clean:
 	go clean; rm -rf pkg
 
-test : test1
+MONGO := $(shell ps auxww | grep mongo | egrep -v grep)
+
+mongo:
+ifndef MONGO
+	$(error "mongo process not found, please start it to proceed ...")
+endif
+
+test : mongo test1
 
 test1:
 	go test -test.v .
