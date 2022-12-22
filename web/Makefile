@@ -63,6 +63,8 @@ endif
 
 testdb:
 	/bin/rm -f /tmp/files.db
+	mkdir -p /tmp/${USER}
+	touch /tmp/${USER}/test
 
 test : mongo testdb test_code
 
