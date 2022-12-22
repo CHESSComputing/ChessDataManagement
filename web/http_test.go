@@ -43,7 +43,7 @@ func respRecorder(method, url string, reader io.Reader, hdlr func(http.ResponseW
 
 // TestHTTPGet provides test of GET method for our service
 func TestHTTPGet(t *testing.T) {
-	configFile := "server.json"
+	configFile := "server_test.json"
 	ParseConfig(configFile)
 
 	// setup HTTP request
