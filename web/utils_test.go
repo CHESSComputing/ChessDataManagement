@@ -1,8 +1,34 @@
 package main
 
 import (
+	"log"
 	"testing"
 )
+
+// helper function to initialize MetaData service
+func initMetaDataService() {
+	// initialize schema manager which holds our schemas
+	configFile := "server_test.json"
+	ParseConfig(configFile)
+	// use verbose log flags
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	// initialize schema manager
+	initSchemaManager()
+}
+
+// helper function to initialize SchemaManager
+func initSchemaManager() {
+	// initialize schema manager
+	_smgr = SchemaManager{}
+	for _, fname := range Config.SchemaFiles {
+		fname = fullPath(fname)
+		_, err := _smgr.Load(fname)
+		if err != nil {
+			log.Fatalf("unable to load %s error %v", fname, err)
+		}
+		_beamlines = append(_beamlines, fileName(fname))
+	}
+}
 
 // TestUtilsInList
 func TestUtilsInList(t *testing.T) {

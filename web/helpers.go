@@ -128,31 +128,9 @@ func validateData(sname string, rec Record) error {
 			return err
 		}
 	} else {
-		msg := "No schema found for your record"
+		msg := fmt.Sprintf("No schema '%s' found for your record", sname)
 		return errors.New(msg)
 	}
-	/*
-		var errs []string
-		for _, smgr := range _smgr.Map {
-			schema := smgr.Schema
-			if schema.FileName != sname {
-				continue
-			}
-			err := schema.Validate(rec)
-			if err != nil {
-				e := fmt.Sprintf("%s, error=%v", schema.String(), err)
-				errs = append(errs, e)
-			} else {
-				log.Printf("Record %+v pass schema %s", rec, schema.String())
-				return nil
-			}
-		}
-		if len(errs) > 0 {
-			// we checked all keys within our schema
-			msg := fmt.Sprintf("Invalid record\n%s", strings.Join(errs, "\n"))
-			return errors.New(msg)
-		}
-	*/
 	return nil
 }
 

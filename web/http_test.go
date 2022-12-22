@@ -13,20 +13,6 @@ import (
 	"testing"
 )
 
-// helper function to initialize SchemaManager
-func initSchemaManager() {
-	// initialize schema manager
-	_smgr = SchemaManager{}
-	for _, fname := range Config.SchemaFiles {
-		fname = fullPath(fname)
-		_, err := _smgr.Load(fname)
-		if err != nil {
-			log.Fatalf("unable to load %s error %v", fname, err)
-		}
-		_beamlines = append(_beamlines, fileName(fname))
-	}
-}
-
 // helper function to create http test response recorder
 // for given HTTP Method, url, reader and web handler
 func respRecorder(method, url string, reader io.Reader, hdlr func(http.ResponseWriter, *http.Request)) (*httptest.ResponseRecorder, error) {
@@ -63,8 +49,7 @@ func respRecorder(method, url string, reader io.Reader, hdlr func(http.ResponseW
 
 // TestHTTPGetApi provides test of GET method for our service
 func TestHTTPGetApi(t *testing.T) {
-	configFile := "server_test.json"
-	ParseConfig(configFile)
+	initMetaDataService()
 
 	// setup HTTP request
 	rr, err := respRecorder("GET", "/faq", nil, FAQHandler)
@@ -80,11 +65,7 @@ func TestHTTPGetApi(t *testing.T) {
 
 // TestHTTPPostGet provides test of POST/GET methods for our service
 func TestHTTPPostGet(t *testing.T) {
-	configFile := "server_test.json"
-	ParseConfig(configFile)
-
-	// use verbose log flags
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	initMetaDataService()
 
 	// initialize FilesDB connection
 	var err error
@@ -93,7 +74,6 @@ func TestHTTPPostGet(t *testing.T) {
 	if err != nil {
 		log.Printf("FilesDB error: %v\n", err)
 	}
-	initSchemaManager()
 
 	// HTTP POST request
 	schema := "test"
@@ -144,11 +124,7 @@ func TestHTTPPostGet(t *testing.T) {
 
 // TestHTTPBadRecord provides test of POST/GET methods for our service
 func TestHTTPBadRecord(t *testing.T) {
-	configFile := "server_test.json"
-	ParseConfig(configFile)
-
-	// use verbose log flags
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	initSchemaManager()
 
 	// initialize FilesDB connection
 	var err error
