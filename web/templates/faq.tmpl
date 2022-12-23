@@ -1,7 +1,75 @@
 <!-- faq.tmpl -->
 <div class="page">
 <div class="normal">
-This page summarizes Frequently Asked Questions about Server.
+<h3>
+Frequently Asked Questions
+</h3>
+
+<br/>
+
+<blockquote>
+What is CHESS MetaData services?
+</blockquote>
+The CHESS MetaData is a service which collects and provides meta-data information
+to CHESS users. For instance, when CHESS performs an experiment it collects
+some data in form of image files. The meta-data represents information about
+this process such as who took the data, when it was collected, which parameters
+of experiments were used, etc.
+
+<br/>
+<br/>
+
+<blockquote>
+How we suppose to query MetaData in CHESS MetaData service?
+</blockquote>
+When you login to MetaData service you can navigate to its <b>Search</b>
+page. From there, you can use either free text or <em>key:value</em> pairs
+to place your query.
+
+<br/>
+<br/>
+
+<blockquote>
+How I can inject data to MetaData service?
+</blockquote>
+We provide several methos to inject data to MetaData service.
+On a web you can either fill out web UI form by choosing your experiment
+beamline, or you can prepare your meta-data as JSON file and upload it via
+web interface. Or, you may use <b>chess_client</b> command line tool to inject
+the data from any CHESS nodes.
+
+<br/>
+<br/>
+
+<blockquote>
+How I can use chess_client tool?
+</blockquote>
+To use <b>chess_client</b> tool please login to your favorite
+CHESS node. From there you can run is as following:
+<pre>
+# Obtain kerberos ticket:
+kinit -c krb5_ccache <username>
+
+# inject new record into the system using lite schema
+chess_client -krbFile krb5cc_ccache -insert record.json -schema lite
+
+# look-up data from the system using free text-search
+chess_client -krbFile krb5cc_ccache -query="search words"
+
+# look-up data from the system using keyword search
+chess_client -krbFile krb5cc_ccache -query="proposal:123"
+
+# look-up files for specific dataset-id
+chess_client -krbFile krb5cc_ccache -did=1570563920579312510
+</pre>
+
+<blockquote>
+How I can report an issue with MetaData service?
+</blockquote>
+Please click on <b>Bug report</b> link on the web interface
+or visit
+<a href="https://github.com/vkuznet/ChessDataManagement/issues">github issue</a> page.
+
 </div> <!-- end of class="normal" -->
 </div> <!-- end of class="page" -->
 
