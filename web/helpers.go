@@ -170,6 +170,8 @@ func insertData(sname string, rec Record) error {
 	if _, ok := rec["Date"]; !ok {
 		rec["Date"] = time.Now().Unix()
 	}
+	rec["SchemaFile"] = sname
+	rec["Schema"] = schemaName(sname)
 	// main attributes to work with
 	var path, experiment, sample string
 	if v, ok := rec["DataLocationRaw"]; ok {
