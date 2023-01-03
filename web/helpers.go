@@ -173,7 +173,7 @@ func insertData(sname string, rec Record) error {
 	rec["SchemaFile"] = sname
 	rec["Schema"] = schemaName(sname)
 	// main attributes to work with
-	var path, experiment, sample string
+	var path, experiment, sample, tier string
 	if v, ok := rec["DataLocationRaw"]; ok {
 		path = v.(string)
 	} else {
@@ -182,14 +182,18 @@ func insertData(sname string, rec Record) error {
 	if v, ok := rec["Facility"]; ok {
 		experiment = v.(string)
 	} else {
-		experiment = "CHESS"
+		experiment = fmt.Sprintf("CHESS-%s", randomString())
 	}
 	if v, ok := rec["SampleName"]; ok {
 		sample = v.(string)
 	} else {
-		sample = "sample"
+		sample = fmt.Sprintf("sample-%s", randomString())
 	}
-	tier := "raw"
+	if v, ok := rec["DataTier"]; ok {
+		tier = v.(string)
+	} else {
+		tier = fmt.Sprintf("raw-%s", randomString())
+	}
 	if v, ok := rec["Detectors"]; ok {
 		var dets []string
 		switch t := v.(type) {
