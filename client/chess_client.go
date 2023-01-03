@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/http/httputil"
 	"net/url"
 	"os"
 	"os/exec"
@@ -193,7 +194,7 @@ func getForm(krbFile string) url.Values {
 }
 
 // helper function to place request to chess data management system
-func placeRequest(schemaName, uri, fileName, krbFile string) error {
+func placeRequest(schemaName, uri, fileName, krbFile string, verbose int) error {
 
 	// if we'll pass yaml file we'll need to convert it to json
 	// if we'll pass json data we should probably read it via
@@ -205,14 +206,24 @@ func placeRequest(schemaName, uri, fileName, krbFile string) error {
 	form := getForm(krbFile)
 	form.Add("record", string(record))
 	form.Add("SchemaName", schemaName)
-	url := fmt.Sprintf("%s/api", uri)
-	req, err := http.NewRequest("POST", url, strings.NewReader(form.Encode()))
+	rurl := fmt.Sprintf("%s/api", uri)
+	req, err := http.NewRequest("POST", rurl, strings.NewReader(form.Encode()))
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	//     req.Header.Add("Content-Type", "multipart/form-data")
+	if verbose > 1 {
+		dump, err := httputil.DumpRequestOut(req, true)
+		log.Printf("http request %+v, rurl %v, dump %v, error %v\n", req, rurl, string(dump), err)
+	}
 	servercrt := getCertificate()
 	client := httpClient(servercrt)
 	resp, err := client.Do(req)
 	defer resp.Body.Close()
+	if verbose > 1 {
+		if resp != nil {
+			dump, err := httputil.DumpResponse(resp, true)
+			log.Printf("http response rurl %v, dump %v, error %v\n", rurl, string(dump), err)
+		}
+	}
 	if resp.StatusCode != 200 {
 		exit(fmt.Sprintf("requset fails with status: %v", resp.Status), nil)
 	}
@@ -222,15 +233,19 @@ func placeRequest(schemaName, uri, fileName, krbFile string) error {
 }
 
 // helper function to look-up records in chess data management system
-func findRecords(uri, query, krbFile string) {
+func findRecords(uri, query, krbFile string, verbose int) {
 	form := getForm(krbFile)
 	form.Add("query", string(query))
 	form.Add("client", "cli")
-	url := fmt.Sprintf("%s/search", uri)
-	req, err := http.NewRequest("POST", url, strings.NewReader(form.Encode()))
+	rurl := fmt.Sprintf("%s/search", uri)
+	req, err := http.NewRequest("POST", rurl, strings.NewReader(form.Encode()))
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	if err != nil {
 		exit("find records method fails", err)
+	}
+	if verbose > 1 {
+		dump, err := httputil.DumpRequestOut(req, true)
+		log.Printf("http request %+v, rurl %v, dump %v, error %v\n", req, rurl, string(dump), err)
 	}
 	servercrt := getCertificate()
 	client := httpClient(servercrt)
@@ -239,6 +254,12 @@ func findRecords(uri, query, krbFile string) {
 		exit("Fail to place request", err)
 	}
 	defer resp.Body.Close()
+	if verbose > 1 {
+		if resp != nil {
+			dump, err := httputil.DumpResponse(resp, true)
+			log.Printf("http response rurl %v, dump %v, error %v\n", rurl, string(dump), err)
+		}
+	}
 	if resp.StatusCode != http.StatusOK {
 		exit(fmt.Sprintf("request fails with status: %v", resp.Status), nil)
 	}
@@ -250,14 +271,18 @@ func findRecords(uri, query, krbFile string) {
 }
 
 // helper function to look-up records in chess data management system
-func findFiles(uri string, did int64, krbFile string) {
+func findFiles(uri string, did int64, krbFile string, verbose int) {
 	form := getForm(krbFile)
 	form.Add("did", fmt.Sprintf("%d", did))
-	url := fmt.Sprintf("%s/files", uri)
-	req, err := http.NewRequest("POST", url, strings.NewReader(form.Encode()))
+	rurl := fmt.Sprintf("%s/files", uri)
+	req, err := http.NewRequest("POST", rurl, strings.NewReader(form.Encode()))
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	if err != nil {
 		exit("find records method fails", err)
+	}
+	if verbose > 1 {
+		dump, err := httputil.DumpRequestOut(req, true)
+		log.Printf("http request %+v, rurl %v, dump %v, error %v\n", req, rurl, string(dump), err)
 	}
 	servercrt := getCertificate()
 	client := httpClient(servercrt)
@@ -266,6 +291,12 @@ func findFiles(uri string, did int64, krbFile string) {
 		exit("Fail to place request", err)
 	}
 	defer resp.Body.Close()
+	if verbose > 1 {
+		if resp != nil {
+			dump, err := httputil.DumpResponse(resp, true)
+			log.Printf("http response rurl %v, dump %v, error %v\n", rurl, string(dump), err)
+		}
+	}
 	if resp.StatusCode != http.StatusOK {
 		exit(fmt.Sprintf("request fails with status: %v", resp.Status), nil)
 	}
@@ -289,6 +320,8 @@ func main() {
 	flag.StringVar(&krbFile, "krbFile", "", "kerberos file")
 	var uri string
 	flag.StringVar(&uri, "uri", "https://chessdata.classe.cornell.edu:8243", "CHESS Data Management System URI")
+	var verbose int
+	flag.IntVar(&verbose, "verbose", 0, "verbosity level")
 	flag.Usage = func() {
 		client := "chess_client"
 		msg := fmt.Sprintf("\nCommand line interface to CHESS Data Management System\n")
@@ -307,13 +340,19 @@ func main() {
 	}
 	flag.Parse()
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	if krbFile == "" {
+		ccname := os.Getenv("KRB5CCNAME")
+		if ccname != "" {
+			krbFile = strings.Replace(ccname, "FILE:", "", -1)
+		}
+	}
 	if did > 0 {
-		findFiles(uri, did, krbFile)
+		findFiles(uri, did, krbFile, verbose)
 		return
 	}
 	if query != "" {
-		findRecords(uri, query, krbFile)
+		findRecords(uri, query, krbFile, verbose)
 		return
 	}
-	placeRequest(schema, uri, record, krbFile)
+	placeRequest(schema, uri, record, krbFile, verbose)
 }
