@@ -225,7 +225,7 @@ func placeRequest(schemaName, uri, fileName, krbFile string, verbose int) error 
 		}
 	}
 	if resp.StatusCode != 200 {
-		exit(fmt.Sprintf("requset fails with status: %v", resp.Status), nil)
+		exit(fmt.Sprintf("request fails with status: %v", resp.Status), nil)
 	}
 	response, _ := ioutil.ReadAll(resp.Body)
 	fmt.Println(string(response))
