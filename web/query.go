@@ -13,6 +13,9 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+// separator defines our query separator
+var separator = ":"
+
 func convertType(val interface{}) interface{} {
 	switch v := val.(type) {
 	case []interface{}:
@@ -53,17 +56,37 @@ func ParseQuery(query string) bson.M {
 	if strings.TrimSpace(query) == "__all__" {
 		return spec
 	}
-	var description string
-	for _, item := range strings.Split(query, " ") {
-		val := strings.Split(strings.TrimSpace(item), ":")
-		if len(val) == 2 {
-			spec[val[0]] = convertType(val[1])
-		} else {
-			description = fmt.Sprintf("%s %s", description, val)
+	// query as key:value
+	if strings.Contains(query, separator) {
+		arr := strings.Split(query, separator)
+		var vals []string
+		key := arr[0]
+		last := arr[len(arr)-1]
+		for i := 0; i < len(arr); i++ {
+			if len(arr) > i+1 {
+				vals = strings.Split(arr[i+1], " ")
+				if arr[i+1] == last {
+					spec[key] = last
+					break
+				}
+				if len(vals) > 0 {
+					values := strings.Join(vals[:len(vals)-1], " ")
+					spec[key] = values
+					key = vals[len(vals)-1]
+				} else {
+					spec[key] = vals[0]
+					break
+				}
+			} else {
+				vals = arr[i:]
+				values := strings.Join(vals, " ")
+				spec[key] = values
+				break
+			}
 		}
-	}
-	if description != "" {
-		spec["$text"] = bson.M{"$search": description}
+	} else {
+		// or, query as free text
+		spec["$text"] = bson.M{"$search": query}
 	}
 	return spec
 }
