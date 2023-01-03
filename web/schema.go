@@ -20,7 +20,7 @@ import (
 )
 
 // skip keys
-var _skipKeys = []string{"User", "Date", "Description", "SchemaName"}
+var _skipKeys = []string{"User", "Date", "Description", "SchemaName", "SchemaFile", "Schema"}
 
 // SchemaRenewInterval setup interal to update schema cache
 var SchemaRenewInterval time.Duration
