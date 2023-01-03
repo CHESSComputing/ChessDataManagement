@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -17,6 +18,10 @@ import (
 	"strings"
 	"time"
 )
+
+func init() {
+    rand.Seed(time.Now().UnixNano())
+}
 
 // ListEntry identifies types used by list's generics function
 type ListEntry interface {
@@ -507,4 +512,19 @@ func fullPath(fname string) string {
 		}
 	}
 	return fname
+}
+
+// code is based on https://github.com/AlanBar13/pass-generator
+const voc string = "abcdfghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+const numbers string = "0123456789"
+const symbols string = "!@#$%&*+_-="
+
+// helper function to generate random string
+func randomString() string {
+	var str string
+	chars := voc + numbers
+	for i := 0; i < 16; i++ {
+		str += string([]rune(chars)[rand.Intn(len(chars))])
+	}
+	return str
 }
