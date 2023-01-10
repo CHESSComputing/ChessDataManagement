@@ -51,7 +51,8 @@ unit-test-job:   # This job runs in the test stage.
     - ps auxww | grep mongod
     - cd web
     - export PATH=$PATH:/nfs/chess/sw/chessdata/go/bin
-    - make test
+    - make testdb
+    - make test_code
   tags:
     - shell
 
