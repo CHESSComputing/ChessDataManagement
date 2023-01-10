@@ -23,15 +23,19 @@ stages:          # List of stages for jobs, and their order of execution
   - test
   - deploy
 
-variables:
-  GIT_STRATEGY: clone
-#  CI_DEBUG_TRACE: "true"
-
+#services:
+#  - name: mongo:4.4.14
+#    alias: mongo
+#    command: ["mongod", "--logpath=/dev/null", "--bind_ip_all", "--port=8230"]
 
 services:
-  - name: mongo:4.4.14
-    alias: mongo
-    command: ["mongod", "--logpath=/dev/null", "--bind_ip_all", "--port=8230"]
+  - mongo
+
+variables:
+  MONGO_URI: 'mongodb://mongo/chess-test'
+  NODE_ENV: 'test'
+  GIT_STRATEGY: clone
+#  CI_DEBUG_TRACE: "true"
 
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
