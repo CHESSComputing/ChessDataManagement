@@ -1,7 +1,7 @@
 {
     "uri":"mongodb://localhost:8230",
     "dbname": "chess",
-    "dbcoll": "meta",
+    "dbcoll": "MetaTest",
     "filesdburi": "sqlite3:///tmp/files.db",
     "schemaFiles": [
         "schemas/test.json",
