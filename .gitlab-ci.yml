@@ -29,13 +29,20 @@ stages:          # List of stages for jobs, and their order of execution
 #    command: ["mongod", "--logpath=/dev/null", "--bind_ip_all", "--port=8230"]
 
 services:
-  - mongo
+  - name: mongo:latest
+    command:
+      [
+        "/bin/sh",
+        "-c",
+        "mongod --logpath /dev/null --bind_ip_all --port=8230"
+      ]
+
 
 variables:
-  MONGO_URI: 'mongodb://mongo/chess-test'
+  MONGO_URI: 'mongodb://127.0.0.1:8230/chess-test'
   NODE_ENV: 'test'
   GIT_STRATEGY: clone
-#  CI_DEBUG_TRACE: "true"
+  CI_DEBUG_TRACE: "true"
 
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
@@ -55,6 +62,8 @@ unit-test-job:   # This job runs in the test stage.
     - ps auxww | grep mongod
     - cd web
     - export PATH=$PATH:/nfs/chess/sw/chessdata/go/bin
+    - sed -i -e "s,meta,MetaTest,g" server_test.go
+    - cat server_test.json
     - make testdb
     - make test_code
   tags:
