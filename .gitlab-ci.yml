@@ -28,10 +28,10 @@ variables:
 #  CI_DEBUG_TRACE: "true"
 
 
-#services:
-#  - name: mongo:4.4/14
-#    alias: mongo
-#    command: ["mongod", "--logpath=/dev/null", "--bind_ip_all", "--port=8230"]
+services:
+  - name: mongo:4.4.14
+    alias: mongo
+    command: ["mongod", "--logpath=/dev/null", "--bind_ip_all", "--port=8230"]
 
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
