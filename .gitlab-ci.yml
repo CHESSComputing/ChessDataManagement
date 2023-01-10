@@ -62,7 +62,7 @@ unit-test-job:   # This job runs in the test stage.
     - ps auxww | grep mongod
     - cd web
     - export PATH=$PATH:/nfs/chess/sw/chessdata/go/bin
-    - sed -i -e "s,meta,MetaTest,g" server_test.go
+    - sed -i -e "s,meta,MetaTest,g" server_test.json
     - cat server_test.json
     - make testdb
     - make test_code
