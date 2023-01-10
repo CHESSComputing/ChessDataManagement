@@ -25,7 +25,7 @@ stages:          # List of stages for jobs, and their order of execution
 
 variables:
   GIT_STRATEGY: clone
-  CI_DEBUG_TRACE: "true"
+#  CI_DEBUG_TRACE: "true"
 
 
 #services:
@@ -37,9 +37,8 @@ build-job:       # This job runs in the build stage, which runs first.
   stage: build
   script:
     - echo "Compiling the code..."
-    - export PATH=$PATH:/nfs/chess/sw/chessdata
     - cd web
-    - make
+    - PATH=$PATH:/nfs/chess/sw/chessdata make
     - echo "Compile complete."
   tags:
     - shell
@@ -48,10 +47,9 @@ unit-test-job:   # This job runs in the test stage.
   stage: test    # It only starts when the job in the build stage completes successfully.
   script:
     - echo "Running unit tests..."
-    - export PATH=$PATH:/nfs/chess/sw/chessdata
     - ps auxww | grep mongod
     - cd web
-    - make test
+    - PATH=$PATH:/nfs/chess/sw/chessdata make test
   tags:
     - shell
 
