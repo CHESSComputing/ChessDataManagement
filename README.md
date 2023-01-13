@@ -1,6 +1,7 @@
 ### Chess Data Management service
 
 [![Build Status](https://travis-ci.org/vkuznet/ChessDataManagement.svg?branch=master)](https://travis-ci.org/vkuznet/ChessDataManagement)
+[![Go CI build](https://github.com/vkuznet/ChessDataManagement/actions/workflows/go-ci.yml/badge.svg)](https://github.com/vkuznet/ChessDataManagement/actions/workflows/go-ci.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/vkuznet/ChessDataManagement)](https://goreportcard.com/report/github.com/vkuznet/ChessDataManagement)
 
 ### Introduction
