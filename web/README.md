@@ -10,49 +10,18 @@ It is written in Go language and provides functionality described
 - kerberos authentication
 - handling meta-data in MongoDB
 
-To build it please install Go language on your system
-and series of dependencies:
-
+To build server code please use make command:
 ```
-# obtain necessary dependencies
-go get gopkg.in/mgo.v2
-go get github.com/shirou/gopsutil
-go get github.com/divan/expvarmon
-go get github.com/lestrrat-go/file-rotatelogs
-go get github.com/mattn/go-sqlite3
-go get github.com/go-sql-driver/mysql
-go get -d github.com/shirou/gopsutil/...
-go get -d gopkg.in/jcmturner/gokrb5.v7/...
-go get gopkg.in/mgo.v2/
-go get gopkg.in/mgo.v2/bson
-
-# build server
-cd web
-go build # or call make
+make
 ```
 
 To run the service use the following command:
 ```
 web -config server.json
 ```
-where `server.json` has the following form:
-```
-{
-    "uri":"mongodb://localhost:8230",
-    "dbname": "chess",
-    "dbcoll": "meta",
-    "filesdburi": "sqlite3:///path/files.db",
-    "port": 8243,
-    "templates": "/etc/web/templates",
-    "jscripts": "/etc/web/js",
-    "styles": "/etc/web/css",
-    "images": "/etc/web/images",
-    "keytab": "/etc/web/krb5.keytab",
-    "krb5Conf": "/etc/web/krb5.conf",
-    "realm": "YOUR_KERBEROS_REALM",
-    "verbose": 0
-}
-```
+For server configuration parameters please refer to
+[server.json](server_test.json) and/or [Configuration](config.go)
+data-structure.
 
 If you prefer, you may run the service via docker:
 ```
