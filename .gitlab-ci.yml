@@ -74,6 +74,7 @@ deploy_staging:
     - echo "Deploying to staging ..."
     - pwd
     - cd web
+    - export PATH=$PATH:/nfs/chess/sw/chessdata/go/bin
     - date >/tmp/chessdata-test
     - make
     - echo "Local info"
