@@ -28,15 +28,6 @@ stages:          # List of stages for jobs, and their order of execution
 #    alias: mongo
 #    command: ["mongod", "--logpath=/dev/null", "--bind_ip_all", "--port=8230"]
 
-services:
-  - name: mongo:latest
-    command:
-      [
-        "/bin/sh",
-        "-c",
-        "mongod --logpath /dev/null --bind_ip_all --port=8230"
-      ]
-
 
 variables:
   MONGO_URI: 'mongodb://127.0.0.1:8230'
@@ -64,7 +55,7 @@ unit-test-job:   # This job runs in the test stage.
     - export PATH=$PATH:/nfs/chess/sw/chessdata/go/bin
     - scp chess_daq@chessdata:/mnt/chessdata/web/server_gitlab.json ./server_test.json
 #    - sed -i -e "s,localhost:8230,testmongo:27017,g" server_test.json
-    - cat server_test.json
+#    - cat server_test.json
     - make testdb
     - make test_code
   tags:
@@ -84,7 +75,11 @@ deploy_staging:
     - echo "Deploying to staging ..."
     - date >/tmp/chessdata-test
     - scp /tmp/chessdata-test chess_daq@chessdata:/mnt/chessdata/test/
+    - scp web chess_daq@chessdata:/mnt/chessdata/test/
+    - ssh chess_daq@chessdata "/mnt/chessdata/test/web --version"
     - echo "Staging deployment comlete."
+  tags:
+    - shell
 
 deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
