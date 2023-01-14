@@ -75,8 +75,16 @@ deploy_staging:
     - pwd
     - cd web
     - date >/tmp/chessdata-test
+    - make
+    - echo "Local info"
+    - ls -al ./web
+    - md5sum ./web
+    - ./web --version
     - scp /tmp/chessdata-test chess_daq@chessdata:/mnt/chessdata/test/
     - scp web chess_daq@chessdata:/mnt/chessdata/test/
+    - echo "chessdata:/mnt/chessdata/test info"
+    - ssh chess_daq@chessdata "ls -al /mnt/chessdata/test/web"
+    - ssh chess_daq@chessdata "md5sum /mnt/chessdata/test/web"
     - ssh chess_daq@chessdata "/mnt/chessdata/test/web --version"
     - echo "Staging deployment comlete."
   tags:
