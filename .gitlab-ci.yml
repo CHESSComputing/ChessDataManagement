@@ -39,6 +39,7 @@ build-job:       # This job runs in the build stage, which runs first.
   stage: build
   script:
     - echo "Compiling the code..."
+    - pwd
     - cd web
     - export PATH=$PATH:/nfs/chess/sw/chessdata/go/bin
     - make
@@ -50,12 +51,10 @@ unit-test-job:   # This job runs in the test stage.
   stage: test    # It only starts when the job in the build stage completes successfully.
   script:
     - echo "Running unit tests..."
-    - ps auxww | grep mongod
+    - pwd
     - cd web
     - export PATH=$PATH:/nfs/chess/sw/chessdata/go/bin
     - scp chess_daq@chessdata:/mnt/chessdata/web/server_gitlab.json ./server_test.json
-#    - sed -i -e "s,localhost:8230,testmongo:27017,g" server_test.json
-#    - cat server_test.json
     - make testdb
     - make test_code
   tags:
@@ -73,6 +72,8 @@ deploy_staging:
   environment: staging
   script:
     - echo "Deploying to staging ..."
+    - pwd
+    - cd web
     - date >/tmp/chessdata-test
     - scp /tmp/chessdata-test chess_daq@chessdata:/mnt/chessdata/test/
     - scp web chess_daq@chessdata:/mnt/chessdata/test/
