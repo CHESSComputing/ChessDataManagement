@@ -62,6 +62,8 @@ unit-test-job:   # This job runs in the test stage.
     - ps auxww | grep mongod
     - cd web
     - export PATH=$PATH:/nfs/chess/sw/chessdata/go/bin
+    - scp chess_daq@chessdata:/mnt/chessdata/web/server_gitlab.json ./server_test.json
+#    - sed -i -e "s,localhost:8230,testmongo:27017,g" server_test.json
     - cat server_test.json
     - make testdb
     - make test_code
