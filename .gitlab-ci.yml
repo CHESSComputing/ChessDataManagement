@@ -75,6 +75,15 @@ unit-test-job:   # This job runs in the test stage.
 #    - sleep 10
 #    - echo "No lint issues found."
 
+deploy_staging:
+  stage: deploy
+  environment: staging
+  script:
+    - echo "Deploying to staging ..."
+    - date >/tmp/chessdata-test
+    - scp /tmp/chessdata-test chess_daq@chessdata:/mnt/chessdata/test/
+    - echo "Staging deployment comlete."
+
 deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   environment: production
