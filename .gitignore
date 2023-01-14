@@ -103,7 +103,7 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-Maintenance.md
+web/Maintenance.md
 TODO.md
 DEMO.md
 validator

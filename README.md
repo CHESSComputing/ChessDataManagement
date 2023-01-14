@@ -51,8 +51,4 @@ Finally, the data access can be organized via XrootD service.
 
 1. [Server](web/README.md)
 2. [Client](client/README.md)
-3. [MongoDB](https://www.mongodb.com)
-4. [MySQL](https://www.mysql.com)
-5. [MariaDB](https://mariadb.com)
-6. [MongoDB free-text search](https://docs.mongodb.com/manual/text-search/)
-
+3. [Maintenance](Maintenance.md)
