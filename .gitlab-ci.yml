@@ -89,9 +89,9 @@ deploy_staging:
     - ssh chess_daq@chessdata "/mnt/chessdata/test/web.dev --version"
     - scp -r templates js css images schemas chess_daq@chessdata:/mnt/chessdata/test
     - echo "restart chessdata-dev resource"
-    - ssh chess_daq@chessdata "sudo pcs resource stop chessdata-dev"
-    - ssh chess_daq@chessdata "mv -f /mnt/chessdata/test/web.dev /mnt/chessdata/test/web"
-    - ssh chess_daq@chessdata "sudo pcs resource start chessdata-dev"
+    - ssh -t chess_daq@chessdata "sudo pcs resource stop chessdata-dev"
+    - ssh -t chess_daq@chessdata "mv -f /mnt/chessdata/test/web.dev /mnt/chessdata/test/web"
+    - ssh -t chess_daq@chessdata "sudo pcs resource start chessdata-dev"
     - echo "Staging deployment comlete."
   tags:
     - shell
