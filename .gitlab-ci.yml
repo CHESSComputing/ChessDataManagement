@@ -82,13 +82,12 @@ deploy_staging:
     - md5sum ./web
     - ./web --version
     - scp /tmp/chessdata-test chess_daq@chessdata:/mnt/chessdata/test/
-    - scp web chess_daq@chessdata:/mnt/chessdata/test/
+    - scp web chess_daq@chessdata:/mnt/chessdata/test/web.dev
     - echo "chessdata:/mnt/chessdata/test info"
-    - ssh chess_daq@chessdata "ls -al /mnt/chessdata/test/web"
-    - ssh chess_daq@chessdata "md5sum /mnt/chessdata/test/web"
-    - ssh chess_daq@chessdata "/mnt/chessdata/test/web --version"
+    - ssh chess_daq@chessdata "ls -al /mnt/chessdata/test/web.dev"
+    - ssh chess_daq@chessdata "md5sum /mnt/chessdata/test/web.dev"
+    - ssh chess_daq@chessdata "/mnt/chessdata/test/web.dev --version"
     - scp -r templates js css images schemas chess_daq@chessdata:/mnt/chessdata/test
-#    - ssh chess_daq@chessdata "sudo pcs resource restart chessdata-dev"
     - echo "Staging deployment comlete."
   tags:
     - shell
@@ -98,7 +97,9 @@ deploy-job:      # This job runs in the deploy stage.
   environment: production
   script:
     - echo "Deploying application..."
-    - ssh chess_daq@chessdata "sudo pcs resource restart chessdata-dev"
+    - ssh chess_daq@chessdata "sudo pcs resource stop chessdata-dev"
+    - ssh chess_daq@chessdata "mv /mnt/chessdata/test/web.dev /mnt/chessdata/test/web"
+    - ssh chess_daq@chessdata "sudo pcs resource start chessdata-dev"
     - echo "Application successfully deployed."
   tags:
     - shell
