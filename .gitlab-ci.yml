@@ -75,22 +75,20 @@ deploy_staging:
     - pwd
     - cd web
     - export PATH=$PATH:/nfs/chess/sw/chessdata/go/bin
-    - date >/tmp/chessdata-test
     - make
     - echo "Local info"
     - ls -al ./web
     - md5sum ./web
     - ./web --version
-    - scp /tmp/chessdata-test chess_daq@chessdata:/mnt/chessdata/test/
-    - scp web chess_daq@chessdata:/mnt/chessdata/test/web.dev
-    - echo "chessdata:/mnt/chessdata/test info"
-    - ssh chess_daq@chessdata "ls -al /mnt/chessdata/test/web.dev"
-    - ssh chess_daq@chessdata "md5sum /mnt/chessdata/test/web.dev"
-    - ssh chess_daq@chessdata "/mnt/chessdata/test/web.dev --version"
-    - scp -r templates js css images schemas chess_daq@chessdata:/mnt/chessdata/test
+    - scp web chess_daq@chessdata:/mnt/chessdata/dev/web.dev
+    - echo "chessdata:/mnt/chessdata/dev info"
+    - ssh chess_daq@chessdata "ls -al /mnt/chessdata/dev/web.dev"
+    - ssh chess_daq@chessdata "md5sum /mnt/chessdata/dev/web.dev"
+    - ssh chess_daq@chessdata "/mnt/chessdata/dev/web.dev --version"
+    - scp -r templates js css images schemas chess_daq@chessdata:/mnt/chessdata/dev
     - echo "restart chessdata-dev resource"
     - ssh -tt chess_daq@chessdata "sudo pcs resource disable chessdata-dev"
-    - ssh -tt chess_daq@chessdata "mv -f /mnt/chessdata/test/web.dev /mnt/chessdata/test/web"
+    - ssh -tt chess_daq@chessdata "mv -f /mnt/chessdata/dev/web.dev /mnt/chessdata/dev/web"
     - ssh -tt chess_daq@chessdata "sudo pcs resource enable chessdata-dev"
     - echo "Staging deployment comlete."
   tags:
