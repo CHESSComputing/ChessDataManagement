@@ -14,14 +14,14 @@
     <meta name="Copyright" content="(CC) 2019, CHESS collaboration." />
     <meta name="Rating" content="General" />
 
-    <link rel="stylesheet" type="text/css" href="/css/main.css"/>
+    <link rel="stylesheet" type="text/css" href="{{.Base}}/css/main.css"/>
     <!-- Kube CSS -->
-    <link rel="stylesheet" href="/css/kube.min.css">
+    <link rel="stylesheet" href="{{.Base}}/css/kube.min.css">
 
-    <link rel="search" type="application/opensearchdescription+xml" href="/opensearch" title="CHESS Data Management System" />
-    <script type="text/javascript" src="/js/prototype.js"></script>
-    <script type="text/javascript" src="/js/utils.js"></script>
-    <script type="text/javascript" src="/js/ajax_utils.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml" href="{{.Base}}/opensearch" title="CHESS Data Management System" />
+    <script type="text/javascript" src="{{.Base}}/js/prototype.js"></script>
+    <script type="text/javascript" src="{{.Base}}/js/utils.js"></script>
+    <script type="text/javascript" src="{{.Base}}/js/ajax_utils.js"></script>
 
 </head>
 <body class="yui-skin-sam">
@@ -34,10 +34,10 @@
         <!-- primary navigation -->
         <nav>
             <ul>
-                <li><a id="web_top_home" href="/">Home</a></li>
-                <li><a id="web_top_search" href="/search">Search</a></li>
-                <li><a id="web_top_status" href="/status">Status</a></li>
-                <li><a id="web_top_faq" href="/faq">FAQ</a></li>
+                <li><a id="web_top_home" href="{{.Base}}/">Home</a></li>
+                <li><a id="web_top_search" href="{{.Base}}/search">Search</a></li>
+                <li><a id="web_top_status" href="{{.Base}}/status">Status</a></li>
+                <li><a id="web_top_faq" href="{{.Base}}/faq">FAQ</a></li>
                 <li><a id="web_top_bug" href="https://github.com/vkuznet/ChessDataManagement/issues">Bug report</a></li>
             </ul>
         </nav>

@@ -4,7 +4,7 @@
     <h3>record: {{.Id}}</h3>
     </div>
     <div class="is-col is-10">
-        <form class="form-content" method="post" action="update" enctype="multipart/form-data">
+        <form class="form-content" method="post" action="{{.Base}}/update" enctype="multipart/form-data">
             <div class="form-item">
                 <div class="is-append is-push-right is-right">
                     <div class="is-80">
@@ -19,7 +19,7 @@
         </form>
     </div>
     <div class="is-col is-20">
-        <form class="form-content" method="post" action="files">
+        <form class="form-content" method="post" action="{{.Base}}/files">
             <div class="form-item">
                 <div class="is-append is-push-right is-right">
                     <div class="is-80">

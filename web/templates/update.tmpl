@@ -1,6 +1,6 @@
 <h3>record: {{.Id}}</h3>
 <div class="is-70 is-center">
-<form method="post" action="updateRecord">
+    <form method="post" action="{{.Base}}/updateRecord">
     <div class="form-item">
         <input name="_id" type="hidden" value="{{.Id}}">
         <input type="hidden" name="User" value="{{.User}}"/>

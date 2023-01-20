@@ -1,6 +1,6 @@
 <!-- searchform.tmpl -->
 
-<form action="/search" method="post" name="web_search" id="web_search" class="web_form">
+<form action="{{.Base}}/search" method="post" name="web_search" id="web_search" class="web_form">
     <div class="form-item">
         <div class="is-append is-80">
             {{if .Query}}
@@ -29,36 +29,20 @@ Need more help on Query Language?
     <br/>
     Here is a list of special keywords:
     <ul>
-        <li><b>__all__:</b> fetch for all records</li>
-        <li><b><a href="https://www.mongodb.com/docs/manual/tutorial/query-documents/">MongoDB spec</a>:</b> fetch records based on provided MongoDB spec, e.g. <pre>{"stringkey":"chess"}</pre></li>
+        <li>Fetch data based on provided
+            <a href="https://www.mongodb.com/docs/manual/tutorial/query-documents/">MongoDB spec</a>, e.g.
+            <pre>
+    # fetch all queries
+    {}
+
+    # search for specific key:value pair
+    {"key":"value"}
+
+    # search for specific condition, key value is greater than one
+    {"key": {"$gt": 1}}
+            </pre>
+        </li>
     </ul>
-    <!--
-    Here is a list of supported keywords along with their description:
-    <ul>
-        <li><b>PI:</b> name of PI, e.g. FirstName LastName</li>
-        <li><b>Affiliation:</b> user affiliation, Cornell</li>
-        <li><b>Proposal:</b> proposal number, e.g. 12345</li>
-        <li><b>BTR:</b> bla-bla-bla, e.g. 1</li>
-        <li><b>RawDataDirectory:</b> path to raw data directory, e.g. /path/A</li>
-        <li><b>AuxDataDirectory:</b> path to aux data directory, /path/B</li>
-        <li><b>Spec:</b> sample specification name, e.g. 304_ss_1</li>
-        <li><b>CalibrationSample:</b> calibration sample, yes or no</li>
-        <li><b>MaterialClass:</b> material class, e.g. Metal</li>
-        <li><b>CommonName:</b> common name of material, 304 Stainless Steel</li>
-        <li><b>AbbreviatedName:</b> abbreviated name of material, e.g. ss304</li>
-        <li><b>ConstituentElements:</b> constituent elements, e.g. Fe, Ni</li>
-        <li><b>Phases:</b> name of material group</li>
-        <li><b>Processing:</b> proceesing aspect of experiment, e.g. heat-treatment</li>
-        <li><b>ExperimentType:</b> experiment type, e.g. Torsion</li>
-        <li><b>XrayModality:</b> x-ray modality, e.g. white beam</li>
-        <li><b>XrayTechnique:</b> x-ray technique, e.g. EDD</li>
-        <li><b>SupplementalMeasurements:</b> supplemental measurements, e.g. Thermocouple</li>
-        <li><b>Furnance:</b> furnance</li>
-        <li><b>LoadFrame:</b> load-frame, e.g. RAMS4</li>
-        <li><b>Detectors:</b> detectors name, e.g. GE</li>
-        <li><b>Description:</b> beamtime notes</li>
-    </ul>
-    -->
 </div>
 <br/>
 
