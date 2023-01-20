@@ -72,7 +72,7 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	var user string
 	var err error
 	if Config.TestMode {
-		user = "testUser"
+		user = "test"
 	} else {
 		user, err = username(r)
 		if err != nil {
@@ -739,6 +739,7 @@ func processForm(r *http.Request) (string, Record, error) {
 		log.Println("ERROR", err)
 		return fname, rec, err
 	}
+	desc := ""
 	// r.PostForm provides url.Values which is map[string][]string type
 	// we convert it to Record
 	for k, items := range r.PostForm {
@@ -746,6 +747,10 @@ func processForm(r *http.Request) (string, Record, error) {
 			log.Println("### PostForm", k, items)
 		}
 		if k == "SchemaName" {
+			continue
+		}
+		if k == "Description" {
+			desc = strings.Join(items, " ")
 			continue
 		}
 		val, err := parseValue(schema, k, items)
@@ -768,10 +773,9 @@ func processForm(r *http.Request) (string, Record, error) {
 		}
 		rec[k] = val
 	}
-	user, err := username(r)
-	if err == nil {
-		rec["User"] = user
-	}
+	user, _ := username(r)
+	rec["User"] = user
+	rec["Description"] = desc
 	log.Printf("process form, record %v\n", rec)
 	return fname, rec, nil
 }
