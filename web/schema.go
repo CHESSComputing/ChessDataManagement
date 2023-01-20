@@ -109,12 +109,14 @@ func (s *Schema) Load() error {
 	file, err := os.Open(fname)
 	if err != nil {
 		msg := fmt.Sprintf("Unable to open %s, error=%v", fname, err)
+		log.Printf("ERROR: %s", msg)
 		return errors.New(msg)
 	}
 	defer file.Close()
 	data, err := io.ReadAll(file)
 	if err != nil {
 		msg := fmt.Sprintf("Unable to read %s, error=%v", fname, err)
+		log.Printf("ERROR: %s", msg)
 		return errors.New(msg)
 	}
 	var records []SchemaRecord
@@ -122,6 +124,7 @@ func (s *Schema) Load() error {
 		err = json.Unmarshal(data, &records)
 		if err != nil {
 			msg := fmt.Sprintf("fail to unmarshal json file %s, error=%v", fname, err)
+			log.Printf("ERROR: %s", msg)
 			return errors.New(msg)
 		}
 	} else if strings.HasSuffix(fname, "yaml") || strings.HasSuffix(fname, "yml") {
@@ -129,6 +132,7 @@ func (s *Schema) Load() error {
 		err = yaml.Unmarshal(data, &yrecords)
 		if err != nil {
 			msg := fmt.Sprintf("fail to unmarshal yaml file %s, error=%v", fname, err)
+			log.Printf("ERROR: %s", msg)
 			return errors.New(msg)
 		}
 		for _, yr := range yrecords {
@@ -151,6 +155,7 @@ func (s *Schema) Load() error {
 		}
 	} else {
 		msg := fmt.Sprintf("unsupported data format of schema file %s", fname)
+		log.Printf("ERROR: %s", msg)
 		return errors.New(msg)
 	}
 	s.FileName = fname
@@ -221,6 +226,7 @@ func (s *Schema) Validate(rec Record) error {
 		// check if our record key belong to the schema keys
 		if !InList(k, keys) {
 			msg := fmt.Sprintf("record key '%s' is not known", k)
+			log.Printf("ERROR: %s", msg)
 			return errors.New(msg)
 		}
 
@@ -228,11 +234,13 @@ func (s *Schema) Validate(rec Record) error {
 			// check key name
 			if m.Key != k {
 				msg := fmt.Sprintf("invalid key=%s", k)
+				log.Printf("ERROR: %s", msg)
 				return errors.New(msg)
 			}
 			// check data type
 			if !validSchemaType(m.Type, v) {
 				msg := fmt.Sprintf("invalid data type for key=%s, value=%v, type=%T, expect=%s", k, v, v, m.Type)
+				log.Printf("ERROR: %s", msg)
 				return errors.New(msg)
 			}
 			// collect mandatory keys
@@ -250,6 +258,7 @@ func (s *Schema) Validate(rec Record) error {
 	if len(mkeys) != len(smkeys) {
 		sort.Sort(StringList(mkeys))
 		msg := fmt.Sprintf("Unable to collect all mandatory keys %v, found %v", smkeys, mkeys)
+		log.Printf("ERROR: %s", msg)
 		return errors.New(msg)
 	}
 	return nil
