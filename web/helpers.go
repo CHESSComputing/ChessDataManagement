@@ -199,7 +199,12 @@ func insertData(sname string, rec Record) error {
 		cycle = fmt.Sprintf("Cycle-%s", randomString())
 	}
 	if v, ok := rec["Beamline"]; ok {
-		beamline = v.(string)
+		switch b := v.(type) {
+		case string:
+			beamline = b
+		case []string:
+			beamline = strings.Join(b, "-")
+		}
 	} else {
 		beamline = fmt.Sprintf("beamline-%s", randomString())
 	}
