@@ -173,40 +173,34 @@ func insertData(sname string, rec Record) error {
 	rec["SchemaFile"] = sname
 	rec["Schema"] = schemaName(sname)
 	// main attributes to work with
-	var path, experiment, sample, tier string
+	var path, cycle, beamline, btr, sample string
 	if v, ok := rec["DataLocationRaw"]; ok {
 		path = v.(string)
 	} else {
 		path = filepath.Join("/tmp", os.Getenv("USER")) // for testing purposes
 	}
-	if v, ok := rec["Facility"]; ok {
-		experiment = v.(string)
+	if v, ok := rec["Cycle"]; ok {
+		cycle = v.(string)
 	} else {
-		experiment = fmt.Sprintf("CHESS-%s", randomString())
+		cycle = fmt.Sprintf("Cycle-%s", randomString())
+	}
+	if v, ok := rec["Beamline"]; ok {
+		beamline = v.(string)
+	} else {
+		beamline = fmt.Sprintf("beamline-%s", randomString())
+	}
+	if v, ok := rec["BTR"]; ok {
+		btr = v.(string)
+	} else {
+		btr = fmt.Sprintf("btr-%s", randomString())
 	}
 	if v, ok := rec["SampleName"]; ok {
 		sample = v.(string)
 	} else {
 		sample = fmt.Sprintf("sample-%s", randomString())
 	}
-	if v, ok := rec["DataTier"]; ok {
-		tier = v.(string)
-	} else {
-		tier = fmt.Sprintf("raw-%s", randomString())
-	}
-	if v, ok := rec["Detectors"]; ok {
-		var dets []string
-		switch t := v.(type) {
-		case []any:
-			for _, d := range t {
-				dets = append(dets, d.(string))
-			}
-		case []string:
-			dets = t
-		}
-		tier = strings.Join(dets, "-")
-	}
-	dataset := fmt.Sprintf("/%s/%s/%s", experiment, sample, tier)
+	// dataset is a /cycle/beamline/BTR/sample
+	dataset := fmt.Sprintf("/%s/%s/%s/%s", cycle, beamline, btr, sample)
 	rec["dataset"] = dataset
 	rec = preprocess(rec)
 	// check if given path exist on file system
@@ -216,11 +210,18 @@ func insertData(sname string, rec Record) error {
 		rec["path"] = path
 		// we generate unique id by using time stamp
 		did := time.Now().UnixNano()
-		go InsertFiles(did, experiment, sample, tier, path)
+		err = InsertFiles(did, dataset, path)
+		if err != nil {
+			log.Printf("ERROR: unable to InsertFiles for did=%v dataset=%s path=%s, error=%v", did, dataset, path, err)
+			return err
+		}
 		rec["did"] = did
 		records := []Record{rec}
-		MongoUpsert(Config.DBName, Config.DBColl, records)
-		return nil
+		err = MongoUpsert(Config.DBName, Config.DBColl, records)
+		if err != nil {
+			log.Printf("ERROR: unable to MongoUpsert for did=%v dataset=%s path=%s, error=%v", did, dataset, path, err)
+		}
+		return err
 	}
 	msg := fmt.Sprintf("No files found associated with DataLocationRaw=%s", path)
 	return errors.New(msg)

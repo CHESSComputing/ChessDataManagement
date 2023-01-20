@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -22,25 +23,27 @@ func TestFilesDB(t *testing.T) {
 
 	// prepare our data for insertion
 	did := int64(123)
-	experiment := "CHESS"
-	processing := "processing"
-	tier := "tier"
+	cycle := "cycle"
+	beamline := "beamline"
+	btr := "btr"
+	sample := "sample"
+	dataset := fmt.Sprintf("/%s/%s/%s/%s", cycle, beamline, btr, sample)
 	path := "/tmp"
 	path = filepath.Join("/tmp", os.Getenv("USER")) // for testing purposes
 	files := FindFiles(path)
 	if len(files) == 0 {
-		t.Errorf("Unable to find any files in %s", path)
+		t.Errorf("Unable to find any files in directory=%s", path)
 	}
 
-	err = InsertFiles(did, experiment, processing, tier, path)
+	err = InsertFiles(did, dataset, path)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	files, err = getFiles(did)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	if len(files) == 0 {
-		t.Errorf("No files found in %s", path)
+		t.Errorf("No files found in database for did=%v", did)
 	}
 }

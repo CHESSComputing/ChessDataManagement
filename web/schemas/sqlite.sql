@@ -1,25 +1,31 @@
 --https://stackoverflow.com/questions/18387209/sqlite-syntax-for-creating-table-with-foreign-key
 
-CREATE TABLE experiments (
- experiment_id INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE cycles (
+ cycle_id INTEGER PRIMARY KEY AUTOINCREMENT,
  name TEXT NOT NULL
 );
 
-CREATE TABLE tiers (
- tier_id INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE beamlines (
+ beamline_id INTEGER PRIMARY KEY AUTOINCREMENT,
  name TEXT NOT NULL
 );
 
-CREATE TABLE processing (
- processing_id INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE btrs (
+ btr_id INTEGER PRIMARY KEY AUTOINCREMENT,
+ name TEXT NOT NULL
+);
+
+CREATE TABLE samples (
+ sample_id INTEGER PRIMARY KEY AUTOINCREMENT,
  name TEXT NOT NULL
 );
 
 CREATE TABLE datasets (
  dataset_id INTEGER PRIMARY KEY,
- experiment_id integer REFERENCES experiments(experiment_id) ON UPDATE CASCADE,
- processing_id integer REFERENCES processing(processing_id) ON UPDATE CASCADE,
- tier_id integer REFERENCES tiers(tier_id) ON UPDATE CASCADE,
+ cycle_id integer REFERENCES cycles(cycle_id) ON UPDATE CASCADE,
+ beamline_id integer REFERENCES beamlines(beamline_id) ON UPDATE CASCADE,
+ btr_id integer REFERENCES btrs(btr_id) ON UPDATE CASCADE,
+ sample_id integer REFERENCES sample(sample_id) ON UPDATE CASCADE,
  tstamp INTEGER NOT NULL UNIQUE
 );
 

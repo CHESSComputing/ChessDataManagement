@@ -19,6 +19,7 @@ package main
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"log"
 	"strings"
 	"time"
@@ -139,21 +140,33 @@ func FindID(stmt string, args ...interface{}) (int64, error) {
 }
 
 // InsertFiles insert given files into FilesDB
-func InsertFiles(did int64, experiment, processing, tier, path string) error {
+func InsertFiles(did int64, dataset, path string) error {
 	// look-up files for given path
 	files := FindFiles(path)
 
+	// dataset is a /cycle/beamline/BTR/sample
+	arr := strings.Split(dataset, "/")
+	if len(arr) != 5 {
+		return errors.New(fmt.Sprintf("ERROR: unable to parse given dataset %s", dataset))
+	}
+	cycle := arr[1]
+	beamline := arr[2]
+	btr := arr[3]
+	sample := arr[4]
+	log.Printf("InsertFiles: parse dataset=%s to cycle=%s beamline=%s btr=%s sample=%s", dataset, cycle, beamline, btr, sample)
+
 	// check if we have already our dataset in DB
-	dstmt := "SELECT dataset_id FROM datasets JOIN tiers ON datasets.tier_id=tiers.tier_id JOIN processing ON datasets.processing_id=processing.processing_id JOIN experiments ON datasets.experiment_id=experiments.experiment_id WHERE experiments.name=? and processing.name=? and tiers.name=?"
-	datasetID, e := FindID(dstmt, experiment, processing, tier)
+	dstmt := "SELECT dataset_id FROM datasets JOIN cules ON datasets.cycle_id=cycles.cycle_id JOIN btrs ON datasets.btr_id=btrs.btr_id JOIN beamlines ON datasets.beamline_id=beamlines.beamline_id JOIN samples ON dataset.sample_id=samples.sample_id WHERE beamlines.name=? and btrs.name=? and cycles.name=? and samaples.name=?"
+	datasetID, e := FindID(dstmt, cycle, beamline, btr, sample)
 	if e == nil && datasetID == did {
 		return nil
 	}
+	log.Println("proceed with insert")
 
 	// proceed with transaction operation
 	tx, err := FilesDB.Begin()
 	if err != nil {
-		log.Printf("DB error %v\n", err)
+		log.Printf("ERROR: DB error %v\n", err)
 		return err
 	}
 	defer tx.Rollback()
@@ -161,53 +174,76 @@ func InsertFiles(did int64, experiment, processing, tier, path string) error {
 	var res []Record
 	var stmt string
 	// insert main attributes
-	stmt = "INSERT INTO tiers (name) VALUES (?)"
-	_, err = tx.Exec(stmt, tier)
+	stmt = "INSERT INTO cycles (name) VALUES (?)"
+	_, err = tx.Exec(stmt, cycle)
 	if err != nil {
+		log.Printf("ERROR: unable to execute %s with %v, error=%v", stmt, cycle, err)
 		return tx.Rollback()
 	}
-	stmt = "INSERT INTO processing (name) VALUES (?)"
-	_, err = tx.Exec(stmt, processing)
+	stmt = "INSERT INTO beamlines (name) VALUES (?)"
+	_, err = tx.Exec(stmt, beamline)
 	if err != nil {
+		log.Printf("ERROR: unable to execute %s with %v, error=%v", stmt, beamline, err)
 		return tx.Rollback()
 	}
-	stmt = "INSERT INTO experiments (name) VALUES (?)"
-	_, err = tx.Exec(stmt, experiment)
+	stmt = "INSERT INTO btrs (name) VALUES (?)"
+	_, err = tx.Exec(stmt, btr)
 	if err != nil {
+		log.Printf("ERROR: unable to execute %s with %v, error=%v", stmt, btr, err)
+		return tx.Rollback()
+	}
+	stmt = "INSERT INTO samples (name) VALUES (?)"
+	_, err = tx.Exec(stmt, sample)
+	if err != nil {
+		log.Printf("ERROR: unable to execute %s with %v, error=%v", stmt, sample, err)
 		return tx.Rollback()
 	}
 
 	// select main attributes ids
 	var rec Record
-	stmt = "SELECT experiment_id FROM experiments WHERE name=?"
-	res, err = execute(tx, stmt, experiment)
-	if err != nil {
-		return tx.Rollback()
-	}
-	rec = res[0]
-	eid := rec["experiment_id"].(int64)
 
-	stmt = "SELECT processing_id FROM processing WHERE name=?"
-	res, err = execute(tx, stmt, processing)
+	stmt = "SELECT cycle_id FROM cycles WHERE name=?"
+	res, err = execute(tx, stmt, cycle)
 	if err != nil {
+		log.Printf("ERROR: unable to execute %s with %v, error=%v", stmt, cycle, err)
 		return tx.Rollback()
 	}
 	rec = res[0]
-	pid := rec["processing_id"].(int64)
+	cycleId := rec["cycle_id"].(int64)
 
-	stmt = "SELECT tier_id FROM tiers WHERE name=?"
-	res, err = execute(tx, stmt, tier)
+	stmt = "SELECT beamline_id FROM beamlines WHERE name=?"
+	res, err = execute(tx, stmt, beamline)
 	if err != nil {
+		log.Printf("ERROR: unable to execute %s with %v, error=%v", stmt, beamline, err)
 		return tx.Rollback()
 	}
 	rec = res[0]
-	tid := rec["tier_id"].(int64)
+	beamlineId := rec["beamline_id"].(int64)
+
+	stmt = "SELECT btr_id FROM btrs WHERE name=?"
+	res, err = execute(tx, stmt, btr)
+	if err != nil {
+		log.Printf("ERROR: unable to execute %s with %v, error=%v", stmt, btr, err)
+		return tx.Rollback()
+	}
+	rec = res[0]
+	btrId := rec["btr_id"].(int64)
+
+	stmt = "SELECT sample_id FROM samples WHERE name=?"
+	res, err = execute(tx, stmt, sample)
+	if err != nil {
+		log.Printf("ERROR: unable to execute %s with %v, error=%v", stmt, sample, err)
+		return tx.Rollback()
+	}
+	rec = res[0]
+	sampleId := rec["sample_id"].(int64)
 
 	// insert data into datasets table
 	tstamp := time.Now()
-	stmt = "INSERT INTO datasets (dataset_id,experiment_id,processing_id,tier_id,tstamp) VALUES (?, ?, ?, ?, ?)"
-	_, err = tx.Exec(stmt, did, eid, pid, tid, tstamp)
+	stmt = "INSERT INTO datasets (dataset_id,cycle_id,beamline_id,btr_id,sample_id,tstamp) VALUES (?, ?, ?, ?, ?, ?)"
+	_, err = tx.Exec(stmt, did, cycleId, beamlineId, btrId, sampleId, tstamp)
 	if err != nil {
+		log.Printf("ERROR: unable to execute %s, error=%v", stmt, err)
 		return tx.Rollback()
 	}
 
@@ -216,12 +252,14 @@ func InsertFiles(did int64, experiment, processing, tier, path string) error {
 		stmt = "INSERT INTO files (dataset_id,name) VALUES (?,?)"
 		_, err = tx.Exec(stmt, did, name)
 		if err != nil {
+			log.Printf("ERROR: unable to execute %s with did=%v name=%s error=%v", stmt, did, name, err)
 			return tx.Rollback()
 		}
 	}
 	// commit whole workflow
 	err = tx.Commit()
 	if err != nil {
+		log.Printf("ERROR: unable to commit, error=%v", err)
 		return tx.Rollback()
 	}
 	return nil
@@ -233,7 +271,7 @@ func getFiles(did int64) ([]string, error) {
 	// proceed with transaction operation
 	tx, err := FilesDB.Begin()
 	if err != nil {
-		log.Printf("DB error %v\n", err)
+		log.Printf("ERROR: DB error %v\n", err)
 		return files, err
 	}
 	defer tx.Rollback()
@@ -241,12 +279,14 @@ func getFiles(did int64) ([]string, error) {
 	stmt := "SELECT name FROM files WHERE dataset_id=?"
 	res, err := tx.Query(stmt, did)
 	if err != nil {
+		log.Printf("ERROR: unable to execute %s, error=%v", stmt, err)
 		return files, tx.Rollback()
 	}
 	for res.Next() {
 		var name string
 		err = res.Scan(&name)
 		if err != nil {
+			log.Printf("ERROR: unable to scan error=%v", err)
 			return files, tx.Rollback()
 		}
 		files = append(files, name)

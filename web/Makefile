@@ -93,9 +93,13 @@ testdb:
 	/bin/rm -f /tmp/files.db && \
 	sqlite3 /tmp/files.db < ./schemas/sqlite.sql && \
 	mkdir -p /tmp/${USER} && \
-	touch /tmp/${USER}/test
+	echo "test" > /tmp/${USER}/test.txt && \
+	ls /tmp/${USER}
 
 test : mongo testdb test_code
 
 test_code:
 	go test -test.v .
+
+# here is an example for execution of individual test
+# go test -v -run TestFilesDB
