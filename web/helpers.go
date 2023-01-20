@@ -178,6 +178,10 @@ func insertData(sname string, rec Record) error {
 		path = v.(string)
 	} else {
 		path = filepath.Join("/tmp", os.Getenv("USER")) // for testing purposes
+		if _, err := os.Stat(path); os.IsNotExist(err) {
+			log.Printf("Directory %s does not exist, will use /tmp", path)
+			path = "/tmp"
+		}
 	}
 	if v, ok := rec["Cycle"]; ok {
 		cycle = v.(string)
