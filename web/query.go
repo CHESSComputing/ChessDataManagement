@@ -53,10 +53,8 @@ func convertType(val interface{}) interface{} {
 func ParseQuery(query string) bson.M {
 	spec := make(bson.M)
 	if strings.TrimSpace(query) == "" {
+		log.Println("WARNING: empty query string")
 		return nil
-	}
-	if strings.TrimSpace(query) == "__all__" {
-		return spec
 	}
 	// support MongoDB specs
 	if strings.Contains(query, "{") {
