@@ -118,3 +118,4 @@ files
 kube
 *.patch
 chess_client
+client/LOCAL.md
