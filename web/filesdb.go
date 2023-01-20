@@ -243,7 +243,7 @@ func InsertFiles(did int64, dataset, path string) error {
 	stmt = "INSERT INTO datasets (dataset_id,cycle_id,beamline_id,btr_id,sample_id,tstamp) VALUES (?, ?, ?, ?, ?, ?)"
 	_, err = tx.Exec(stmt, did, cycleId, beamlineId, btrId, sampleId, tstamp)
 	if err != nil {
-		log.Printf("ERROR: unable to execute %s, error=%v", stmt, err)
+		log.Printf("ERROR: unable to execute %s, datasetId=%v, cycleId=%v, beamlineId=%v, btrId=%v, sampleId=%v, tstamp=%v, error=%v", stmt, did, cycleId, beamlineId, btrId, sampleId, tstamp, err)
 		return tx.Rollback()
 	}
 
