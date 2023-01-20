@@ -47,6 +47,10 @@ func (m *SchemaManager) String() string {
 
 // Schema returns either cached schema map or load it from provided file
 func (m *SchemaManager) Load(fname string) (*Schema, error) {
+	// use full path of file name
+	fname = fullPath(fname)
+
+	// check fname in our schema map
 	if sobj, ok := m.Map[fname]; ok {
 		if sobj.Schema != nil && time.Since(sobj.LoadTime) < SchemaRenewInterval {
 			log.Println("schema taken from cache", fname)
