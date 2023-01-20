@@ -93,8 +93,7 @@ testdb:
 	/bin/rm -f /tmp/files.db && \
 	sqlite3 /tmp/files.db < ./schemas/sqlite.sql && \
 	mkdir -p /tmp/${USER} && \
-	echo "test" > /tmp/${USER}/test.txt && \
-	ls /tmp/${USER}
+	echo "test" > /tmp/${USER}/test.txt
 
 test : mongo testdb test_code
 
