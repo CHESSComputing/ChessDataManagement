@@ -239,7 +239,7 @@ func InsertFiles(did int64, dataset, path string) error {
 	sampleId := rec["sample_id"].(int64)
 
 	// insert data into datasets table
-	tstamp := time.Now()
+	tstamp := time.Now().Unix()
 	stmt = "INSERT INTO datasets (dataset_id,cycle_id,beamline_id,btr_id,sample_id,tstamp) VALUES (?, ?, ?, ?, ?, ?)"
 	_, err = tx.Exec(stmt, did, cycleId, beamlineId, btrId, sampleId, tstamp)
 	if err != nil {
