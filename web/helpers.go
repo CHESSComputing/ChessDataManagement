@@ -39,7 +39,9 @@ func username(r *http.Request) (string, error) {
 
 	arr := strings.Split(s, "-")
 	if len(arr) != 2 {
-		return "", errors.New("Unable to decript auth-session")
+		msg := "Unable to decript auth-session"
+		log.Printf("ERROR: %s", msg)
+		return "", errors.New(msg)
 	}
 	user := arr[0]
 	return user, nil
@@ -82,7 +84,7 @@ func auth(r *http.Request) error {
 
 // helper function to handle http server errors
 func handleError(w http.ResponseWriter, r *http.Request, msg string, err error) {
-	log.Printf("Error %v\n", err)
+	log.Printf("ERROR: %v\n", err)
 	var templates Templates
 	tmplData := makeTmplData()
 	tmplData["Message"] = strings.ToTitle(msg)
@@ -101,22 +103,26 @@ func getUserCredentials(r *http.Request) (*credentials.Credentials, error) {
 	tmpFile, err := ioutil.TempFile("/tmp", name)
 	if err != nil {
 		msg = fmt.Sprintf("Unable to create tempfile: %v", err)
+		log.Printf("ERROR: %s", msg)
 		return nil, errors.New(msg)
 	}
 	defer os.Remove(tmpFile.Name())
 	_, err = tmpFile.Write([]byte(ticket))
 	if err != nil {
 		msg = "unable to write kerberos ticket"
+		log.Printf("ERROR: %s", msg)
 		return nil, errors.New(msg)
 	}
 	err = tmpFile.Close()
 	creds, err := kuserFromCache(tmpFile.Name())
 	if err != nil {
 		msg = "wrong user credentials"
+		log.Printf("ERROR: %s", msg)
 		return nil, errors.New(msg)
 	}
 	if creds == nil {
 		msg = "unable to obtain user credentials"
+		log.Printf("ERROR: %s", msg)
 		return nil, errors.New(msg)
 	}
 	return creds, nil
@@ -232,5 +238,6 @@ func insertData(sname string, rec Record) error {
 		return err
 	}
 	msg := fmt.Sprintf("No files found associated with DataLocationRaw=%s", path)
+	log.Printf("ERROR: %s", msg)
 	return errors.New(msg)
 }
