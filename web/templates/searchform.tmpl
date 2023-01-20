@@ -23,26 +23,24 @@ Need more help on Query Language?
     You may combine keyword search together along with free text. For example,
     if you are looking for data sample with known user, proposal number and some description
     you may use the query as following:
-    <pre>
-    Email:user@gmail.com Proposal:12345 mydescription
-    </pre>
+<pre>
+Email:user@gmail.com Proposal:12345 mydescription
+</pre>
     <br/>
-    Here is a list of special keywords:
-    <ul>
-        <li>Fetch data based on provided
-            <a href="https://www.mongodb.com/docs/manual/tutorial/query-documents/">MongoDB spec</a>, e.g.
-            <pre>
-    # fetch all queries
-    {}
+    You may also search for records using
+    <a href="https://www.mongodb.com/docs/manual/tutorial/query-documents/">MongoDB queries</a>:
+<pre>
+# fetch all queries
+{}
 
-    # search for specific key:value pair
-    {"key":"value"}
+# search for specific key:value pair where "key" is your record key
+# and "value" is your record value. The keys are always strings, while
+# values can be any data-type or mongo query expression, see next example:
+{"key":"value"}
 
-    # search for specific condition, key value is greater than one
-    {"key": {"$gt": 1}}
-            </pre>
-        </li>
-    </ul>
+# search for specific condition, e.g. "key" value is greater than one
+{"key": {"$gt": 1}}
+</pre>
 </div>
 <br/>
 
