@@ -132,6 +132,7 @@ func validateData(sname string, rec Record) error {
 		}
 	} else {
 		msg := fmt.Sprintf("No schema '%s' found for your record", sname)
+		log.Printf("ERROR: %s, schema map %+v", msg, _smgr.Map)
 		return errors.New(msg)
 	}
 	return nil
