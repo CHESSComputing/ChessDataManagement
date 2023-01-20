@@ -44,8 +44,7 @@ func FindFiles(root string) []string {
 	}
 	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			log.Printf("ERROR: unable to walk through %s, error %v", root, err)
-			return err
+			log.Printf("WARNING: unable to access %s/%s, error %v", root, path, err)
 		}
 //         log.Printf("dir: %v: name: %s\n", info.IsDir(), path)
 		files = append(files, path)
