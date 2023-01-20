@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 	"time"
 
 	"gopkg.in/jcmturner/gokrb5.v7/keytab"
@@ -73,22 +74,37 @@ func loggerMiddleware(r *mux.Router) mux.MiddlewareFunc {
 	}
 }
 
+// helper function to handle base path of URL requests
+func basePath(api string) string {
+	base := Config.Base
+	if base != "" {
+		if strings.HasPrefix(api, "/") {
+			api = strings.Replace(api, "/", "", 1)
+		}
+		if strings.HasPrefix(base, "/") {
+			return fmt.Sprintf("%s/%s", base, api)
+		}
+		return fmt.Sprintf("/%s/%s", base, api)
+	}
+	return api
+}
+
 // Handlers provides helper function to setup all HTTP routes
 func Handlers() *mux.Router {
 	router := mux.NewRouter()
 	router.StrictSlash(true) // to allow /route and /route/ end-points
-	router.HandleFunc("/auth", KAuthHandler).Methods("GET", "POST")
-	router.HandleFunc("/api", APIHandler).Methods("POST")
-	router.HandleFunc("/search", SearchHandler).Methods("GET", "POST")
-	router.HandleFunc("/files", FilesHandler).Methods("GET", "POST")
-	router.HandleFunc("/faq", FAQHandler)
-	router.HandleFunc("/status", StatusHandler)
-	router.HandleFunc("/server", SettingsHandler)
-	router.HandleFunc("/data", DataHandler)
-	router.HandleFunc("/process", ProcessHandler)
-	router.HandleFunc("/updateRecord", UpdateRecordHandler)
-	router.HandleFunc("/json", JsonHandler)
-	router.HandleFunc("/", AuthHandler).Methods("GET", "POST")
+	router.HandleFunc(basePath("/auth"), KAuthHandler).Methods("GET", "POST")
+	router.HandleFunc(basePath("/api"), APIHandler).Methods("POST")
+	router.HandleFunc(basePath("/search"), SearchHandler).Methods("GET", "POST")
+	router.HandleFunc(basePath("/files"), FilesHandler).Methods("GET", "POST")
+	router.HandleFunc(basePath("/faq"), FAQHandler)
+	router.HandleFunc(basePath("/status"), StatusHandler)
+	router.HandleFunc(basePath("/server"), SettingsHandler)
+	router.HandleFunc(basePath("/data"), DataHandler)
+	router.HandleFunc(basePath("/process"), ProcessHandler)
+	router.HandleFunc(basePath("/updateRecord"), UpdateRecordHandler)
+	router.HandleFunc(basePath("/json"), JsonHandler)
+	router.HandleFunc(basePath("/"), AuthHandler).Methods("GET", "POST")
 
 	// common middleware
 	router.Use(loggerMiddleware(router))
@@ -126,8 +142,11 @@ func Server(configFile string) {
 		log.Fatal("Configuration does not have schema files")
 	}
 
-	log.Println("Configuration:", Config.String())
+	// set log flags
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
+	// dump server configuration
+	log.Printf("Configuration:\n%s", Config.String())
 
 	// initialize FilesDB connection
 	FilesDB, err = InitFilesDB()
@@ -147,7 +166,7 @@ func Server(configFile string) {
 	log.Println("Schema", _smgr.String())
 
 	var templates Templates
-	tmplData := make(map[string]interface{})
+	tmplData := makeTmplData()
 	tmplData["Time"] = time.Now()
 	tmplData["Version"] = info()
 	_top = templates.Tmpl(Config.Templates, "top.tmpl", tmplData)
@@ -158,13 +177,19 @@ func Server(configFile string) {
 	kt, err := keytab.Load(Config.Keytab)
 	l := log.New(os.Stderr, "GOKRB5 Service: ", log.Ldate|log.Ltime|log.Lshortfile)
 	h := http.HandlerFunc(LoginHandler)
-	http.Handle("/login", spnego.SPNEGOKRB5Authenticate(h, kt, service.Logger(l)))
+	http.Handle(basePath("/login"), spnego.SPNEGOKRB5Authenticate(h, kt, service.Logger(l)))
 
 	// assign handlers
-	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir(Config.Styles))))
-	http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir(Config.Jscripts))))
-	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir(Config.Images))))
-	http.Handle("/", Handlers())
+	http.Handle(
+		basePath("/css/"),
+		http.StripPrefix(basePath("/css/"), http.FileServer(http.Dir(Config.Styles))))
+	http.Handle(
+		basePath("/js/"),
+		http.StripPrefix(basePath("/js/"), http.FileServer(http.Dir(Config.Jscripts))))
+	http.Handle(
+		basePath("/images/"),
+		http.StripPrefix(basePath("/images/"), http.FileServer(http.Dir(Config.Images))))
+	http.Handle(basePath("/"), Handlers())
 
 	// Start server
 	addr := fmt.Sprintf(":%d", Config.Port)

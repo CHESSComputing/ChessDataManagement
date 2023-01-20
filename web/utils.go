@@ -453,7 +453,7 @@ const PLAIN = "\x1b[0m"
 func pagination(query string, nres, startIdx, limit int) string {
 	var templates Templates
 	url := fmt.Sprintf("/search?query=%s", query)
-	tmplData := make(map[string]interface{})
+	tmplData := makeTmplData()
 	if nres > 0 {
 		tmplData["StartIndex"] = fmt.Sprintf("%d", startIdx+1)
 	} else {

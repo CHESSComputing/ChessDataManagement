@@ -45,6 +45,13 @@ type ServerSettings struct {
 // ### HTTP METHODS
 //
 
+// helper function to make tmpl data struct with pre-defined fields
+func makeTmplData() map[string]any {
+	tmplData := make(map[string]any)
+	tmplData["Base"] = Config.Base
+	return tmplData
+}
+
 // helper function to write json response
 func jsonResponse(w http.ResponseWriter, err error, status int) {
 	rec := make(Record)
@@ -119,7 +126,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var templates Templates
-	tmplData := make(map[string]interface{})
+	tmplData := makeTmplData()
 	page := templates.Tmpl(Config.Templates, "login.tmpl", tmplData)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(_top + page + _bottom))
@@ -218,7 +225,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 
 	// create search template form
 	var templates Templates
-	tmplData := make(map[string]interface{})
+	tmplData := makeTmplData()
 	tmplData["Query"] = query
 	tmplData["User"] = user
 	page := templates.Tmpl(Config.Templates, "searchform.tmpl", tmplData)
@@ -359,7 +366,7 @@ func genForm(fname string, record *Record) (string, error) {
 		out = append(out, "</fieldset>")
 	}
 	form := strings.Join(out, "\n")
-	tmplData := make(map[string]interface{})
+	tmplData := makeTmplData()
 	tmplData["Beamline"] = beamline
 	tmplData["Form"] = template.HTML(form)
 	var templates Templates
@@ -378,7 +385,7 @@ func formEntry(smap map[string]SchemaRecord, k, s, required string, record *Reco
 		defaultValue = strings.Replace(defaultValue, "[", "", -1)
 		defaultValue = strings.Replace(defaultValue, "]", "", -1)
 	}
-	tmplData := make(map[string]interface{})
+	tmplData := makeTmplData()
 	tmplData["Key"] = k
 	tmplData["Value"] = defaultValue
 	tmplData["Placeholder"] = ""
@@ -494,7 +501,7 @@ func JsonHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	user, _ := username(r)
 	var templates Templates
-	tmplData := make(map[string]interface{})
+	tmplData := makeTmplData()
 	tmplData["User"] = user
 	tmplData["Date"] = time.Now().Unix()
 	tmplData["Beamlines"] = _beamlines
@@ -528,7 +535,7 @@ func DataHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	user, _ := username(r)
 	var templates Templates
-	tmplData := make(map[string]interface{})
+	tmplData := makeTmplData()
 	tmplData["User"] = user
 	tmplData["Date"] = time.Now().Unix()
 	tmplData["Beamlines"] = _beamlines
@@ -560,7 +567,7 @@ func FAQHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var templates Templates
-	tmplData := make(map[string]interface{})
+	tmplData := makeTmplData()
 	page := templates.Tmpl(Config.Templates, "faq.tmpl", tmplData)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(_top + page + _bottom))
@@ -604,7 +611,7 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 
 	// get unfinished queries
 	var templates Templates
-	tmplData := make(map[string]interface{})
+	tmplData := makeTmplData()
 	tmplData["NGo"] = runtime.NumGoroutine()
 	//     virt := Memory{Total: m.Total, Free: m.Free, Used: m.Used, UsedPercent: m.UsedPercent}
 	//     swap := Memory{Total: s.Total, Free: s.Free, Used: s.Used, UsedPercent: s.UsedPercent}
@@ -792,7 +799,7 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 	var msg string
 	var class string
 	var templates Templates
-	tmplData := make(map[string]interface{})
+	tmplData := makeTmplData()
 	user, _ := username(r)
 	tmplData["User"] = user
 	if err := r.ParseForm(); err == nil {
@@ -960,7 +967,7 @@ func APIHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	var templates Templates
-	tmplData := make(map[string]interface{})
+	tmplData := makeTmplData()
 	tmplData["Schema"] = schemaName(schema)
 	tmplData["Message"] = msg
 	tmplData["Class"] = class
@@ -1024,7 +1031,7 @@ func UpdateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var templates Templates
-	tmplData := make(map[string]interface{})
+	tmplData := makeTmplData()
 	record := r.FormValue("record")
 	var rec Record
 	err := json.Unmarshal([]byte(record), &rec)
@@ -1052,7 +1059,7 @@ func UpdateRecordHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var templates Templates
-	tmplData := make(map[string]interface{})
+	tmplData := makeTmplData()
 	user, _ := username(r)
 	tmplData["User"] = user
 	var msg, cls, schema string
@@ -1135,7 +1142,7 @@ func FilesHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var templates Templates
-	tmplData := make(map[string]interface{})
+	tmplData := makeTmplData()
 	did, err := strconv.ParseInt(r.FormValue("did"), 10, 64)
 	if err != nil {
 		tmplData["Message"] = fmt.Sprintf("Unable to parse did\nError: %v", err)

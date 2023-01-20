@@ -84,7 +84,7 @@ func auth(r *http.Request) error {
 func handleError(w http.ResponseWriter, r *http.Request, msg string, err error) {
 	log.Printf("Error %v\n", err)
 	var templates Templates
-	tmplData := make(map[string]interface{})
+	tmplData := makeTmplData()
 	tmplData["Message"] = strings.ToTitle(msg)
 	tmplData["Class"] = "alert is-error is-large is-text-center"
 	page := templates.Tmpl(Config.Templates, "confirm.tmpl", tmplData)
