@@ -6,7 +6,9 @@ package main
 //
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 
@@ -56,6 +58,16 @@ func ParseQuery(query string) bson.M {
 	if strings.TrimSpace(query) == "__all__" {
 		return spec
 	}
+	// support MongoDB specs
+	if strings.Contains(query, "{") {
+		if err := json.Unmarshal([]byte(query), &spec); err == nil {
+			if Config.Verbose > 0 {
+				log.Printf("found bson spec %+v", spec)
+			}
+			return spec
+		}
+	}
+
 	// query as key:value
 	if strings.Contains(query, separator) {
 		arr := strings.Split(query, separator)
