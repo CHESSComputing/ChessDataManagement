@@ -679,6 +679,7 @@ func parseValue(schema *Schema, key string, items []string) (any, error) {
 			return "", nil
 		}
 		msg := fmt.Sprintf("No key %s found in schema map", key)
+		log.Printf("ERROR: %s", msg)
 		return false, errors.New(msg)
 	} else if r.Type == "list_str" {
 		return items, nil
@@ -694,6 +695,7 @@ func parseValue(schema *Schema, key string, items []string) (any, error) {
 			return v, nil
 		}
 		msg := fmt.Sprintf("Unable to parse boolean value for key=%s, please come back to web form and choose either true or false", key)
+		log.Printf("ERROR: %s", msg)
 		return false, errors.New(msg)
 	} else if strings.HasPrefix(r.Type, "int") {
 		v, err := strconv.ParseInt(items[0], 10, 64)
@@ -709,6 +711,7 @@ func parseValue(schema *Schema, key string, items []string) (any, error) {
 		return 0, err
 	}
 	msg := fmt.Sprintf("Unable to parse form value for key %s", key)
+	log.Printf("ERROR: %s", msg)
 	return 0, errors.New(msg)
 }
 
