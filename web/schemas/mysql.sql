@@ -29,6 +29,6 @@ CREATE TABLE datasets (
 
 CREATE TABLE files (
  file_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
- dataset_id INTEGER REFERENCES datasets(dataset_id) ON UPDATE CASCADE,
+ dataset_id BIGINT REFERENCES datasets(dataset_id) ON UPDATE CASCADE,
  name VARCHAR(100) NOT NULL
 );
