@@ -17,6 +17,7 @@ import (
 type Configuration struct {
 	Port                int                 `json:"port"`                // server port number
 	URI                 string              `json:"uri"`                 // server mongodb URI
+	Base                string              `json:"base"`                // base path
 	DBName              string              `json:"dbname"`              // mongo db name
 	DBColl              string              `json:"dbcoll"`              // mongo db name
 	FilesDBUri          string              `json:"filesdburi"`          // server FilesDB URI
@@ -51,7 +52,7 @@ func (c *Configuration) String() string {
 	if len(dbAttrs) > 1 {
 		cc.FilesDBUri = dbAttrs[1]
 	}
-	data, _ := json.Marshal(cc)
+	data, _ := json.MarshalIndent(cc, "", "    ")
 	return fmt.Sprintf(string(data))
 }
 
