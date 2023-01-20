@@ -195,7 +195,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	query = strings.ToLower(query)
 	spec := ParseQuery(query)
 	if Config.Verbose > 0 {
-		log.Println("search query='%s' spec=%+v user=%v", query, spec, user)
+		log.Printf("search query='%s' spec=%+v user=%v", query, spec, user)
 	}
 
 	// check if we use web or cli
