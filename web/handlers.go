@@ -183,12 +183,16 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+	// we store all values as lower case and will use lower case in searches
+	query := r.FormValue("query")
+	query = strings.ToLower(query)
+	spec := ParseQuery(query)
+	if Config.Verbose > 0 {
+		log.Println("search query='%s' spec=%+v user=%v", query, spec, user)
+	}
+
 	// check if we use web or cli
 	if client := r.FormValue("client"); client == "cli" {
-		query := r.FormValue("query")
-
-		// process the query
-		spec := ParseQuery(query)
 		var records []Record
 		if spec != nil {
 			records = MongoGet(Config.DBName, Config.DBColl, spec, 0, -1)
@@ -211,7 +215,6 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		idx = 0
 	}
-	query := r.FormValue("query")
 
 	// create search template form
 	var templates Templates
@@ -221,7 +224,6 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	page := templates.Tmpl(Config.Templates, "searchform.tmpl", tmplData)
 
 	// process the query
-	spec := ParseQuery(query)
 	if spec != nil {
 		nrec := MongoCount(Config.DBName, Config.DBColl, spec)
 		records := MongoGet(Config.DBName, Config.DBColl, spec, 0, -1)
