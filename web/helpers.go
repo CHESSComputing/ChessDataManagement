@@ -23,6 +23,9 @@ import (
 
 // helper function to extract username from auth-session cookie
 func username(r *http.Request) (string, error) {
+	if Config.TestMode {
+		return "test", nil
+	}
 	cookie, err := r.Cookie("auth-session")
 	if err != nil {
 		return "", err
