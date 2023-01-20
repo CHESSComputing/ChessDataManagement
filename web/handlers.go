@@ -1103,7 +1103,7 @@ func UpdateRecordHandler(w http.ResponseWriter, r *http.Request) {
 // FilesHandler handlers Files requests
 func FilesHandler(w http.ResponseWriter, r *http.Request) {
 	_, err := username(r)
-	if err != nil {
+	if !Config.TestMode && err != nil {
 		_, err := getUserCredentials(r)
 		if err != nil {
 			msg := "unable to get user credentials"
