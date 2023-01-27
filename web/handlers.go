@@ -482,6 +482,10 @@ func JsonHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// get beamline value from the form
+	sname := r.FormValue("SchemaName")
+
+	// read form file
 	file, _, err := r.FormFile("file")
 	if err != nil {
 		msg := "unable to read file form"
@@ -504,9 +508,36 @@ func JsonHandler(w http.ResponseWriter, r *http.Request) {
 	tmplData := makeTmplData()
 	tmplData["User"] = user
 	tmplData["Date"] = time.Now().Unix()
-	tmplData["Beamlines"] = _beamlines
+	schemaFiles := Config.SchemaFiles
+	if sname != "" {
+		// construct proper schema files order which will be used to generate forms
+		sfiles := []string{}
+		// add scheme file which matches our desired schema
+		for _, f := range schemaFiles {
+			if strings.Contains(f, sname) {
+				sfiles = append(sfiles, f)
+			}
+		}
+		// add rest of schema files
+		for _, f := range schemaFiles {
+			if !strings.Contains(f, sname) {
+				sfiles = append(sfiles, f)
+			}
+		}
+		schemaFiles = sfiles
+		// construct proper bemalines order
+		blines := []string{sname}
+		for _, b := range _beamlines {
+			if b != sname {
+				blines = append(blines, b)
+			}
+		}
+		tmplData["Beamlines"] = blines
+	} else {
+		tmplData["Beamlines"] = _beamlines
+	}
 	var forms []string
-	for idx, fname := range Config.SchemaFiles {
+	for idx, fname := range schemaFiles {
 		cls := "hide"
 		if idx == 0 {
 			cls = ""
