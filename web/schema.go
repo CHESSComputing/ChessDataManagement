@@ -380,7 +380,7 @@ func (s *Schema) SectionKeys() (map[string][]string, error) {
 // helper function to validate schema type of given value with respect to schema
 func validSchemaType(stype string, v interface{}) bool {
 	// on web form 0 will be int type, but we can allow it for any int's float's
-	if v == 0 {
+	if v == 0 || v == 0. {
 		if strings.Contains(stype, "int") || strings.Contains(stype, "float") {
 			return true
 		}
