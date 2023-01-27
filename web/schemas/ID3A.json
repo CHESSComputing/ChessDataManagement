@@ -258,7 +258,7 @@
         "placeholder": "/nfs/chess/aux/cycles/2022-3/id3a/wilson-1234-a/beamtime_log.txt"
     },
     {
-        "key": "CESRCondtions",
+        "key": "CESRConditions",
         "type": "list_str",
         "optional": false,
         "multiple": false,

@@ -171,7 +171,7 @@
         "placeholder": "/nfs/chess/aux/cycles/2022-2/id1a3/batterman-1111-c/metadata/batterman-1111-c_notebook.txt"
     },
     {
-        "key": "CESRCondtions",
+        "key": "CESRConditions",
         "type": "list_str",
         "optional": false,
         "multiple": false,
@@ -466,7 +466,7 @@
     },
     {
         "key": "SampleSpaceGroup",
-        "type": "UTF-8",
+        "type": "string",
         "optional": true,
         "multiple": true,
         "section": "Sample",
