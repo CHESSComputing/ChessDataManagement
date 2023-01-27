@@ -1,7 +1,7 @@
 #!/bin/bash
 export PATH=$PATH:../../client
 srv=http://localhost:8212
-docs="test-data.json ID4B-data.json lite-data.json ID3A-data.json"
+docs="test-data.json ID4B-data.json lite-data.json ID3A-data.json ID1A3-data.json"
 
 for doc in $docs;
 do
