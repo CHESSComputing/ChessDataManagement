@@ -83,7 +83,7 @@
         "value": ["Vortex", "Pilatus6M", "DualDexelas", "GE2", "Manta", "Retiga", "Eiger216M", "Eiger1M", "Pilatus200K", "Pilatus300K", "CanberraSingleElement"]
     },
 {
-        "key": "CESRCondtions",
+        "key": "CESRConditions",
         "type": "list_str",
         "optional": false,
         "section": "Beam",
