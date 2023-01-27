@@ -1,0 +1,73 @@
+{
+   "Alignment": true,
+   "BTR": "BTR",
+   "BeamEnergy": "58 KeV",
+   "Beamline": [
+      "1A3"
+   ],
+   "BeamlineFundingPartner": [
+      "CHEXS_NSF"
+   ],
+   "CESRConditions": [
+      "9BunchMode"
+   ],
+   "Calibration": [
+      "CeO2"
+   ],
+   "CryoCooler": false,
+   "Cryostat3Kto300K": "5K",
+   "Cryostream11Kto500K": "50K",
+   "Cycle": "2022-2",
+   "DataLocationBeamtimeNotes": "/tmp",
+   "DataLocationMeta": "/tmp",
+   "DataLocationRaw": "/tmp",
+   "DataLocationReduced": "/tmp",
+   "DataLocationScientificData": "",
+   "Date": 1674825262,
+   "Description": "test record",
+   "Detectors": [
+      "Eiger500"
+   ],
+   "EnergyScan": true,
+   "ExperimentType": [
+      "Scattering/Diffraction"
+   ],
+   "Experimenters": "",
+   "Facility": "CHESS",
+   "HolderLabel": "label",
+   "InSitu": true,
+   "InsertionDevice": [
+      "CCU"
+   ],
+   "MaterialSafetyHazardousSamples": false,
+   "Monochromator": [
+      "MultiLayer"
+   ],
+   "PI": "Cornell",
+   "ReferenceCalibrantSampleName": "",
+   "SampleChemicalFormula": "test",
+   "SampleDSpacing": 0.123,
+   "SampleMass": "5 gm",
+   "SampleMatPedHeatTreatment": "sample",
+   "SampleMatPedProcessingRoute": "sample",
+   "SampleName": "test",
+   "SamplePreparationDate": "2022-11-18",
+   "SampleSpaceGroup": "F-43m",
+   "SampleState": [
+      "Powder "
+   ],
+   "SampleThermalGradient": false,
+   "SampleType": [
+      "sample"
+   ],
+   "SampleUnitCell": "2.5",
+   "ScanEdgeK": "",
+   "ScanEdgeL": "",
+   "SpotSize": "200 micron",
+   "StaffScientist": "Valentin",
+   "Technique": [
+      "PowderDiffraction"
+   ],
+   "UndulatorScan": true,
+   "User": "test"
+}
