@@ -1,0 +1,86 @@
+{
+   "Alignment": false,
+   "AttenThickness": 0,
+   "BTR": "BTR",
+   "BeamEnergy": 41.991,
+   "BeamSlitHorizontalPosition": 0,
+   "BeamSlitHorizontalSize": 0,
+   "BeamSlitVerticalPosition": 0,
+   "BeamSlitVerticalSize": 0,
+   "Beamline": [
+      "1A3"
+   ],
+   "BeamlineFundingPartner": [
+      "CHEXS_NSF"
+   ],
+   "CESRConditions": [
+      "9BunchMode"
+   ],
+   "Calibration": false,
+   "Cycle": "2022-2",
+   "DataLocationBeamtimeNotes": "/tmp",
+   "DataLocationMeta": "/tmp",
+   "DataLocationRaw": "/tmp",
+   "DataLocationReduced": "/tmp",
+   "DataLocationScratch": "/tmp",
+   "Date": 1674825943,
+   "Description": "test record",
+   "Detectors": [
+      "Eiger500"
+   ],
+   "EnergyFoil": [
+      "scrn"
+   ],
+   "EnergyScan": false,
+   "ExperimentType": [
+      "Scattering/Diffraction"
+   ],
+   "Experimenters": "",
+   "Facility": "CHESS",
+   "Focusing": [
+      "Collimator"
+   ],
+   "Furnace": [
+      "RAMSII"
+   ],
+   "GuardSlitHorizontalPosition": 0,
+   "GuardSlitHorizontalSize": 0,
+   "GuardSlitVerticalPosition": 0,
+   "GuardSlitVerticalSize": 0,
+   "InSitu": false,
+   "MaterialSafetyHazardousSamples": false,
+   "MechanicalGrips": [
+      "Wedge"
+   ],
+   "MechanicalLoadFrame": [
+      "RAMSII"
+   ],
+   "MechanicalTest": false,
+   "Monochromator": [
+      "MultiLayer"
+   ],
+   "PI": "Cornell",
+   "PreSlitHorizontalPosition": 0,
+   "PreSlitHorizontalSize": 0,
+   "PreSlitVerticalPosition": 0,
+   "PreSlitVerticalSize": 0,
+   "Processing": ",NISTTestBed,Stratasys3DPrinter,Other",
+   "ReferenceCalibrantSampleName": "",
+   "ReferenceCalibrantScanNumber": 0,
+   "ReferenceEnergyScanNumber": 0,
+   "ReferenceEnergyScanSampleName": "",
+   "SampleChemicalFormula": "freetext",
+   "SampleCommonName": "T64",
+   "SampleGeometry": "sample",
+   "SampleMatPedHeatTreatment": "sample",
+   "SampleMatPedProcessingRoute": "sample",
+   "SampleName": "sample",
+   "SampleSpaceGroup": "123",
+   "SampleUnitCell": 2.5,
+   "StaffScientist": "Valentin",
+   "Technique": [
+      "SingleCrystalDiffraction"
+   ],
+   "UndulatorScan": false,
+   "User": "test"
+}
