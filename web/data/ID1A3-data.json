@@ -1,0 +1,76 @@
+{
+   "Alignment": false,
+   "BTR": "BTR",
+   "BeamEnergy": 0,
+   "BeamMode": [
+      "White"
+   ],
+   "Beamline": [
+      "1A3"
+   ],
+   "BeamlineFundingPartner": [
+      "CHEXS_NSF"
+   ],
+   "BeamlineSetupDocument": "",
+   "CESRConditions": [
+      "9BunchMode"
+   ],
+   "Calibration": true,
+   "Cycle": "2022-2",
+   "DataLocationBeamtimeNotes": "/tmp",
+   "DataLocationMeta": "/tmp",
+   "DataLocationRaw": "/tmp",
+   "DataLocationReduced": "/tmp",
+   "DataLocationScratch": "/tmp",
+   "Date": 1674826725,
+   "Description": "test record",
+   "Detectors": [
+      "Eiger500"
+   ],
+   "EnergyScan": false,
+   "EnergyScanDocument": "",
+   "ExperimentType": [
+      "Scattering/Diffraction"
+   ],
+   "Experimenters": "",
+   "Facility": "CHESS",
+   "Focusing": [
+      "Collimator"
+   ],
+   "Furnace": [
+      "RAMSII"
+   ],
+   "InSitu": false,
+   "InsertionDevice": [
+      "CCU"
+   ],
+   "MaterialSafetyHazardousSamples": false,
+   "MechanicalGrips": [
+      "Wedge"
+   ],
+   "MechanicalLoadFrame": [
+      "RAMSII"
+   ],
+   "MechanicalTest": false,
+   "MechanicalTestType": [
+      "Tension"
+   ],
+   "Monochromator": [
+      "MultiLayer"
+   ],
+   "PI": "Cornell",
+   "SampleGeometry": "",
+   "SampleMatPedHeatTreatment": "",
+   "SampleMatPedProcessingRoute": "",
+   "SampleName": "sample",
+   "SampleSpaceGroup": "F-43m",
+   "SampleState": [
+      "Powder "
+   ],
+   "StaffScientist": "Valentin",
+   "Technique": [
+      "SingleCrystalDiffraction"
+   ],
+   "User": "test"
+}
+
