@@ -128,7 +128,7 @@
         "values.1": "Vortex"
     },
     {
-        "key": "CESRCondtions",
+        "key": "CESRConditions",
         "type": "list_str",
         "optional": false,
         "section": "Beam",
