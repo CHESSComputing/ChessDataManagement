@@ -1,0 +1,40 @@
+{
+   "Alignment": false,
+   "BTR": "BTR",
+   "Beamline": [
+      "2A"
+   ],
+   "BeamlineFundingPartner": [
+      "MSNC_AFRL"
+   ],
+   "CESRCondtions": [
+      "21BunchMode"
+   ],
+   "Calibration": false,
+   "Cycle": "2022-2",
+   "DataLocationBeamtimeNotes": "",
+   "DataLocationMeta": "",
+   "DataLocationRaw": "/tmp",
+   "DataLocationReduced": "",
+   "DataLocationScratch": "",
+   "Date": 1674825595,
+   "Description": "test record",
+   "Detectors": [
+      "Vortex"
+   ],
+   "ExperimentType": [
+      "Imaging"
+   ],
+   "Experimenters": "",
+   "Facility": "CHESS",
+   "PI": "Cornell",
+   "SampleName": "",
+   "SampleType": [
+      "sample+can"
+   ],
+   "StaffScientist": "Valentin",
+   "Technique": [
+      "HighEnergyDiffractionMicroscopyNearField"
+   ],
+   "User": "test"
+}
