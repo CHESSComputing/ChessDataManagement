@@ -176,7 +176,7 @@
         "placeholder": "Insert the link"
     },
     {
-        "key": "CESRCondtions",
+        "key": "CESRConditions",
         "type": "list_str",
         "optional": false,
         "multiple": false,
