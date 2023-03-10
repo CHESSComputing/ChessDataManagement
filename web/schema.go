@@ -226,7 +226,7 @@ func (s *Schema) Validate(rec Record) error {
 		// check if our record key belong to the schema keys
 		if !InList(k, keys) {
 			msg := fmt.Sprintf("record key '%s' is not known", k)
-			log.Printf("ERROR: %s", msg)
+			log.Printf("ERROR: %s, schema file %s, schema map %+v", msg, s.FileName, s.Map)
 			return errors.New(msg)
 		}
 
