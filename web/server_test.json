@@ -2,7 +2,7 @@
     "uri":"mongodb://localhost:8230",
     "dbname": "chess",
     "dbcoll": "MetaTest",
-    "filesdburi": "sqlite3:///tmp/files.db",
+    "filesdburi": "sqlite3:///Users/vk/Work/CHESS/ChessDataManagement/web/files.db",
     "schemaFiles": [
         "schemas/test.json",
         "schemas/lite.json",
