@@ -100,7 +100,10 @@ type Schema struct {
 
 // Load loads given schema file
 func (s *Schema) String() string {
-	return fmt.Sprintf("<schema %s, map %d entries>", s.FileName, len(s.Map))
+	if s.Map != nil {
+		return fmt.Sprintf("<schema %s, map %d entries>", s.FileName, len(s.Map))
+	}
+	return fmt.Sprintf("<schema %s, map %v>", s.FileName, s.Map)
 }
 
 // Load loads given schema file
@@ -212,6 +215,7 @@ func (s *Schema) Validate(rec Record) error {
 	if err := s.Load(); err != nil {
 		return err
 	}
+	log.Println("INFO: ", s.String())
 	keys, err := s.Keys()
 	if err != nil {
 		return err
