@@ -173,6 +173,13 @@ func preprocess(rec Record) Record {
 
 // helper function to insert data into backend DB
 func insertData(sname string, rec Record) error {
+	// load our schema
+	if _, err := _smgr.Load(sname); err != nil {
+		msg := fmt.Sprintf("unable to load %s error %v", sname, err)
+		log.Println("ERROR: ", msg)
+		return errors.New(msg)
+	}
+
 	// check if data satisfies to one of the schema
 	if err := validateData(sname, rec); err != nil {
 		return err
