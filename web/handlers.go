@@ -886,7 +886,7 @@ func ProcessHandler(w http.ResponseWriter, r *http.Request) {
 
 // APIHandler handlers Api requests
 func APIHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("ApiHandler")
+	log.Println("APIHandler")
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
