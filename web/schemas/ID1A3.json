@@ -64,12 +64,20 @@
     },
     {
         "key": "StaffScientist",
-        "type": "string",
+        "type": "list_string",
         "optional": false,
         "multiple": true,
         "section": "User",
         "description": "List staff scientists",
-        "placeholder": "KoJYP, NygrenKE"
+        "placeholder": ""
+        "value": [
+            "",
+            "KoJYP",
+            "NygrenKE",
+            "DasA",
+            "GustafsonSE",
+            "ShanksKS"
+        ]        
     },
     {
         "key": "BeamlineFundingPartner",
