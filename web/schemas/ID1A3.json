@@ -97,6 +97,27 @@
         ]
     },
     {
+        "key": "Affiliation",
+        "type": "list_str",
+        "optional": true,
+        "multiple": false,
+        "section": "User",
+        "description": "Select affiliation",
+        "placeholder": "AirForce",
+        "value": [
+            "",
+            "AirForce",
+            "Army",
+            "Navy",
+            "OtherGov",
+            "Basic",
+            "Industry",
+            "Development"
+        ]
+    },
+
+    
+    {
         "key": "Alignment",
         "type": "bool",
         "optional": true,
