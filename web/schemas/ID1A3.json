@@ -64,7 +64,7 @@
     },
     {
         "key": "StaffScientist",
-        "type": "list_string",
+        "type": "list_str",
         "optional": false,
         "multiple": true,
         "section": "User",
