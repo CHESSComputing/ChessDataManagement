@@ -431,7 +431,7 @@
         "multiple": false,
         "section": "Experiment",
         "description": "Specify grips",
-        "placeholder": "RAMS",
+        "placeholder": "Wedge",
         "value": [
             "",
             "Wedge",
