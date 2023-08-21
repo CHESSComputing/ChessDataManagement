@@ -64,12 +64,20 @@
     },
     {
         "key": "StaffScientist",
-        "type": "string",
+        "type": "list_str",
         "optional": false,
         "multiple": true,
         "section": "User",
         "description": "List staff scientists",
-        "placeholder": "KoJYP, NygrenKE"
+        "placeholder": "KoJYP, NygrenKE, DasA",
+        "value": [
+            "",
+            "KoJYP",
+            "NygrenKE",
+            "DasA",
+            "GustafsonSE",
+            "ShanksKS"
+        ]        
     },
     {
         "key": "BeamlineFundingPartner",
@@ -88,6 +96,27 @@
             "CHEXS_NSF"
         ]
     },
+    {
+        "key": "Affiliation",
+        "type": "list_str",
+        "optional": true,
+        "multiple": false,
+        "section": "User",
+        "description": "Select affiliation",
+        "placeholder": "AirForce",
+        "value": [
+            "",
+            "AirForce",
+            "Army",
+            "Navy",
+            "OtherGov",
+            "Basic",
+            "Industry",
+            "Development"
+        ]
+    },
+
+    
     {
         "key": "Alignment",
         "type": "bool",
@@ -269,7 +298,7 @@
         "key": "Detectors",
         "type": "list_str",
         "optional": false,
-        "multiple": false,
+        "multiple": true,
         "section": "Experiment",
         "description": "Indicate detector(s) being used",
         "placeholder": "GE2, Manta",
@@ -294,7 +323,7 @@
         "key": "ExperimentType",
         "type": "list_str",
         "optional": false,
-        "multiple": false,
+        "multiple": true,
         "section": "Experiment",
         "description": "Specify experiment type",
         "placeholder": "Scattering/Diffraction",
@@ -303,15 +332,14 @@
             "Scattering/Diffraction",
             "Imaging",
             "Spectroscopy",
-            "Crystallography",
-            "Scattering/Diffraction"
+            "Crystallography"
         ]
     },
     {
         "key": "Technique",
         "type": "list_str",
         "optional": false,
-        "multiple": false,
+        "multiple": true,
         "section": "Experiment",
         "description": "Specify technique",
         "placeholder": "EDD",
@@ -403,7 +431,7 @@
         "multiple": false,
         "section": "Experiment",
         "description": "Specify grips",
-        "placeholder": "RAMS",
+        "placeholder": "Wedge",
         "value": [
             "",
             "Wedge",
@@ -437,6 +465,7 @@
         "value": [
             "",
             "RAMSII",
+            "RAMSIV",
             "LinkamHFS600",
             "Other"
         ]
