@@ -69,7 +69,7 @@
         "multiple": true,
         "section": "User",
         "description": "List staff scientists",
-        "placeholder": ""
+        "placeholder": "KoJYP, NygrenKE, DasA",
         "value": [
             "",
             "KoJYP",
