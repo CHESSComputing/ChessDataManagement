@@ -65,12 +65,21 @@
     },
     {
         "key": "StaffScientist",
-        "type": "string",
+        "type": "list_str",
         "optional": false,
         "multiple": true,
         "section": "User",
         "description": "Please list the staff scientist(s) supporting this experiment",
-        "placeholder": "lastname1, lastname2"
+        "placeholder": "ShanksKS, DasA",
+        "value": [
+            "",
+            "ShanksKS",
+            "DasA",
+            "GustafsonSE",
+            "KoJYP",
+            "NygrenKE"
+        ]                
+        
     },
     {
         "key": "BeamlineFundingPartner",
