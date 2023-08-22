@@ -334,8 +334,10 @@
         "placeholder": "DoubleCrystalMonochromator",
         "value": [
             "",
-            "MultiLayer",
-            "DoubleCrystalMono"
+            "MultiLayer15HE",
+            "MultiLayer30LE",
+            "DoubleCrystalBraggSi111",
+            "DoubleCrystalBraggSi220"
         ]
     },
     {
