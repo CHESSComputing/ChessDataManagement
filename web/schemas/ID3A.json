@@ -42,7 +42,7 @@
         "multiple": true,
         "section": "User",
         "description": "Please list the experimenter(s) who performed this data collection",
-        "placeholder": "lastname1, lastname2"
+        "placeholder": "Lastname1Initials, Lastname2Initials"
     },
     {
         "key": "Beamline",
