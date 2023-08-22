@@ -42,7 +42,7 @@
         "multiple": true,
         "section": "User",
         "description": "Please list the experimenter(s) who performed this data collection",
-        "placeholder": "lastname1, lastname2"
+        "placeholder": "Lastname1Initials, Lastname2Initials"
     },
     {
         "key": "Beamline",
@@ -65,12 +65,21 @@
     },
     {
         "key": "StaffScientist",
-        "type": "string",
+        "type": "list_str",
         "optional": false,
         "multiple": true,
         "section": "User",
         "description": "Please list the staff scientist(s) supporting this experiment",
-        "placeholder": "lastname1, lastname2"
+        "placeholder": "ShanksKS, DasA",
+        "value": [
+            "",
+            "ShanksKS",
+            "DasA",
+            "GustafsonSE",
+            "KoJYP",
+            "NygrenKE"
+        ]                
+        
     },
     {
         "key": "BeamlineFundingPartner",
@@ -90,13 +99,37 @@
         ]
     },
     {
+        "key": "Affiliation",
+        "type": "list_str",
+        "optional": true,
+        "multiple": false,
+        "section": "User",
+        "description": "Select affiliation",
+        "placeholder": "AirForce",
+        "value": [
+            "",
+            "AirForce",
+            "Army",
+            "Navy",
+            "OtherGov",
+            "Basic",
+            "Industry",
+            "Development"
+        ]
+    },
+    {
         "key": "Alignment",
         "type": "bool",
         "optional": false,
         "multiple": false,
         "section": "Alignment",
         "description": "Is this data collection part of an alignment series?",
-        "placeholder": "Y/N"
+        "placeholder": "false",
+        "value": [
+            "",
+            "true",
+            "false"
+        ]
     },
     {
         "key": "EnergyScan",
@@ -105,7 +138,12 @@
         "multiple": false,
         "section": "Alignment",
         "description": "Is this an energy scan?",
-        "placeholder": "Y/N"
+        "placeholder": "false",
+        "value": [
+            "",
+            "true",
+            "false"
+        ]
     },
     {
         "key": "UndulatorScan",
@@ -114,7 +152,12 @@
         "multiple": false,
         "section": "Alignment",
         "description": "Is this an undulator scan?",
-        "placeholder": "Y/N"
+        "placeholder": "false",
+        "value": [
+            "",
+            "true",
+            "false"
+        ]
     },
     {
         "key": "BeamSlitHorizontalSize",
@@ -291,8 +334,10 @@
         "placeholder": "DoubleCrystalMonochromator",
         "value": [
             "",
-            "MultiLayer",
-            "DoubleCrystalMono"
+            "MultiLayer15HE",
+            "MultiLayer30LE",
+            "DoubleCrystalBraggSi111",
+            "DoubleCrystalBraggSi220"
         ]
     },
     {
@@ -441,7 +486,12 @@
         "multiple": false,
         "section": "Experiment",
         "description": "Is this an in-situ experiment?",
-        "placeholder": "Y/N"
+        "placeholder": "false",
+        "value": [
+            "",
+            "true",
+            "false"
+        ]
     },
     {
         "key": "MechanicalTest",
@@ -450,7 +500,12 @@
         "multiple": false,
         "section": "Experiment",
         "description": "Is this a mechanical test?",
-        "placeholder": "Y/N"
+        "placeholder": "false",
+        "value": [
+            "",
+            "true",
+            "false"
+        ]
     },
     {
         "key": "MechanicalTestType",
@@ -555,7 +610,12 @@
         "multiple": false,
         "section": "Sample",
         "description": "Is this a calibration sample (e.g. CeO2, multiruby)?",
-        "placeholder": "Y/N"
+        "placeholder": "false",
+        "value": [
+            "",
+            "true",
+            "false"
+        ]
     },
     {
         "key": "ReferenceCalibrantSampleName",
@@ -632,7 +692,7 @@
     },
     {
         "key": "SampleSpaceGroup",
-        "type": "string",
+        "type": "int32",
         "optional": false,
         "multiple": false,
         "section": "Sample",
@@ -673,6 +733,11 @@
         "multiple": false,
         "section": "Sample",
         "description": "Is the sample hazardous?",
-        "placeholder": "Y/N"
+        "placeholder": "false",
+        "value": [
+            "",
+            "true",
+            "false"
+        ]
     }
 ]
