@@ -691,7 +691,7 @@
     },
     {
         "key": "SampleSpaceGroup",
-        "type": "string",
+        "type": "int32",
         "optional": false,
         "multiple": false,
         "section": "Sample",
