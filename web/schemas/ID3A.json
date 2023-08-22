@@ -486,7 +486,11 @@
         "multiple": false,
         "section": "Experiment",
         "description": "Is this an in-situ experiment?",
-        "placeholder": "Y/N"
+        "placeholder": "false",
+        "value": [
+            "",
+            "true",
+            "false"
     },
     {
         "key": "MechanicalTest",
