@@ -105,7 +105,7 @@
         "multiple": false,
         "section": "User",
         "description": "Select affiliation",
-        "placeholder": "AirForce",
+        "placeholder": "Basic",
         "value": [
             "",
             "AirForce",
