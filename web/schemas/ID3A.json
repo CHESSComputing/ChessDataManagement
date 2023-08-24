@@ -94,8 +94,7 @@
             "CHEXS_NSF",
             "MSNC_AFRL",
             "MACCHESS_NSF_NIH",
-            "CHESS_internal",
-            "CHEXS_NSF"
+            "CHESS_internal"
         ]
     },
     {
@@ -403,8 +402,7 @@
             "Tb",
             "Sm",
             "Pr",
-            "Sn",
-            "value",
+            "Sn",            
             "blank2",
             "Yb",
             "other"
@@ -451,8 +449,7 @@
             "Scattering/Diffraction",
             "Imaging",
             "Spectroscopy",
-            "Crystallography",
-            "Scattering/Diffraction"
+            "Crystallography"            
         ]
     },
     {
