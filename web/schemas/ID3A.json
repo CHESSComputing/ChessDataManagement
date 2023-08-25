@@ -589,7 +589,7 @@
     },
     {
         "key": "Processing",
-        "type": "string",
+        "type": "list_str",
         "optional": true,
         "multiple": false,
         "section": "Experiment",
