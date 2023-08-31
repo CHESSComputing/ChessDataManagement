@@ -681,7 +681,7 @@
     },
     {
         "key": "SampleUnitCell",
-        "type": "float64",
+        "type": "list_float",
         "optional": false,
         "multiple": false,
         "section": "Sample",
@@ -690,7 +690,7 @@
     },
     {
         "key": "SampleSpaceGroup",
-        "type": "int32",
+        "type": "int64",
         "optional": false,
         "multiple": false,
         "section": "Sample",
