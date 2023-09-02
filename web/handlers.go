@@ -192,9 +192,10 @@ func SchemasHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("unable to unmarshal body", err)
 		}
-		for _, r := range rec {
-			records = append(records, r)
-		}
+		srec := make(Record)
+		srec["schema"] = sname
+		srec["records"] = rec
+		records = append(records, srec)
 	}
 	if body, err := json.Marshal(records); err == nil {
 		w.Write(body)
