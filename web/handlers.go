@@ -100,6 +100,8 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 		SettingsHandler(w, r)
 	case "search":
 		SearchHandler(w, r)
+	case "schemas":
+		SchemasHandler(w, r)
 	case "data":
 		DataHandler(w, r)
 	case "process":
@@ -170,6 +172,33 @@ func KAuthHandler(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &cookie)
 	w.Header().Set("Location", "/data")
 	w.WriteHeader(http.StatusFound)
+}
+
+// SchemasHandler handlers /schemas requests
+func SchemasHandler(w http.ResponseWriter, r *http.Request) {
+	var records []Record
+	for _, sname := range Config.SchemaFiles {
+		file, err := os.Open(sname)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer file.Close()
+		body, err := io.ReadAll(file)
+		if err != nil {
+			log.Println("unable to open", sname, err)
+		}
+		var rec []Record
+		err = json.Unmarshal(body, &rec)
+		if err != nil {
+			log.Println("unable to unmarshal body", err)
+		}
+		for _, r := range rec {
+			records = append(records, r)
+		}
+	}
+	if body, err := json.Marshal(records); err == nil {
+		w.Write(body)
+	}
 }
 
 // SearchHandler handlers Search requests

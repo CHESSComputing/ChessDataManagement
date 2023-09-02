@@ -99,6 +99,7 @@ func Handlers() *mux.Router {
 	router.HandleFunc(basePath("/files"), FilesHandler).Methods("GET", "POST")
 	router.HandleFunc(basePath("/faq"), FAQHandler)
 	router.HandleFunc(basePath("/status"), StatusHandler)
+	router.HandleFunc(basePath("/schemas"), SchemasHandler)
 	router.HandleFunc(basePath("/server"), SettingsHandler)
 	router.HandleFunc(basePath("/data"), DataHandler)
 	router.HandleFunc(basePath("/process"), ProcessHandler)
