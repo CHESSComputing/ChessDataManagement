@@ -428,7 +428,7 @@ func formEntry(smap map[string]SchemaRecord, k, s, required string, record *Reco
 	tmplData["Multiple"] = ""
 	if r, ok := smap[k]; ok {
 		if r.Section == s {
-			if r.Type == "list_str" || r.Type == "list_int" || r.Type == "list_float" || r.Type == "list" {
+			if r.Type == "list_str" || r.Type == "list" {
 				tmplData["List"] = true
 				switch values := r.Value.(type) {
 				case []any:
@@ -745,9 +745,35 @@ func parseValue(schema *Schema, key string, items []string) (any, error) {
 	} else if r.Type == "list_str" {
 		return items, nil
 	} else if strings.HasPrefix(r.Type, "list_int") {
-		return items, nil
+		// parse given values to int data type
+		var vals []int
+		for _, values := range items {
+			for _, val := range strings.Split(values, " ") {
+				v, err := strconv.Atoi(val)
+				if err == nil {
+					vals = append(vals, v)
+				} else {
+					msg := fmt.Sprintf("ERROR: unable to parse input '%v' into int data-type, %v", items, err)
+					return items, errors.New(msg)
+				}
+			}
+		}
+		return vals, nil
 	} else if strings.HasPrefix(r.Type, "list_float") {
-		return items, nil
+		// parse given values to float data type
+		var vals []float64
+		for _, values := range items {
+			for _, val := range strings.Split(values, " ") {
+				v, err := strconv.ParseFloat(val, 32)
+				if err == nil {
+					vals = append(vals, v)
+				} else {
+					msg := fmt.Sprintf("ERROR: unable to parse input '%v' into float data-type, %v", items, err)
+					return items, errors.New(msg)
+				}
+			}
+		}
+		return vals, nil
 	} else if r.Type == "string" {
 		return items[0], nil
 	} else if r.Type == "bool" {
@@ -761,15 +787,29 @@ func parseValue(schema *Schema, key string, items []string) (any, error) {
 	} else if strings.HasPrefix(r.Type, "int") {
 		v, err := strconv.ParseInt(items[0], 10, 64)
 		if err == nil {
+			if r.Type == "int64" {
+				return int64(v), nil
+			} else if r.Type == "int32" {
+				return int32(v), nil
+			} else if r.Type == "int16" {
+				return int16(v), nil
+			} else if r.Type == "int8" {
+				return int8(v), nil
+			} else if r.Type == "int" {
+				return int(v), nil
+			}
 			return v, nil
 		}
 		return 0, err
 	} else if strings.HasPrefix(r.Type, "float") {
 		v, err := strconv.ParseFloat(items[0], 64)
 		if err == nil {
+			if r.Type == "float32" {
+				return float32(v), nil
+			}
 			return v, nil
 		}
-		return 0, err
+		return 0.0, err
 	}
 	msg := fmt.Sprintf("Unable to parse form value for key %s", key)
 	log.Printf("ERROR: %s", msg)
