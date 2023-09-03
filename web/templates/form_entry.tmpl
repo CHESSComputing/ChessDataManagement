@@ -15,6 +15,9 @@
 {{else}}
         <select class="is-50" name="{{.Key}}">
 {{end}}
+{{range $val := .Selected}}
+        <option value="{{$val}}" selected>{{$val}}</option>
+{{end}}
 {{range $val := .Value}}
         <option value="{{$val}}">{{$val}}</option>
 {{end}}

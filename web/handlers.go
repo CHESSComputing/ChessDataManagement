@@ -426,19 +426,24 @@ func formEntry(smap map[string]SchemaRecord, k, s, required string, record *Reco
 	}
 	tmplData["Type"] = "text"
 	tmplData["Multiple"] = ""
+	tmplData["Selected"] = []string{}
 	if r, ok := smap[k]; ok {
 		if r.Section == s {
 			if r.Type == "list_str" || r.Type == "list" {
 				tmplData["List"] = true
 				switch values := r.Value.(type) {
 				case []any:
-					var vals []string
+					var vals, selected []string
 					if defaultValue != "" {
-						vals = append(vals, defaultValue)
+						selected = append(selected, defaultValue)
 					}
+					tmplData["Selected"] = selected
 					for _, v := range values {
-						if v != defaultValue {
-							vals = append(vals, fmt.Sprintf("%v", v))
+						if v != defaultValue && v != "" {
+							strVal := fmt.Sprintf("%v", v)
+							if !InList(strVal, selected) {
+								vals = append(vals, strVal)
+							}
 						}
 					}
 					vals = List2Set(vals)
