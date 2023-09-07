@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"crypto/tls"
 	"crypto/x509"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -23,6 +24,9 @@ import (
 	"gopkg.in/jcmturner/gokrb5.v7/config"
 	"gopkg.in/jcmturner/gokrb5.v7/credentials"
 )
+
+// define if we use dev mode
+var devMode bool
 
 // helper function to get ROOT certificate
 func getCertificate() string {
@@ -160,6 +164,9 @@ func userTicket() []byte {
 
 // helper function to get kerberos ticket
 func getKerberosTicket(krbFile string) []byte {
+	if devMode {
+		return []byte("krb5-token-dev")
+	}
 	if krbFile != "" {
 		// read krbFile and check user credentials
 		creds, err := kuserFromCache(krbFile)
@@ -318,6 +325,7 @@ func main() {
 	flag.StringVar(&record, "insert", "", "insert record to the server")
 	var krbFile string
 	flag.StringVar(&krbFile, "krbFile", "", "kerberos file")
+	flag.BoolVar(&devMode, "devMode", false, "run dev mode")
 	var uri string
 	flag.StringVar(&uri, "uri", "https://chessdata.classe.cornell.edu:8243", "CHESS Data Management System URI")
 	var verbose int
@@ -339,6 +347,13 @@ func main() {
 		fmt.Fprintf(os.Stderr, "\n%s -krbFile krb5cc_ccache -did=1570563920579312510\n", client)
 	}
 	flag.Parse()
+	// we only allow devMode for localhost testing
+	if devMode {
+		if !strings.HasPrefix(uri, "http://localhost") {
+			msg := fmt.Sprintf("In dev mode we only allow access to localhost while uri=%s", uri)
+			exit(msg, errors.New("invalid set of parameters"))
+		}
+	}
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	if krbFile == "" {
 		ccname := os.Getenv("KRB5CCNAME")
