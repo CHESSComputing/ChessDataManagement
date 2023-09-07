@@ -29,5 +29,5 @@
     },
     "realm": "CERN.CH",
     "testMode": true,
-    "verbose": 0
+    "verbose": 2
 }
