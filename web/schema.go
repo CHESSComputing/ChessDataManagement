@@ -243,6 +243,7 @@ func (s *Schema) Validate(rec Record) error {
 			}
 			// check data type
 			if !validSchemaType(m.Type, v) {
+				// check if provided data type can be converted to m.Type
 				msg := fmt.Sprintf("invalid data type for key=%s, value=%v, type=%T, expect=%s", k, v, v, m.Type)
 				log.Printf("ERROR: %s", msg)
 				return errors.New(msg)
@@ -428,6 +429,17 @@ func validSchemaType(stype string, v interface{}) bool {
 		etype = "list_float"
 	}
 	sv := fmt.Sprintf("%v", v)
+	vtype := fmt.Sprintf("%T", v)
+	if Config.Verbose > 1 {
+		log.Printf("### validSchemaType schema type=%v value type=%T value=%v", stype, v, sv)
+	}
+	if stype == "int64" && vtype == "float64" && !strings.Contains(sv, ".") {
+		return true
+	}
+	if stype == "list_float" && vtype == "[]interface {}" {
+		return true
+	}
+	// check if we can reduce data-type
 	if sv == "" && etype != "string" {
 		return false
 	}
