@@ -380,6 +380,57 @@
         "placeholder": "80.725"
     },
     {
+        "key": "AttenMaterial",
+        "type": "list_str",
+        "optional": true,
+        "multiple": true,
+        "section": "Beam",
+        "description": "List of attenuator materials used - skip this field if this metadata record is for multiple scans with different attenuators",
+        "placeholder": "steel, aluminum",
+        "value": [
+            "",
+            "Steel",
+            "Aluminum"
+        ]
+    },
+    {
+        "key": "AttenThickness",
+        "type": "float64",
+        "optional": true,
+        "multiple": true,
+        "section": "Beam",
+        "description": "Thickness [mm] of attenuator(s) - enter one value for each attenutor material -  skip this field if this metadata record is for multiple scans with different attenuators",
+        "placeholder": "0.25, 3.0"
+    },
+    {
+        "key": "EnergyFoil",
+        "type": "list_str",
+        "optional": true,
+        "multiple": false,
+        "section": "Beam",
+        "description": "Energy foil used, if any -  skip this field if this metadata record is for multiple scans with different energy foils",
+        "placeholder": "Pr",
+        "value": [
+            "",
+            "scrn",
+            "blank1",
+            "Au",
+            "Pt",
+            "Ir",
+            "W",
+            "Hf",
+            "Yb",
+            "Ho",
+            "Tb",
+            "Sm",
+            "Pr",
+            "Sn",            
+            "blank2",
+            "Yb",
+            "other"
+        ]
+    },    
+    {
         "key": "BeamlineSetupDocument",
         "type": "string",
         "optional": true,
