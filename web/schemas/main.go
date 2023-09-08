@@ -14,6 +14,7 @@ func main() {
 	var schema string
 	flag.StringVar(&schema, "schema", "", "schema file")
 	flag.Parse()
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	validate(schema)
 }
 
@@ -71,19 +72,42 @@ func validate(fname string) {
 		val := rec.Value
 		switch vvv := val.(type) {
 		case []any:
-			// check if values are in list type
-			if !checkTypeValues(rec.Type, vvv) {
-				log.Fatalf(
-					"Provided type %s does not match values %v in record\n%+v",
-					rec.Type, val, repr(rec))
-			}
-			// check individual values
-			rtype := strings.Replace(rec.Type, "list_", "", -1)
-			for _, v := range vvv {
-				if !checkTypeValues(rtype, v) {
-					log.Fatalf(
-						"Provided type %s does not match values %v in record\n%+v",
-						rec.Type, val, repr(rec))
+			if strings.HasPrefix(rec.Type, "list_") {
+				// check individual values
+				rtype := strings.Replace(rec.Type, "list_", "", -1)
+				for _, v := range vvv {
+					if !checkTypeValues(rtype, v) {
+						log.Fatalf(
+							"Provided type %s does not match values %v in record\n%+v",
+							rec.Type, val, repr(rec))
+					}
+				}
+			} else {
+				// provided values are in a list but rec.Type is not a list
+				// ["", "true", "false"] vs bool
+				for _, v := range vvv {
+					if v == "" {
+						// default empty string we may omit
+						continue
+					}
+					// check if values are in list type
+					if rec.Type == "bool" {
+						vb := false
+						if v == "true" {
+							vb = true
+						}
+						if !checkTypeValues(rec.Type, vb) {
+							log.Fatalf(
+								"Provided type '%s' does not match values '%v' from list '%v' in record\n%+v",
+								rec.Type, v, val, repr(rec))
+						}
+					} else {
+						if !checkTypeValues(rec.Type, v) {
+							log.Fatalf(
+								"Provided type '%s' does not match values '%v' from list '%v' in record\n%+v",
+								rec.Type, v, val, repr(rec))
+						}
+					}
 				}
 			}
 		default:
@@ -98,6 +122,15 @@ func validate(fname string) {
 
 func checkTypeValues(rtype string, v any) bool {
 	if v == nil { // nothing to be checked
+		return true
+	}
+	if v == 0 || v == 0. {
+		if strings.Contains(rtype, "int") || strings.Contains(rtype, "float") {
+			return true
+		}
+	}
+	if v == "" {
+		// for empty values we simply return
 		return true
 	}
 	if rtype == "str" {
@@ -140,6 +173,14 @@ func checkTypeValues(rtype string, v any) bool {
 		etype = "list_float"
 	case []float32:
 		etype = "list_float"
+	}
+	sv := fmt.Sprintf("%v", v)
+	vtype := fmt.Sprintf("%T", v)
+	if rtype == "int64" && vtype == "float64" && !strings.Contains(sv, ".") {
+		return true
+	}
+	if rtype == "list_float" && vtype == "[]interface {}" {
+		return true
 	}
 	if rtype != etype {
 		return false
