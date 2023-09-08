@@ -20,7 +20,7 @@
     {
         "key": "PI",
         "type": "string",
-        ,
+        "optional": false,
         "multiple": false,
         "section": "User",
         "description": "Last name of principle investigator",
