@@ -20,7 +20,7 @@
     {
         "key": "PI",
         "type": "string",
-        "optional": false,
+        ,
         "multiple": false,
         "section": "User",
         "description": "Last name of principle investigator",
@@ -672,7 +672,7 @@
     {
         "key": "SampleChemicalFormula",
         "type": "string",
-        "optional": false,
+        "optional": true,
         "multiple": false,
         "section": "Sample",
         "description": "Chemical formula of sample",
@@ -682,7 +682,7 @@
     {
         "key": "SampleUnitCell",
         "type": "list_float",
-        "optional": false,
+        "optional": true,
         "multiple": false,
         "section": "Sample",
         "description": "Unit cell dimensions [Angstrom]",
@@ -691,7 +691,7 @@
     {
         "key": "SampleSpaceGroup",
         "type": "int64",
-        "optional": false,
+        "optional": true,
         "multiple": false,
         "section": "Sample",
         "description": "Sample space group",
