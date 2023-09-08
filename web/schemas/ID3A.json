@@ -78,8 +78,7 @@
             "GustafsonSE",
             "KoJYP",
             "NygrenKE"
-        ]                
-        
+        ]        
     },
     {
         "key": "BeamlineFundingPartner",
@@ -144,6 +143,15 @@
             "false"
         ]
     },
+    {
+        "key": "EnergyScanDocument",
+        "type": "string",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "Energy scan document location",
+        "placeholder": "/"
+    },    
     {
         "key": "UndulatorScan",
         "type": "bool",
