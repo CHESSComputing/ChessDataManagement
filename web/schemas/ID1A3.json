@@ -93,7 +93,7 @@
             "CHEXS_NSF",
             "MSNC_AFRL",
             "MACCHESS_NSF_NIH",
-            "CHESS_internal",
+            "CHESS_internal"
         ]
     },
     {
@@ -114,9 +114,7 @@
             "Industry",
             "Development"
         ]
-    },
-
-    
+    },    
     {
         "key": "Alignment",
         "type": "bool",
