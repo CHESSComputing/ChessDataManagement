@@ -37,3 +37,9 @@ jobs:
       run: |
         cd web
         make test
+
+    - name: schema check
+      run: |
+        cd web/schemas
+        go build
+        ls *.json | awk '{print "echo \"validate "$1"\"; ./validator -schema "$1""}' | /bin/sh

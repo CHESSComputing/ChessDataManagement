@@ -20,6 +20,13 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
 
+    - name: schema check
+      run: |
+        cd web/schemas
+        go build
+        ls *.json | awk '{print "echo \"validate "$1"\"; ./validator -schema "$1""}' | /bin/sh
+        cd -
+
     - name: Build
       run: |
         cd web
