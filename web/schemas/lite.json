@@ -19,7 +19,7 @@
             "",
             "2022-2"
         ],
-        "values.1": "2022-2"
+        "value": "2022-2"
     },
     {
         "key": "PI",
@@ -49,18 +49,20 @@
         "key": "Beamline",
         "type": "list_str",
         "optional": false,
+        "multiple": false,
         "section": "User",
-        "placeholder": "dropdown or checklist",
+        "description": "Specify beamline",
+        "placeholder": "3A",
         "value": [
             "",
+            "1A3",
             "2A",
             "3A",
             "3B",
             "4B",
             "7A",
             "7B2"
-        ],
-        "values.1": "2A"
+        ]
     },
     {
         "key": "StaffScientist",
@@ -82,8 +84,7 @@
             "MACCHESS_NSF_NIH",
             "CHESS_internal",
             "CHEXS_NSF"
-        ],
-        "values.1": "MSNC_AFRL"
+        ]
     },
     {
         "key": "Alignment",
@@ -94,9 +95,9 @@
         "placeholder": "checkmark for true/false",
         "value": [
             "",
-            "false"
-        ],
-        "values.1": "false"
+            "false",
+            "true"
+        ]
     },
     {
         "key": "DataLocationRaw",
@@ -124,8 +125,7 @@
             "Pilatus200K",
             "Pilatus300K",
             "CanberraSingleElement"
-        ],
-        "values.1": "Vortex"
+        ]
     },
     {
         "key": "CESRConditions",
@@ -137,8 +137,7 @@
             "",
             "21BunchMode",
             "9x5BunchMode"
-        ],
-        "values.1": "21BunchMode"
+        ]
     },
     {
         "key": "ExperimentType",
@@ -152,8 +151,7 @@
             "Spectroscopy",
             "Crystallography",
             "Scattering/Diffraction"
-        ],
-        "values.1": "Imaging"
+        ]
     },
     {
         "key": "Technique",
@@ -174,8 +172,7 @@
             "SAXS",
             "XRayFluorescence",
             "Tomography"
-        ],
-        "values.1": "HighEnergyDiffractionMicroscopyNearField"
+        ]
     },
     {
         "key": "SampleType",
@@ -194,8 +191,7 @@
             "simulated data",
             "none",
             "sample environment"
-        ],
-        "values.1": "sample+can"
+        ]
     },
     {
         "key": "SampleName",
@@ -212,9 +208,9 @@
         "placeholder": "checkmark for true/false",
         "value": [
             "",
-            "false"
-        ],
-        "values.1": "false"
+            "false",
+            "true"
+        ]
     },
     {
         "key": "DataLocationMeta",
