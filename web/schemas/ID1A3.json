@@ -153,6 +153,102 @@
         "placeholder": "/"
     },
     {
+        "key": "BeamSlitHorizontalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "horizontal beam-defining slit size - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "BeamSlitVerticalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "vertical beam-defining slit size - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "BeamSlitHorizontalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "horizontal beam-defining slit position - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "BeamSlitVerticalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "vertical beam-defining slit position - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "PreSlitHorizontalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "horizontal pre-slit size - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "PreSlitVerticalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "vertical pre-slit size - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "PreSlitHorizontalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "horizontal pre-slit position - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "PreSlitVerticalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "vertical pre-slit position - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "GuardSlitHorizontalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "horizontal guard slit size - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "GuardSlitVerticalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "vertical guard slit size - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "GuardSlitHorizontalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "horizontal guard slit position - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "GuardSlitVerticalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "verticall guard slit position - skip if this metadata record is for multiple scans with different slit sizes"
+    },    
+    {
         "key": "DataLocationRaw",
         "type": "string",
         "optional": false,
