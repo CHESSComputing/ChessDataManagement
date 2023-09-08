@@ -5,6 +5,7 @@
         "optional": false,
         "multiple": false,
         "section": "User",
+        "description": "Facility where the experiment was performed, e.g. CHESS, APS, ESRF",
         "placeholder": "CHESS"
     },
     {
