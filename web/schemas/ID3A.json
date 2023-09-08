@@ -323,6 +323,21 @@
         ]
     },
     {
+        "key": "InsertionDevice",
+        "type": "list_str",
+        "optional": false,
+        "multiple": false,
+        "section": "Beam",
+        "description": "Insertion device",
+        "placeholder": "Wiggler",
+        "value": [
+            "",
+            "CCU",
+            "Wiggler",
+            "CCU"
+        ]
+    },    
+    {
         "key": "BeamEnergy",
         "type": "float64",
         "optional": false,
