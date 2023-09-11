@@ -616,15 +616,6 @@
         ]
     },
     {
-        "key": "SampleName",
-        "type": "string",
-        "optional": false,
-        "multiple": false,
-        "section": "Sample",
-        "description": "Specify sample name",
-        "placeholder": "alloy1"
-    },
-    {
         "key": "Calibration",
         "type": "bool",
         "optional": false,
@@ -637,6 +628,24 @@
             "true",
             "false"
         ]
+    },    
+    {
+        "key": "CalibrationDocument",
+        "type": "string",
+        "optional": true,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Calibration document location",
+        "placeholder": "/"
+    },        
+    {
+        "key": "SampleName",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Specify sample name",
+        "placeholder": "alloy1"
     },
     {
         "key": "SampleSpaceGroup",
