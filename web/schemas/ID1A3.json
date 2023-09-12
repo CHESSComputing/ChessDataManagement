@@ -648,13 +648,41 @@
         "placeholder": "alloy1"
     },
     {
+        "key": "SampleCommonName",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Common name of sample material",
+        "placeholder": "Ti64"
+    },
+    {
+        "key": "SampleChemicalFormula",
+        "type": "string",
+        "optional": true,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Chemical formula of sample",
+        "placeholder": "Ti6Al4V",
+        "value": "freetext"
+    },
+    {
         "key": "SampleSpaceGroup",
         "type": "string",
         "optional": true,
         "multiple": true,
         "section": "Sample",
         "description": "Specify sample space group"
-    },
+    },    
+    {
+        "key": "SampleUnitCell",
+        "type": "list_float",
+        "optional": true,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Unit cell dimensions [Angstrom]",
+        "placeholder": "2.511, 2.9511, 4.6843"
+    },    
     {
         "key": "SampleGeometry",
         "type": "string",
