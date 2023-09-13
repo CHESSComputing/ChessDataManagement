@@ -210,3 +210,14 @@ function SaveRecord() {
   a.href = window.URL.createObjectURL(file);
   a.click();
 }
+function FlipRecord(rid) {
+  sid = document.getElementById('record-'+rid);
+  jid = document.getElementById('json-record-'+rid);
+  if (jid.className == "hide") {
+    sid.className = "hide";
+    jid.className = "show";
+  } else {
+    sid.className = "show";
+    jid.className = "hide";
+  }
+}

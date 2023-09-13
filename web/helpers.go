@@ -145,6 +145,7 @@ func validateData(sname string, rec Record) error {
 }
 
 // helper function to preprocess given record
+/*
 func preprocess(rec Record) Record {
 	r := make(Record)
 	for k, v := range rec {
@@ -170,6 +171,7 @@ func preprocess(rec Record) Record {
 	}
 	return r
 }
+*/
 
 // helper function to insert data into backend DB
 func insertData(sname string, rec Record) error {
@@ -228,7 +230,7 @@ func insertData(sname string, rec Record) error {
 	// dataset is a /cycle/beamline/BTR/sample
 	dataset := fmt.Sprintf("/%s/%s/%s/%s", cycle, beamline, btr, sample)
 	rec["dataset"] = dataset
-	rec = preprocess(rec)
+//     rec = preprocess(rec)
 	// check if given path exist on file system
 	_, err := os.Stat(path)
 	if err == nil {

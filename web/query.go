@@ -98,5 +98,34 @@ func ParseQuery(query string) bson.M {
 		// or, query as free text
 		spec["$text"] = bson.M{"$search": query}
 	}
-	return spec
+	return adjustQuery(spec)
+}
+
+// helper function to adjust query keys
+func adjustQuery(spec bson.M) bson.M {
+	// TODO: take input query and change its keys to match schema
+	nspec := make(bson.M)
+	for kkk, val := range spec {
+		if strings.HasPrefix(kkk, "$") {
+			continue
+		}
+		// look-up appropriate schema key
+		if key, ok := _schemaKeys[strings.ToLower(kkk)]; ok {
+			// create regex for value if it is the string
+			sval := fmt.Sprintf("%v", val)
+			if PatternInt.MatchString(sval) || PatternFloat.MatchString(sval) {
+				nspec[key] = val
+			} else {
+				//                 pat, err := regexp.Compile(fmt.Sprintf("/^%s$/i", sval))
+				pat := fmt.Sprintf("^%s$", sval)
+				nspec[key] = bson.M{"$regex": pat, "$options": "i"}
+			}
+		} else {
+			log.Printf("WARNING: unable to find matching schema key for %s, existing schema keys %+v", kkk, _schemaKeys)
+		}
+	}
+	if Config.Verbose > 0 {
+		log.Printf("Perform adjustment of input query from %+v to %+v", spec, nspec)
+	}
+	return nspec
 }

@@ -22,6 +22,12 @@ import (
 // skip keys
 var _skipKeys = []string{"User", "Date", "Description", "SchemaName", "SchemaFile", "Schema"}
 
+// SchemaKeys represents full collection of schema keys across all schemas
+type SchemaKeys map[string]string
+
+// schema keys map
+var _schemaKeys SchemaKeys
+
 // SchemaRenewInterval setup interal to update schema cache
 var SchemaRenewInterval time.Duration
 
@@ -168,6 +174,16 @@ func (s *Schema) Load() error {
 	}
 	// update schema map
 	s.Map = smap
+
+	// upload SchemaKeys object
+	if _schemaKeys == nil {
+		_schemaKeys = make(SchemaKeys)
+	}
+	for _, r := range smap {
+		if _, ok := _schemaKeys[r.Key]; !ok {
+			_schemaKeys[strings.ToLower(r.Key)] = r.Key
+		}
+	}
 
 	// either load web section schema file or use default web section keys
 	base := strings.Split(fname, ".")[0]

@@ -222,7 +222,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	// we store all values as lower case and will use lower case in searches
 	query := r.FormValue("query")
-	query = strings.ToLower(query)
+//     query = strings.ToLower(query)
 	spec := ParseQuery(query)
 	if Config.Verbose > 0 {
 		log.Printf("search query='%s' spec=%+v user=%v", query, spec, user)

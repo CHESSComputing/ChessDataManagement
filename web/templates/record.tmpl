@@ -1,6 +1,6 @@
 <hr />
 <div class="is-row">
-    <div class="is-col is-70">
+    <div class="is-col is-50">
     <h3>record: {{.Id}}</h3>
     </div>
     <div class="is-col is-10">
@@ -18,7 +18,7 @@
             </div>
         </form>
     </div>
-    <div class="is-col is-20">
+    <div class="is-col is-10">
         <form class="form-content" method="post" action="{{.Base}}/files">
             <div class="form-item">
                 <div class="is-append is-push-right is-right">
@@ -32,7 +32,15 @@
             </div>
         </form>
     </div>
+    <div class="is-col is-10"></div>
+    <div class="is-col is-10">
+        <a href="javascript:FlipRecord('{{.Id}}')" class="button is-secondary">JSON</a>
+    </div>
+    <div class="is-col is-10"></div>
 </div>
-<pre>
-{{.RecordString}}
-</pre>
+<div id="record-{{.Id}}">
+    <pre>{{.RecordString}}</pre>
+</div>
+<div id="json-record-{{.Id}}" class="hide">
+    <pre>{{.Record}}</pre>
+</div>
