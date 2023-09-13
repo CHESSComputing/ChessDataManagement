@@ -158,7 +158,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "horizontal pre-slit size - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "if mono beam mode: horizontal pre-slit size - skip if this metadata record is for multiple scans with different slit sizes"
     },
     {
         "key": "PreSlitVerticalSize",
@@ -166,7 +166,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "vertical pre-slit size - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "if mono beam mode: vertical pre-slit size - skip if this metadata record is for multiple scans with different slit sizes"
     },
     {
         "key": "PreSlitHorizontalPosition",
@@ -174,7 +174,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "horizontal pre-slit position - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "if mono beam mode: horizontal pre-slit position - skip if this metadata record is for multiple scans with different slit sizes"
     },
     {
         "key": "PreSlitVerticalPosition",
@@ -182,7 +182,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "vertical pre-slit position - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "if mono beam mode: vertical pre-slit position - skip if this metadata record is for multiple scans with different slit sizes"
     },    
     {
         "key": "BeamSlitHorizontalSize",
@@ -222,7 +222,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "horizontal guard slit size - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "if mono beam mode: horizontal guard slit size - skip if this metadata record is for multiple scans with different slit sizes"
     },
     {
         "key": "GuardSlitVerticalSize",
@@ -230,7 +230,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "vertical guard slit size - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "if mono beam mode: vertical guard slit size - skip if this metadata record is for multiple scans with different slit sizes"
     },
     {
         "key": "GuardSlitHorizontalPosition",
@@ -238,7 +238,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "horizontal guard slit position - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "if mono beam mode: horizontal guard slit position - skip if this metadata record is for multiple scans with different slit sizes"
     },
     {
         "key": "GuardSlitVerticalPosition",
@@ -246,7 +246,71 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "verticall guard slit position - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "if mono beam mode: verticall guard slit position - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "UpstreamDetectorSlitHorizontalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "if white beam mode: horizontal upstream detector slit size - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "UpstreamDetectorSlitVerticalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "if white beam mode: vertical upstream detector slit size - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "UpstreamDetectorSlitHorizontalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "if white beam mode: horizontal upstream detector slit position - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "UpstreamDetectorSlitVerticalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "if white beam mode: verticall upstream detector slit position - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "DownstreamDetectorSlitHorizontalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "if white beam mode: horizontal downstream detector slit size - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "DownstreamDetectorSlitVerticalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "if white beam mode: vertical downstream detector slit size - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "DownstreamDetectorSlitHorizontalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "if white beam mode: horizontal downstream detector slit position - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "DownstreamDetectorSlitVerticalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "if white beam mode: verticall downstream detector slit position - skip if this metadata record is for multiple scans with different slit sizes"
     },    
     {
         "key": "DataLocationRaw",
