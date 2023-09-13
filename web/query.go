@@ -122,6 +122,7 @@ func adjustQuery(spec bson.M) bson.M {
 			}
 		} else {
 			log.Printf("WARNING: unable to find matching schema key for %s, existing schema keys %+v", kkk, _schemaKeys)
+			nspec[kkk] = val
 		}
 	}
 	if Config.Verbose > 0 {
