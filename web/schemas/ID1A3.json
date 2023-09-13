@@ -153,38 +153,6 @@
         "placeholder": "/"
     },
     {
-        "key": "BeamSlitHorizontalSize",
-        "type": "float64",
-        "optional": true,
-        "multiple": false,
-        "section": "Alignment",
-        "description": "horizontal beam-defining slit size - skip if this metadata record is for multiple scans with different slit sizes"
-    },
-    {
-        "key": "BeamSlitVerticalSize",
-        "type": "float64",
-        "optional": true,
-        "multiple": false,
-        "section": "Alignment",
-        "description": "vertical beam-defining slit size - skip if this metadata record is for multiple scans with different slit sizes"
-    },
-    {
-        "key": "BeamSlitHorizontalPosition",
-        "type": "float64",
-        "optional": true,
-        "multiple": false,
-        "section": "Alignment",
-        "description": "horizontal beam-defining slit position - skip if this metadata record is for multiple scans with different slit sizes"
-    },
-    {
-        "key": "BeamSlitVerticalPosition",
-        "type": "float64",
-        "optional": true,
-        "multiple": false,
-        "section": "Alignment",
-        "description": "vertical beam-defining slit position - skip if this metadata record is for multiple scans with different slit sizes"
-    },
-    {
         "key": "PreSlitHorizontalSize",
         "type": "float64",
         "optional": true,
@@ -215,6 +183,38 @@
         "multiple": false,
         "section": "Alignment",
         "description": "vertical pre-slit position - skip if this metadata record is for multiple scans with different slit sizes"
+    },    
+    {
+        "key": "BeamSlitHorizontalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "horizontal beam-defining slit size - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "BeamSlitVerticalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "vertical beam-defining slit size - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "BeamSlitHorizontalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "horizontal beam-defining slit position - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "BeamSlitVerticalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "vertical beam-defining slit position - skip if this metadata record is for multiple scans with different slit sizes"
     },
     {
         "key": "GuardSlitHorizontalSize",
@@ -431,15 +431,6 @@
         ]
     },    
     {
-        "key": "BeamlineSetupDocument",
-        "type": "string",
-        "optional": true,
-        "multiple": false,
-        "section": "Beam",
-        "description": "Beamline setup document location",
-        "placeholder": "/"
-    },
-    {
         "key": "Detectors",
         "type": "list_str",
         "optional": false,
@@ -464,6 +455,15 @@
             "CanberraMultielement"
         ]
     },
+    {
+        "key": "BeamlineSetupDocument",
+        "type": "string",
+        "optional": true,
+        "multiple": false,
+        "section": "Beam",
+        "description": "Beamline setup document location",
+        "placeholder": "/"
+    },    
     {
         "key": "ExperimentType",
         "type": "list_str",
