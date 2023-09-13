@@ -158,7 +158,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "if mono beam mode: horizontal pre-slit size - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "if mono beam mode: horizontal pre-slit size"
     },
     {
         "key": "PreSlitVerticalSize",
@@ -166,7 +166,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "if mono beam mode: vertical pre-slit size - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "if mono beam mode: vertical pre-slit size"
     },
     {
         "key": "PreSlitHorizontalPosition",
@@ -174,7 +174,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "if mono beam mode: horizontal pre-slit position - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "if mono beam mode: horizontal pre-slit position"
     },
     {
         "key": "PreSlitVerticalPosition",
@@ -182,7 +182,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "if mono beam mode: vertical pre-slit position - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "if mono beam mode: vertical pre-slit position"
     },    
     {
         "key": "BeamSlitHorizontalSize",
@@ -190,7 +190,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "horizontal beam-defining slit size - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "horizontal beam-defining slit size"
     },
     {
         "key": "BeamSlitVerticalSize",
@@ -198,7 +198,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "vertical beam-defining slit size - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "vertical beam-defining slit size"
     },
     {
         "key": "BeamSlitHorizontalPosition",
@@ -206,7 +206,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "horizontal beam-defining slit position - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "horizontal beam-defining slit position"
     },
     {
         "key": "BeamSlitVerticalPosition",
@@ -214,7 +214,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "vertical beam-defining slit position - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "vertical beam-defining slit position"
     },
     {
         "key": "GuardSlitHorizontalSize",
@@ -222,7 +222,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "if mono beam mode: horizontal guard slit size - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "if mono beam mode: horizontal guard slit size"
     },
     {
         "key": "GuardSlitVerticalSize",
@@ -230,7 +230,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "if mono beam mode: vertical guard slit size - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "if mono beam mode: vertical guard slit size"
     },
     {
         "key": "GuardSlitHorizontalPosition",
@@ -238,7 +238,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "if mono beam mode: horizontal guard slit position - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "if mono beam mode: horizontal guard slit position"
     },
     {
         "key": "GuardSlitVerticalPosition",
@@ -246,7 +246,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "if mono beam mode: verticall guard slit position - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "if mono beam mode: verticall guard slit position"
     },
     {
         "key": "UpstreamDetectorSlitHorizontalSize",
@@ -254,7 +254,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "if white beam mode: horizontal upstream detector slit size - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "if white beam mode: horizontal upstream detector slit size"
     },
     {
         "key": "UpstreamDetectorSlitVerticalSize",
@@ -262,7 +262,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "if white beam mode: vertical upstream detector slit size - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "if white beam mode: vertical upstream detector slit size"
     },
     {
         "key": "UpstreamDetectorSlitHorizontalPosition",
@@ -270,7 +270,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "if white beam mode: horizontal upstream detector slit position - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "if white beam mode: horizontal upstream detector slit position"
     },
     {
         "key": "UpstreamDetectorSlitVerticalPosition",
@@ -278,7 +278,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "if white beam mode: verticall upstream detector slit position - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "if white beam mode: verticall upstream detector slit position"
     },
     {
         "key": "DownstreamDetectorSlitHorizontalSize",
@@ -286,7 +286,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "if white beam mode: horizontal downstream detector slit size - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "if white beam mode: horizontal downstream detector slit size"
     },
     {
         "key": "DownstreamDetectorSlitVerticalSize",
@@ -294,7 +294,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "if white beam mode: vertical downstream detector slit size - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "if white beam mode: vertical downstream detector slit size"
     },
     {
         "key": "DownstreamDetectorSlitHorizontalPosition",
@@ -302,7 +302,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "if white beam mode: horizontal downstream detector slit position - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "if white beam mode: horizontal downstream detector slit position"
     },
     {
         "key": "DownstreamDetectorSlitVerticalPosition",
@@ -310,7 +310,7 @@
         "optional": true,
         "multiple": false,
         "section": "Alignment",
-        "description": "if white beam mode: verticall downstream detector slit position - skip if this metadata record is for multiple scans with different slit sizes"
+        "description": "if white beam mode: verticall downstream detector slit position"
     },    
     {
         "key": "DataLocationRaw",
@@ -449,7 +449,7 @@
         "optional": true,
         "multiple": true,
         "section": "Beam",
-        "description": "List of attenuator materials used - skip this field if this metadata record is for multiple scans with different attenuators",
+        "description": "List of attenuator materials used",
         "placeholder": "steel, aluminum",
         "value": [
             "",
@@ -463,7 +463,7 @@
         "optional": true,
         "multiple": true,
         "section": "Beam",
-        "description": "Thickness [mm] of attenuator(s) - enter one value for each attenutor material -  skip this field if this metadata record is for multiple scans with different attenuators",
+        "description": "Thickness [mm] of attenuator(s) - enter one value for each attenutor material",
         "placeholder": "0.25, 3.0"
     },
     {
@@ -472,7 +472,7 @@
         "optional": true,
         "multiple": false,
         "section": "Beam",
-        "description": "Energy foil used, if any -  skip this field if this metadata record is for multiple scans with different energy foils",
+        "description": "Energy foil used, if any",
         "placeholder": "Pr",
         "value": [
             "",
