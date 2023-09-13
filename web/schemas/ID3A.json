@@ -337,15 +337,6 @@
         ]
     },    
     {
-        "key": "BeamEnergy",
-        "type": "float64",
-        "optional": false,
-        "multiple": false,
-        "section": "Beam",
-        "description": "Beam energy [keV]",
-        "placeholder": "41.991"
-    },
-    {
         "key": "Monochromator",
         "type": "list_str",
         "optional": false,
@@ -379,6 +370,15 @@
             "None"
         ]
     },
+    {
+        "key": "BeamEnergy",
+        "type": "float64",
+        "optional": false,
+        "multiple": false,
+        "section": "Beam",
+        "description": "Beam energy [keV]",
+        "placeholder": "41.991"
+    },    
     {
         "key": "AttenMaterial",
         "type": "list_str",
