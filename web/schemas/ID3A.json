@@ -760,7 +760,6 @@
             "false"
         ]
     },
-[
     {
         "key": "Facility",
         "type": "string",
@@ -1497,22 +1496,5 @@
             "Foil",
             "Solution"
         ]
-    },
-    {
-        "key": "SampleState",
-        "type": "list_str",
-        "optional": true,
-        "multiple": false,
-        "section": "Sample",
-        "description": "Sample state",
-        "value": [
-            "",
-            "Powder ",
-            "ThinFilm",
-            "SingleCrystal",
-            "Foil",
-            "Solution"
-        ]
-    }    
-]    
+    } 
 ]
