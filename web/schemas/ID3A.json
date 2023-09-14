@@ -93,7 +93,7 @@
             "CHEXS_NSF",
             "MSNC_AFRL",
             "MACCHESS_NSF_NIH",
-            "CHESS_internal"
+            "CHESSInternal"
         ]
     },
     {
@@ -330,7 +330,7 @@
         "multiple": false,
         "section": "Beam",
         "description": "Insertion device",
-        "placeholder": "Wiggler",
+        "placeholder": "CCU",
         "value": [
             "",
             "CCU",
@@ -387,7 +387,7 @@
         "multiple": true,
         "section": "Beam",
         "description": "List of attenuator materials used - skip this field if this metadata record is for multiple scans with different attenuators",
-        "placeholder": "steel, aluminum",
+        "placeholder": "Steel",
         "value": [
             "",
             "Steel",
@@ -401,7 +401,7 @@
         "multiple": true,
         "section": "Beam",
         "description": "Thickness [mm] of attenuator(s) - enter one value for each attenutor material -  skip this field if this metadata record is for multiple scans with different attenuators",
-        "placeholder": "0.25, 3.0"
+        "placeholder": "3.25"
     },
     {
         "key": "EnergyFoil",
@@ -438,7 +438,7 @@
         "multiple": true,
         "section": "Experiment",
         "description": "Detectors used",
-        "placeholder": "DualDexelas, Retiga",
+        "placeholder": "DualDexelas",
         "value": [
             "",
             "Eiger500",
