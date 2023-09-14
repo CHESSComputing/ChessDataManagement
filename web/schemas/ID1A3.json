@@ -116,6 +116,51 @@
         ]
     },    
     {
+        "key": "DataLocationRaw",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "DataLocations",
+        "description": "Raw data location (do not input \"current\" in the path directory. Instead, specify the actual cycle, e.g. 2022-3)",
+        "placeholder": "/nfs/chess/aux/cycles/2022-2/id1a3/batterman-1111-c/raw_data/test-1"
+    },
+    {
+        "key": "DataLocationMeta",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "DataLocations",
+        "description": "Metadata location (do not input \"current\" in the path directory. Instead, specify the actual cycle, e.g. 2022-3)",
+        "placeholder": "/nfs/chess/aux/cycles/2022-2/id1a3/batterman-1111-c/metadata/test-1"
+    },
+    {
+        "key": "DataLocationReduced",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "DataLocations",
+        "description": "Reduced data location (do not input \"current\" in the path directory. Instead, specify the actual cycle, e.g. 2022-3)",
+        "placeholder": "/nfs/chess/aux/cycles/2022-2/id1a3/batterman-1111-c/reduced_data/test-1"
+    },
+    {
+        "key": "DataLocationScratch",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "DataLocations",
+        "description": "Scartch data location (do not input \"current\" in the path directory. Instead, specify the actual cycle, e.g. 2022-3)",
+        "placeholder": "/nfs/chess/aux/cycles/2022-2/id1a3/batterman-1111-c/scratch_data/test-1"
+    },
+    {
+        "key": "DataLocationBeamtimeNotes",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "DataLocations",
+        "description": "Beam time notes location (do not input \"current\" in the path directory. Instead, specify the actual cycle, e.g. 2022-3)",
+        "placeholder": "/nfs/chess/aux/cycles/2022-2/id1a3/batterman-1111-c/metadata/batterman-1111-c_notebook.txt"
+    },    
+    {
         "key": "Alignment",
         "type": "bool",
         "optional": true,
@@ -312,51 +357,6 @@
         "section": "Alignment",
         "description": "if white beam mode: verticall downstream detector slit position"
     },    
-    {
-        "key": "DataLocationRaw",
-        "type": "string",
-        "optional": false,
-        "multiple": false,
-        "section": "DataLocations",
-        "description": "Raw data location (do not input \"current\" in the path directory. Instead, specify the actual cycle, e.g. 2022-3)",
-        "placeholder": "/nfs/chess/aux/cycles/2022-2/id1a3/batterman-1111-c/raw_data/test-1"
-    },
-    {
-        "key": "DataLocationMeta",
-        "type": "string",
-        "optional": false,
-        "multiple": false,
-        "section": "DataLocations",
-        "description": "Metadata location (do not input \"current\" in the path directory. Instead, specify the actual cycle, e.g. 2022-3)",
-        "placeholder": "/nfs/chess/aux/cycles/2022-2/id1a3/batterman-1111-c/metadata/test-1"
-    },
-    {
-        "key": "DataLocationReduced",
-        "type": "string",
-        "optional": false,
-        "multiple": false,
-        "section": "DataLocations",
-        "description": "Reduced data location (do not input \"current\" in the path directory. Instead, specify the actual cycle, e.g. 2022-3)",
-        "placeholder": "/nfs/chess/aux/cycles/2022-2/id1a3/batterman-1111-c/reduced_data/test-1"
-    },
-    {
-        "key": "DataLocationScratch",
-        "type": "string",
-        "optional": false,
-        "multiple": false,
-        "section": "DataLocations",
-        "description": "Scartch data location (do not input \"current\" in the path directory. Instead, specify the actual cycle, e.g. 2022-3)",
-        "placeholder": "/nfs/chess/aux/cycles/2022-2/id1a3/batterman-1111-c/scratch_data/test-1"
-    },
-    {
-        "key": "DataLocationBeamtimeNotes",
-        "type": "string",
-        "optional": false,
-        "multiple": false,
-        "section": "DataLocations",
-        "description": "Beam time notes location (do not input \"current\" in the path directory. Instead, specify the actual cycle, e.g. 2022-3)",
-        "placeholder": "/nfs/chess/aux/cycles/2022-2/id1a3/batterman-1111-c/metadata/batterman-1111-c_notebook.txt"
-    },
     {
         "key": "CESRConditions",
         "type": "list_str",
