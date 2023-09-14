@@ -78,8 +78,7 @@
             "GustafsonSE",
             "KoJYP",
             "NygrenKE"
-        ]                
-        
+        ]        
     },
     {
         "key": "BeamlineFundingPartner",
@@ -94,7 +93,7 @@
             "CHEXS_NSF",
             "MSNC_AFRL",
             "MACCHESS_NSF_NIH",
-            "CHESS_internal"
+            "CHESSInternal"
         ]
     },
     {
@@ -145,6 +144,15 @@
         ]
     },
     {
+        "key": "EnergyScanDocument",
+        "type": "string",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "Energy scan document location",
+        "placeholder": "/"
+    },    
+    {
         "key": "UndulatorScan",
         "type": "bool",
         "optional": false,
@@ -157,38 +165,6 @@
             "true",
             "false"
         ]
-    },
-    {
-        "key": "BeamSlitHorizontalSize",
-        "type": "float64",
-        "optional": true,
-        "multiple": false,
-        "section": "Alignment",
-        "description": "horizontal beam-defining slit size - skip if this metadata record is for multiple scans with different slit sizes"
-    },
-    {
-        "key": "BeamSlitVerticalSize",
-        "type": "float64",
-        "optional": true,
-        "multiple": false,
-        "section": "Alignment",
-        "description": "vertical beam-defining slit size - skip if this metadata record is for multiple scans with different slit sizes"
-    },
-    {
-        "key": "BeamSlitHorizontalPosition",
-        "type": "float64",
-        "optional": true,
-        "multiple": false,
-        "section": "Alignment",
-        "description": "horizontal beam-defining slit position - skip if this metadata record is for multiple scans with different slit sizes"
-    },
-    {
-        "key": "BeamSlitVerticalPosition",
-        "type": "float64",
-        "optional": true,
-        "multiple": false,
-        "section": "Alignment",
-        "description": "vertical beam-defining slit position - skip if this metadata record is for multiple scans with different slit sizes"
     },
     {
         "key": "PreSlitHorizontalSize",
@@ -221,6 +197,39 @@
         "multiple": false,
         "section": "Alignment",
         "description": "vertical pre-slit position - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    
+    {
+        "key": "BeamSlitHorizontalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "horizontal beam-defining slit size - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "BeamSlitVerticalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "vertical beam-defining slit size - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "BeamSlitHorizontalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "horizontal beam-defining slit position - skip if this metadata record is for multiple scans with different slit sizes"
+    },
+    {
+        "key": "BeamSlitVerticalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "vertical beam-defining slit position - skip if this metadata record is for multiple scans with different slit sizes"
     },
     {
         "key": "GuardSlitHorizontalSize",
@@ -315,14 +324,19 @@
         ]
     },
     {
-        "key": "BeamEnergy",
-        "type": "float64",
+        "key": "InsertionDevice",
+        "type": "list_str",
         "optional": false,
         "multiple": false,
         "section": "Beam",
-        "description": "Beam energy [keV]",
-        "placeholder": "41.991"
-    },
+        "description": "Insertion device",
+        "placeholder": "CCU",
+        "value": [
+            "",
+            "CCU",
+            "Wiggler"
+        ]
+    },    
     {
         "key": "Monochromator",
         "type": "list_str",
@@ -358,13 +372,22 @@
         ]
     },
     {
+        "key": "BeamEnergy",
+        "type": "float64",
+        "optional": false,
+        "multiple": false,
+        "section": "Beam",
+        "description": "Beam energy [keV]",
+        "placeholder": "41.991"
+    },    
+    {
         "key": "AttenMaterial",
         "type": "list_str",
         "optional": true,
         "multiple": true,
         "section": "Beam",
         "description": "List of attenuator materials used - skip this field if this metadata record is for multiple scans with different attenuators",
-        "placeholder": "steel, aluminum",
+        "placeholder": "Steel",
         "value": [
             "",
             "Steel",
@@ -378,7 +401,7 @@
         "multiple": true,
         "section": "Beam",
         "description": "Thickness [mm] of attenuator(s) - enter one value for each attenutor material -  skip this field if this metadata record is for multiple scans with different attenuators",
-        "placeholder": "0.25, 3.0"
+        "placeholder": "3.25"
     },
     {
         "key": "EnergyFoil",
@@ -415,7 +438,7 @@
         "multiple": true,
         "section": "Experiment",
         "description": "Detectors used",
-        "placeholder": "DualDexelas, Retiga",
+        "placeholder": "DualDexelas",
         "value": [
             "",
             "Eiger500",
@@ -437,13 +460,22 @@
         ]
     },
     {
+        "key": "BeamlineSetupDocument",
+        "type": "string",
+        "optional": true,
+        "multiple": false,
+        "section": "Beam",
+        "description": "Beamline setup document location",
+        "placeholder": "/"
+    },    
+    {
         "key": "ExperimentType",
         "type": "list_str",
         "optional": false,
         "multiple": true,
         "section": "Experiment",
         "description": "Experiment type(s) (e.g. scattering, imaging)",
-        "placeholder": "Scattering/Diffraction, Imaging",
+        "placeholder": "Scattering/Diffraction",
         "value": [
             "",
             "Scattering/Diffraction",
@@ -459,7 +491,7 @@
         "multiple": true,
         "section": "Experiment",
         "description": "Experimental technique(s) (e.g. powder, HEDM)",
-        "placeholder": "HighEnergyDiffractionMicroscopyFarField, Tomography",
+        "placeholder": "Tomography",
         "value": [
             "",
             "SingleCrystalDiffraction",
@@ -616,40 +648,13 @@
         ]
     },
     {
-        "key": "ReferenceCalibrantSampleName",
+        "key": "CalibrationDocument",
         "type": "string",
         "optional": true,
         "multiple": false,
         "section": "Sample",
-        "description": "If this is not a calibration sample: enter the sample name (used in newsample) for the relevant calibration sample dataset. FOR MULTIRUBY CALIBRANTS: enter the sample name for the corresponding CeO2 scan",
-        "placeholder": "ceo2-0101"
-    },
-    {
-        "key": "ReferenceCalibrantScanNumber",
-        "type": "int32",
-        "optional": true,
-        "multiple": false,
-        "section": "Sample",
-        "description": "If this is not a calibration sample: enter the scan number for the relevant calibration sample dataset",
-        "placeholder": "3"
-    },
-    {
-        "key": "ReferenceEnergyScanSampleName",
-        "type": "string",
-        "optional": true,
-        "multiple": false,
-        "section": "Sample",
-        "description": "If this is not an energy scan: enter the sample name (used in newsample) for the relevant master energy scan",
-        "placeholder": "lineup-1"
-    },
-    {
-        "key": "ReferenceEnergyScanNumber",
-        "type": "int32",
-        "optional": true,
-        "multiple": false,
-        "section": "Sample",
-        "description": "If this is not an energy scan: enter the scan number for the relevant master energy scan",
-        "placeholder": "7"
+        "description": "Calibration document location",
+        "placeholder": "/"
     },
     {
         "key": "SampleName",
@@ -685,8 +690,8 @@
         "optional": true,
         "multiple": false,
         "section": "Sample",
-        "description": "Unit cell dimensions [Angstrom]",
-        "placeholder": "2.511, 2.9511, 4.6843"
+        "description": "Unit cell dimensions a, b, c, alha, beta, gamma; Angstroms and degrees",
+        "placeholder": "2.511, 2.9511, 4.6843, 90, 90, 120"
     },
     {
         "key": "SampleSpaceGroup",
@@ -737,5 +742,23 @@
             "true",
             "false"
         ]
-    }
+    },
+    {
+        "key": "SampleState",
+        "type": "list_str",
+        "optional": true,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Sample state",
+        "value": [
+            "",
+            "Powder ",
+            "ThinFilm",
+            "SingleCrystal",
+            "Foil",
+            "Solution"
+        ]
+    }    
 ]
+ 
+

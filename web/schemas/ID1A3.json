@@ -5,6 +5,7 @@
         "optional": false,
         "multiple": false,
         "section": "User",
+        "description": "Facility where the experiment was performed, e.g. CHESS, APS, ESRF",
         "placeholder": "CHESS"
     },
     {
@@ -92,8 +93,7 @@
             "CHEXS_NSF",
             "MSNC_AFRL",
             "MACCHESS_NSF_NIH",
-            "CHESS_internal",
-            "CHEXS_NSF"
+            "CHESSInternal"
         ]
     },
     {
@@ -114,46 +114,7 @@
             "Industry",
             "Development"
         ]
-    },
-
-    
-    {
-        "key": "Alignment",
-        "type": "bool",
-        "optional": true,
-        "multiple": false,
-        "section": "Alignment",
-        "description": "Are scans related to alignment?",
-        "placeholder": "false",
-        "value": [
-            "",
-            "true",
-            "false"
-        ]
-    },
-    {
-        "key": "EnergyScan",
-        "type": "bool",
-        "optional": true,
-        "multiple": false,
-        "section": "Alignment",
-        "description": "Are scans related to energy scans?",
-        "placeholder": "false",
-        "value": [
-            "",
-            "true",
-            "false"
-        ]
-    },
-    {
-        "key": "EnergyScanDocument",
-        "type": "string",
-        "optional": true,
-        "multiple": false,
-        "section": "Alignment",
-        "description": "Energy scan document location",
-        "placeholder": "/"
-    },
+    },    
     {
         "key": "DataLocationRaw",
         "type": "string",
@@ -198,7 +159,204 @@
         "section": "DataLocations",
         "description": "Beam time notes location (do not input \"current\" in the path directory. Instead, specify the actual cycle, e.g. 2022-3)",
         "placeholder": "/nfs/chess/aux/cycles/2022-2/id1a3/batterman-1111-c/metadata/batterman-1111-c_notebook.txt"
+    },    
+    {
+        "key": "Alignment",
+        "type": "bool",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "Are scans related to alignment?",
+        "placeholder": "false",
+        "value": [
+            "",
+            "true",
+            "false"
+        ]
     },
+    {
+        "key": "EnergyScan",
+        "type": "bool",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "Are scans related to energy scans?",
+        "placeholder": "false",
+        "value": [
+            "",
+            "true",
+            "false"
+        ]
+    },
+    {
+        "key": "EnergyScanDocument",
+        "type": "string",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "Energy scan document location",
+        "placeholder": "/"
+    },
+    {
+        "key": "PreSlitHorizontalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "if mono beam mode: horizontal pre-slit size"
+    },
+    {
+        "key": "PreSlitVerticalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "if mono beam mode: vertical pre-slit size"
+    },
+    {
+        "key": "PreSlitHorizontalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "if mono beam mode: horizontal pre-slit position"
+    },
+    {
+        "key": "PreSlitVerticalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "if mono beam mode: vertical pre-slit position"
+    },    
+    {
+        "key": "BeamSlitHorizontalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "horizontal beam-defining slit size"
+    },
+    {
+        "key": "BeamSlitVerticalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "vertical beam-defining slit size"
+    },
+    {
+        "key": "BeamSlitHorizontalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "horizontal beam-defining slit position"
+    },
+    {
+        "key": "BeamSlitVerticalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "vertical beam-defining slit position"
+    },
+    {
+        "key": "GuardSlitHorizontalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "if mono beam mode: horizontal guard slit size"
+    },
+    {
+        "key": "GuardSlitVerticalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "if mono beam mode: vertical guard slit size"
+    },
+    {
+        "key": "GuardSlitHorizontalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "if mono beam mode: horizontal guard slit position"
+    },
+    {
+        "key": "GuardSlitVerticalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "if mono beam mode: verticall guard slit position"
+    },
+    {
+        "key": "UpstreamDetectorSlitHorizontalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "if white beam mode: horizontal upstream detector slit size"
+    },
+    {
+        "key": "UpstreamDetectorSlitVerticalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "if white beam mode: vertical upstream detector slit size"
+    },
+    {
+        "key": "UpstreamDetectorSlitHorizontalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "if white beam mode: horizontal upstream detector slit position"
+    },
+    {
+        "key": "UpstreamDetectorSlitVerticalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "if white beam mode: verticall upstream detector slit position"
+    },
+    {
+        "key": "DownstreamDetectorSlitHorizontalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "if white beam mode: horizontal downstream detector slit size"
+    },
+    {
+        "key": "DownstreamDetectorSlitVerticalSize",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "if white beam mode: vertical downstream detector slit size"
+    },
+    {
+        "key": "DownstreamDetectorSlitHorizontalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "if white beam mode: horizontal downstream detector slit position"
+    },
+    {
+        "key": "DownstreamDetectorSlitVerticalPosition",
+        "type": "float64",
+        "optional": true,
+        "multiple": false,
+        "section": "Alignment",
+        "description": "if white beam mode: verticall downstream detector slit position"
+    },    
     {
         "key": "CESRConditions",
         "type": "list_str",
@@ -224,8 +382,7 @@
         "value": [
             "",
             "CCU",
-            "Wiggler",
-            "CCU"
+            "Wiggler"
         ]
     },
     {
@@ -259,7 +416,8 @@
             "CRL",
             "KB",
             "Capillary",
-            "Sagittal"
+            "Sagittal",
+            "None"
         ]
     },
     {
@@ -286,14 +444,56 @@
         "placeholder": "80.725"
     },
     {
-        "key": "BeamlineSetupDocument",
-        "type": "string",
+        "key": "AttenMaterial",
+        "type": "list_str",
+        "optional": true,
+        "multiple": true,
+        "section": "Beam",
+        "description": "List of attenuator materials used",
+        "placeholder": "Steel",
+        "value": [
+            "",
+            "Steel",
+            "Aluminum"
+        ]
+    },
+    {
+        "key": "AttenThickness",
+        "type": "float64",
+        "optional": true,
+        "multiple": true,
+        "section": "Beam",
+        "description": "Thickness [mm] of attenuator(s) - enter one value for each attenutor material",
+        "placeholder": "3.25"
+    },
+    {
+        "key": "EnergyFoil",
+        "type": "list_str",
         "optional": true,
         "multiple": false,
         "section": "Beam",
-        "description": "Beamline setup document location",
-        "placeholder": "/"
-    },
+        "description": "Energy foil used, if any",
+        "placeholder": "Pr",
+        "value": [
+            "",
+            "scrn",
+            "blank1",
+            "Au",
+            "Pt",
+            "Ir",
+            "W",
+            "Hf",
+            "Yb",
+            "Ho",
+            "Tb",
+            "Sm",
+            "Pr",
+            "Sn",            
+            "blank2",
+            "Yb",
+            "other"
+        ]
+    },    
     {
         "key": "Detectors",
         "type": "list_str",
@@ -301,7 +501,7 @@
         "multiple": true,
         "section": "Experiment",
         "description": "Indicate detector(s) being used",
-        "placeholder": "GE2, Manta",
+        "placeholder": "GE2",
         "value": [
             "",
             "Eiger500",
@@ -319,6 +519,15 @@
             "CanberraMultielement"
         ]
     },
+    {
+        "key": "BeamlineSetupDocument",
+        "type": "string",
+        "optional": true,
+        "multiple": false,
+        "section": "Beam",
+        "description": "Beamline setup document location",
+        "placeholder": "/"
+    },    
     {
         "key": "ExperimentType",
         "type": "list_str",
@@ -471,15 +680,6 @@
         ]
     },
     {
-        "key": "SampleName",
-        "type": "string",
-        "optional": false,
-        "multiple": false,
-        "section": "Sample",
-        "description": "Specify sample name",
-        "placeholder": "alloy1"
-    },
-    {
         "key": "Calibration",
         "type": "bool",
         "optional": false,
@@ -492,6 +692,43 @@
             "true",
             "false"
         ]
+    },    
+    {
+        "key": "CalibrationDocument",
+        "type": "string",
+        "optional": true,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Calibration document location",
+        "placeholder": "/"
+    },        
+    {
+        "key": "SampleName",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Specify sample name",
+        "placeholder": "ti64-1"
+    },
+    {
+        "key": "SampleCommonName",
+        "type": "string",
+        "optional": false,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Common name of sample material",
+        "placeholder": "Ti64"
+    },
+    {
+        "key": "SampleChemicalFormula",
+        "type": "string",
+        "optional": true,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Chemical formula of sample",
+        "placeholder": "Ti6Al4V",
+        "value": "freetext"
     },
     {
         "key": "SampleSpaceGroup",
@@ -500,7 +737,16 @@
         "multiple": true,
         "section": "Sample",
         "description": "Specify sample space group"
-    },
+    },    
+    {
+        "key": "SampleUnitCell",
+        "type": "list_float",
+        "optional": true,
+        "multiple": false,
+        "section": "Sample",
+        "description": "Unit cell dimensions a, b, c, alha, beta, gamma; Angstroms and degrees",
+        "placeholder": "2.511, 2.9511, 4.6843, 90, 90, 120"
+    },    
     {
         "key": "SampleGeometry",
         "type": "string",
