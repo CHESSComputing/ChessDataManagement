@@ -744,8 +744,8 @@
         "optional": true,
         "multiple": false,
         "section": "Sample",
-        "description": "Unit cell dimensions [Angstrom]",
-        "placeholder": "2.511, 2.9511, 4.6843"
+        "description": "Unit cell dimensions a, b, c, alha, beta, gamma; Angstroms and degrees",
+        "placeholder": "2.511, 2.9511, 4.6843, 90, 90, 120"
     },    
     {
         "key": "SampleGeometry",
