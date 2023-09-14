@@ -93,7 +93,7 @@
             "CHEXS_NSF",
             "MSNC_AFRL",
             "MACCHESS_NSF_NIH",
-            "CHESS_internal"
+            "CHESSInternal"
         ]
     },
     {
@@ -450,7 +450,7 @@
         "multiple": true,
         "section": "Beam",
         "description": "List of attenuator materials used",
-        "placeholder": "steel, aluminum",
+        "placeholder": "Steel",
         "value": [
             "",
             "Steel",
@@ -464,7 +464,7 @@
         "multiple": true,
         "section": "Beam",
         "description": "Thickness [mm] of attenuator(s) - enter one value for each attenutor material",
-        "placeholder": "0.25, 3.0"
+        "placeholder": "3.25"
     },
     {
         "key": "EnergyFoil",
@@ -501,7 +501,7 @@
         "multiple": true,
         "section": "Experiment",
         "description": "Indicate detector(s) being used",
-        "placeholder": "GE2, Manta",
+        "placeholder": "GE2",
         "value": [
             "",
             "Eiger500",
@@ -709,7 +709,7 @@
         "multiple": false,
         "section": "Sample",
         "description": "Specify sample name",
-        "placeholder": "alloy1"
+        "placeholder": "ti64-1"
     },
     {
         "key": "SampleCommonName",
