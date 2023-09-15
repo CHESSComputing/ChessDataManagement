@@ -493,6 +493,15 @@
             "Yb",
             "other"
         ]
+    },
+    {
+        "key": "BeamlineSetupDocument",
+        "type": "string",
+        "optional": true,
+        "multiple": false,
+        "section": "Beam",
+        "description": "Beamline setup document location",
+        "placeholder": "/"
     },    
     {
         "key": "Detectors",
@@ -518,15 +527,6 @@
             "CanberraSingleElement",
             "CanberraMultielement"
         ]
-    },
-    {
-        "key": "BeamlineSetupDocument",
-        "type": "string",
-        "optional": true,
-        "multiple": false,
-        "section": "Beam",
-        "description": "Beamline setup document location",
-        "placeholder": "/"
     },    
     {
         "key": "ExperimentType",
