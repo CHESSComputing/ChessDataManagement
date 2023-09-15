@@ -432,6 +432,15 @@
         ]
     },
     {
+        "key": "BeamlineSetupDocument",
+        "type": "string",
+        "optional": true,
+        "multiple": false,
+        "section": "Beam",
+        "description": "Beamline setup document location",
+        "placeholder": "/"
+    },       
+    {
         "key": "Detectors",
         "type": "list_str",
         "optional": false,
@@ -458,16 +467,7 @@
             "Pilatus100K",
             "Others"
         ]
-    },
-    {
-        "key": "BeamlineSetupDocument",
-        "type": "string",
-        "optional": true,
-        "multiple": false,
-        "section": "Beam",
-        "description": "Beamline setup document location",
-        "placeholder": "/"
-    },    
+    }, 
     {
         "key": "ExperimentType",
         "type": "list_str",
