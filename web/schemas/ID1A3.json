@@ -732,7 +732,7 @@
     },
     {
         "key": "SampleSpaceGroup",
-        "type": "string",
+        "type": "int64",
         "optional": true,
         "multiple": true,
         "section": "Sample",
