@@ -77,13 +77,14 @@ func TestHTTPPostGet(t *testing.T) {
 
 	// HTTP POST request
 	schema := "test"
-	inputRecord := `{"StringKey": "test","StrKeyMultipleValues": "foo,bla","ListKey": ["foo", "bla"],"FloatKey": 1.1,"BoolKey": true}`
+	inputRecord := `{"StringKey": "test","StrKeyMultipleValues": "3A, 3B","ListKey": ["3A", "3B"],"FloatKey": 1.1,"BoolKey": true}`
 	form := url.Values{}
 	form.Add("record", string(inputRecord))
 	form.Add("SchemaName", schema)
 	reader := strings.NewReader(form.Encode())
 	rr, err := respRecorder("POST", "/api", reader, APIHandler)
 	if err != nil {
+		fmt.Println("fail to process record", inputRecord, "for schema", schema)
 		t.Error(err)
 	}
 

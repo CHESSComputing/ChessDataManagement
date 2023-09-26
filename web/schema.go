@@ -264,6 +264,13 @@ func (s *Schema) Validate(rec Record) error {
 				log.Printf("ERROR: %s", msg)
 				return errors.New(msg)
 			}
+			// check data value
+			if !validDataValue(m, v) {
+				// check if provided data type can be converted to m.Type
+				msg := fmt.Sprintf("invalid data value for key=%s, type=%s, multiple=%v, value=%v", k, m.Type, m.Multiple, v)
+				log.Printf("ERROR: %s", msg)
+				return errors.New(msg)
+			}
 			// collect mandatory keys
 			if !m.Optional {
 				mkeys = append(mkeys, k)
@@ -396,6 +403,50 @@ func (s *Schema) SectionKeys() (map[string][]string, error) {
 		}
 	}
 	return smap, nil
+}
+
+// helper function to validate given value with respect to schema one
+// only valid for value of list type
+func validDataValue(rec SchemaRecord, v any) bool {
+	if strings.HasPrefix(rec.Type, "list") {
+		var values []string
+		for _, v := range rec.Value.([]any) {
+			values = append(values, fmt.Sprintf("%v", v))
+		}
+		matched := false
+		if Config.Verbose > 0 {
+			log.Printf("checking %v of type %T against %+v", v, v, rec)
+		}
+		vtype := fmt.Sprintf("%T", v)
+		if strings.HasPrefix(vtype, "[]") {
+			// our input value is a list data-type and we should check all its values
+			var matchArr []bool
+			rvalues := v.([]any)
+			for _, rv := range rvalues {
+				for _, val := range values {
+					vvv := fmt.Sprintf("%v", val)
+					if rv == vvv {
+						matchArr = append(matchArr, true)
+					}
+				}
+			}
+			// all matched values
+			if len(matchArr) == len(rvalues) {
+				matched = true
+			}
+		} else {
+			for _, val := range values {
+				vvv := fmt.Sprintf("%v", val)
+				if v == vvv {
+					matched = true
+				}
+			}
+		}
+		if !matched {
+			return false
+		}
+	}
+	return true
 }
 
 // helper function to validate schema type of given value with respect to schema

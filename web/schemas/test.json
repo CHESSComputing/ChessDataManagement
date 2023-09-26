@@ -23,7 +23,7 @@
         "key": "ListKey",
         "type": "list_str",
         "optional": false,
-        "multiple": false,
+        "multiple": true,
         "section": "User",
         "description": "Specify beamline",
         "placeholder": "3A",
