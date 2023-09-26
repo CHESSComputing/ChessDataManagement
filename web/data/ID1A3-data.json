@@ -1,76 +1,103 @@
 {
-   "Alignment": false,
-   "BTR": "BTR",
-   "BeamEnergy": 0,
-   "BeamMode": [
-      "White"
-   ],
-   "Beamline": [
-      "1A3"
-   ],
-   "BeamlineFundingPartner": [
-      "CHEXS_NSF"
-   ],
-   "BeamlineSetupDocument": "",
-   "CESRConditions": [
-      "9BunchMode"
-   ],
-   "Calibration": true,
-   "Cycle": "2022-2",
-   "DataLocationBeamtimeNotes": "/tmp",
-   "DataLocationMeta": "/tmp",
-   "DataLocationRaw": "/tmp",
-   "DataLocationReduced": "/tmp",
-   "DataLocationScratch": "/tmp",
-   "Date": 1674826725,
-   "Description": "test record",
-   "Detectors": [
-      "Eiger500"
-   ],
-   "EnergyScan": false,
-   "EnergyScanDocument": "",
-   "ExperimentType": [
-      "Scattering/Diffraction"
-   ],
-   "Experimenters": "",
-   "Facility": "CHESS",
-   "Focusing": [
-      "Collimator"
-   ],
-   "Furnace": [
-      "RAMSII"
-   ],
-   "InSitu": false,
-   "InsertionDevice": [
-      "CCU"
-   ],
-   "MaterialSafetyHazardousSamples": false,
-   "MechanicalGrips": [
-      "Wedge"
-   ],
-   "MechanicalLoadFrame": [
-      "RAMSII"
-   ],
-   "MechanicalTest": false,
-   "MechanicalTestType": [
-      "Tension"
-   ],
-   "Monochromator": [
-      "MultiLayer"
-   ],
-   "PI": "Cornell",
-   "SampleGeometry": "",
-   "SampleMatPedHeatTreatment": "",
-   "SampleMatPedProcessingRoute": "",
-   "SampleName": "sample",
-   "SampleSpaceGroup": "F-43m",
-   "SampleState": [
-      "Powder "
-   ],
-   "StaffScientist": "Valentin",
-   "Technique": [
-      "SingleCrystalDiffraction"
-   ],
-   "User": "test"
+    "Alignment": false,
+    "EnergyScan": false,
+    "BeamSlitHorizontalSize": 0.2,
+    "BeamSlitVerticalSize": 1.0,
+    "BeamSlitHorizontalPosition": 0.0,
+    "BeamSlitVerticalPosition": 0.0,
+    "UpstreamDetectorSlitHorizontalSize": 0.2,
+    "UpstreamDetectorSlitVerticalSize": 1.0,
+    "UpstreamDetectorSlitHorizontalPosition": 0.0,
+    "UpstreamDetectorSlitVerticalPosition": 0.0,
+    "DownstreamDetectorSlitHorizontalSize": 0.2,
+    "DownstreamDetectorSlitVerticalSize": 5.0,
+    "DownstreamDetectorSlitHorizontalPosition": 0.0,
+    "DownstreamDetectorSlitVerticalPosition": 0.0,
+    "CESRConditions": [
+        "9x5BunchMode"
+    ],
+    "InsertionDevice": [
+        "Wiggler"
+    ],
+    "Monochromator": [
+        "SiLaueMono"
+    ],
+    "Focusing": [
+        "None"
+    ],
+    "BeamMode": [
+        "White"
+    ],
+    "BeamEnergy": 42.0,
+    "BeamlineSetupDocument": "/nfs/chess/aux/cycles/2023-3/id1a3/testuser-1111-a/metadata/testuser-1111-a_notebook.txt",
+    "DataLocationBeamtimeNotes": "/nfs/chess/aux/cycles/2023-3/id1a3/testuser-1111-a/metadata/testuser-1111-a_notebook.txt",
+    "DataLocationMeta": "/nfs/chess/aux/cycles/2023-3/id1a3/testuser-1111-a/metadata/test-1/79",
+    "DataLocationRaw": "/nfs/chess/aux/cycles/2023-3/id1a3/testuser-1111-a/raw_data/test-1/79",
+    "DataLocationReduced": "/nfs/chess/aux/cycles/2023-3/id1a3/testuser-1111-a/reduced_data/test-1/79",
+    "DataLocationScratch": "/nfs/chess/aux/cycles/2023-3/id1a3/testuser-1111-a/scratch_data/test-1/79",
+    "Detectors": [
+        "CanberraSingleElement"
+    ],
+    "ExperimentType": [
+        "Scattering/Diffraction"
+    ],
+    "Technique": [
+        "EDD"
+    ],
+    "SupplementaryTechnique": [
+        ""
+    ],
+    "Furnace": [
+        ""
+    ],
+    "MechanicalLoadFrame": [
+        ""
+    ],
+    "MechanicalGrips": [
+        ""
+    ],
+    "MechanicalTest": false,
+    "MechanicalTestType": [
+        ""
+    ],
+    "InSitu": false,
+    "SampleName": "test-1",
+    "SampleCommonName": "Ti64",
+    "SampleChemicalFormula": "Ti",
+    "Calibration": false,
+    "SampleSpaceGroup": 194,
+    "SampleUnitCell": [
+        2.511,
+        2.511,
+        4.6843,
+        90.0,
+        90.0,
+        120.0
+    ],
+    "SampleGeometry": "Plate",
+    "SampleMatPedHeatTreatment": "None",
+    "SampleMatPedProcessingRoute": "None",
+    "MaterialSafetyHazardousSamples": false,
+    "SampleState": [
+        "Powder"
+    ],
+    "BTR": "1111-a",
+    "Cycle": "2023-3",
+    "Facility": "CHESS",
+    "PI": "testuser",
+    "Beamline": [
+        "1A3"
+    ],
+    "StaffScientist": [
+        "DasA",
+        "KoJYP",
+        "NygrenKE"
+    ],
+    "BeamlineFundingPartner": [
+        "MSNC_AFRL"
+    ],
+    "Experimenters": "UserAB",
+    "Affiliation": [
+        "AirForce"
+    ]
 }
-

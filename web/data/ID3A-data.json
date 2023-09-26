@@ -1,86 +1,99 @@
 {
-   "Alignment": false,
-   "AttenThickness": 0,
-   "BTR": "BTR",
-   "BeamEnergy": 41.991,
-   "BeamSlitHorizontalPosition": 0,
-   "BeamSlitHorizontalSize": 0,
-   "BeamSlitVerticalPosition": 0,
-   "BeamSlitVerticalSize": 0,
-   "Beamline": [
-      "1A3"
-   ],
-   "BeamlineFundingPartner": [
-      "CHEXS_NSF"
-   ],
-   "CESRConditions": [
-      "9BunchMode"
-   ],
-   "Calibration": false,
-   "Cycle": "2022-2",
-   "DataLocationBeamtimeNotes": "/tmp",
-   "DataLocationMeta": "/tmp",
-   "DataLocationRaw": "/tmp",
-   "DataLocationReduced": "/tmp",
-   "DataLocationScratch": "/tmp",
-   "Date": 1674825943,
-   "Description": "test record",
-   "Detectors": [
-      "Eiger500"
-   ],
-   "EnergyFoil": [
-      "scrn"
-   ],
-   "EnergyScan": false,
-   "ExperimentType": [
-      "Scattering/Diffraction"
-   ],
-   "Experimenters": "",
-   "Facility": "CHESS",
-   "Focusing": [
-      "Collimator"
-   ],
-   "Furnace": [
-      "RAMSII"
-   ],
-   "GuardSlitHorizontalPosition": 0,
-   "GuardSlitHorizontalSize": 0,
-   "GuardSlitVerticalPosition": 0,
-   "GuardSlitVerticalSize": 0,
-   "InSitu": false,
-   "MaterialSafetyHazardousSamples": false,
-   "MechanicalGrips": [
-      "Wedge"
-   ],
-   "MechanicalLoadFrame": [
-      "RAMSII"
-   ],
-   "MechanicalTest": false,
-   "Monochromator": [
-      "MultiLayer"
-   ],
-   "PI": "Cornell",
-   "PreSlitHorizontalPosition": 0,
-   "PreSlitHorizontalSize": 0,
-   "PreSlitVerticalPosition": 0,
-   "PreSlitVerticalSize": 0,
-   "Processing": ",NISTTestBed,Stratasys3DPrinter,Other",
-   "ReferenceCalibrantSampleName": "",
-   "ReferenceCalibrantScanNumber": 0,
-   "ReferenceEnergyScanNumber": 0,
-   "ReferenceEnergyScanSampleName": "",
-   "SampleChemicalFormula": "freetext",
-   "SampleCommonName": "T64",
-   "SampleGeometry": "sample",
-   "SampleMatPedHeatTreatment": "sample",
-   "SampleMatPedProcessingRoute": "sample",
-   "SampleName": "sample",
-   "SampleSpaceGroup": "123",
-   "SampleUnitCell": 2.5,
-   "StaffScientist": "Valentin",
-   "Technique": [
-      "SingleCrystalDiffraction"
-   ],
-   "UndulatorScan": false,
-   "User": "test"
+    "Alignment": false,
+    "EnergyScan": false,
+    "UndulatorScan": false,
+    "BeamSlitHorizontalSize": 4.0,
+    "BeamSlitVerticalSize": 3.0,
+    "BeamSlitHorizontalPosition": 16.8,
+    "BeamSlitVerticalPosition": 1.99,
+    "GuardSlitHorizontalSize": 6.0,
+    "GuardSlitVerticalSize": 3.0,
+    "GuardSlitHorizontalPosition": 8.34,
+    "GuardSlitVerticalPosition": -5.04,
+    "CESRConditions": [
+        "9x5BunchMode"
+    ],
+    "InsertionDevice": [
+        "CCU"
+    ],
+    "Monochromator": [
+        "DoubleCrystalBraggSi111"
+    ],
+    "BeamEnergy": 41.991,
+    "AttenMaterial": [
+        "Steel"
+    ],
+    "AttenThickness": 0.0,
+    "EnergyFoil": [
+        ""
+    ],
+    "DataLocationBeamtimeNotes": "/nfs/chess/aux/cycles/2023-3/id3a/testuser-1111-a/metadata/testuser-1111-a_notebook.txt",
+    "DataLocationMeta": "/nfs/chess/aux/cycles/2023-3/id3a/testuser-1111-a/metadata/test-1/34",
+    "DataLocationRaw": "/nfs/chess/aux/cycles/2023-3/id3a/testuser-1111-a/raw_data/test-1/34",
+    "DataLocationReduced": "/nfs/chess/aux/cycles/2023-3/id3a/testuser-1111-a/reduced_data/test-1/34",
+    "DataLocationScratch": "/nfs/chess/aux/cycles/2023-3/id3a/testuser-1111-a/scratch_data/test-1/34",
+    "Detectors": [
+        "Retiga"
+    ],
+    "ExperimentType": [
+        "Imaging"
+    ],
+    "Technique": [
+        "Tomography"
+    ],
+    "SupplementaryTechnique": [
+        ""
+    ],
+    "Furnace": [
+        ""
+    ],
+    "MechanicalLoadFrame": [
+        ""
+    ],
+    "MechanicalGrips": [
+        ""
+    ],
+    "Processing": [
+        ""
+    ],
+    "MechanicalTest": false,
+    "MechanicalTestType": [
+        ""
+    ],
+    "InSitu": false,
+    "SampleName": "test-1",
+    "SampleCommonName": "Ti64",
+    "SampleChemicalFormula": "Ti",
+    "Calibration": false,
+    "SampleSpaceGroup": 194,
+    "SampleUnitCell": [
+        2.511,
+        2.511,
+        4.6843,
+        90.0,
+        90.0,
+        120.0
+    ],
+    "SampleGeometry": "Plate",
+    "SampleMatPedHeatTreatment": "None",
+    "SampleMatPedProcessingRoute": "None",
+    "MaterialSafetyHazardousSamples": false,
+    "SampleState": [
+        "SingleCrystal"
+    ],
+    "BTR": "1111-a",
+    "Cycle": "2023-3",
+    "Facility": "CHESS",
+    "PI": "testuser",
+    "Beamline": [
+        "3A"
+    ],
+    "StaffScientist": [
+        "DasA",
+        "ShanksKS"
+    ],
+    "BeamlineFundingPartner": [
+        "CHEXS_NSF"
+    ],
+    "Experimenters": "UserAB"
 }
