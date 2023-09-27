@@ -752,7 +752,7 @@
         "description": "Sample state",
         "value": [
             "",
-            "Powder ",
+            "Powder",
             "ThinFilm",
             "SingleCrystal",
             "Foil",
