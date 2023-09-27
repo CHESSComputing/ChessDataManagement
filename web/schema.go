@@ -410,6 +410,9 @@ func (s *Schema) SectionKeys() (map[string][]string, error) {
 func validDataValue(rec SchemaRecord, v any) bool {
 	if strings.HasPrefix(rec.Type, "list") {
 		var values []string
+		if rec.Value == nil {
+			return true
+		}
 		for _, v := range rec.Value.([]any) {
 			values = append(values, fmt.Sprintf("%v", v))
 		}
