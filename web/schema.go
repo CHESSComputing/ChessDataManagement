@@ -285,7 +285,13 @@ func (s *Schema) Validate(rec Record) error {
 	}
 	if len(mkeys) != len(smkeys) {
 		sort.Sort(StringList(mkeys))
-		msg := fmt.Sprintf("Unable to collect all mandatory keys %v, found %v", smkeys, mkeys)
+		var missing []string
+		for _, k := range smkeys {
+			if !InList(k, mkeys) {
+				missing = append(missing, k)
+			}
+		}
+		msg := fmt.Sprintf("Schema %s, mandatory keys %v, record keys %v, missing keys %v", s.FileName, smkeys, mkeys, missing)
 		log.Printf("ERROR: %s", msg)
 		return errors.New(msg)
 	}

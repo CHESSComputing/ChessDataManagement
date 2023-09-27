@@ -150,3 +150,31 @@ func TestHTTPBadRecord(t *testing.T) {
 		log.Println("bad record injection returns", err)
 	}
 }
+
+func TestHTTPPostMissingKeys(t *testing.T) {
+	initMetaDataService()
+
+	// initialize FilesDB connection
+	var err error
+	FilesDB, err = InitFilesDB()
+	defer FilesDB.Close()
+	if err != nil {
+		log.Printf("FilesDB error: %v\n", err)
+	}
+
+	// HTTP POST request
+	schema := "test"
+	inputRecord := `{"StringKey": "test","StrKeyMultipleValues": "3A, 3B","ListKey": ["3A", "3B"],"FloatKey": 1.1}`
+	form := url.Values{}
+	form.Add("record", string(inputRecord))
+	form.Add("SchemaName", schema)
+	reader := strings.NewReader(form.Encode())
+	_, err = respRecorder("POST", "/api", reader, APIHandler)
+	if err == nil {
+		msg := fmt.Sprintf("fail to catch missing key error for record %v in schema %s", inputRecord, schema)
+		fmt.Println(msg)
+		t.Error(errors.New(msg))
+	} else {
+		fmt.Printf("INFO: expected error %v", err)
+	}
+}
