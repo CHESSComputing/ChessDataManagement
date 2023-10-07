@@ -210,6 +210,9 @@ func MongoUpsert(dbname, collname string, records []Record) error {
 
 // MongoGet records from MongoDB
 func MongoGet(dbname, collname string, spec bson.M, idx, limit int) []Record {
+	if Config.Verbose > 1 {
+		log.Printf("MongoGet spec=%s idx=%d limit=%d", spec, idx, limit)
+	}
 	out := []Record{}
 	s := _Mongo.Connect()
 	defer s.Close()
@@ -267,6 +270,9 @@ func MongoUpdate(dbname, collname string, spec, newdata bson.M) {
 
 // MongoCount gets number records from MongoDB
 func MongoCount(dbname, collname string, spec bson.M) int {
+	if Config.Verbose > 1 {
+		log.Printf("MongoCount spec=%s", spec)
+	}
 	s := _Mongo.Connect()
 	defer s.Close()
 	c := s.DB(dbname).C(collname)

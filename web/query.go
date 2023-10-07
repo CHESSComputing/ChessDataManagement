@@ -7,6 +7,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"strconv"
@@ -50,20 +51,27 @@ func convertType(val interface{}) interface{} {
 
 // ParseQuery function provides basic parser for user queries and return
 // results in bson dictionary
-func ParseQuery(query string) bson.M {
+func ParseQuery(query string) (bson.M, error) {
 	spec := make(bson.M)
 	if strings.TrimSpace(query) == "" {
 		log.Println("WARNING: empty query string")
-		return nil
+		return nil, errors.New("empty query")
 	}
 	// support MongoDB specs
 	if strings.Contains(query, "{") {
-		if err := json.Unmarshal([]byte(query), &spec); err == nil {
+		err := json.Unmarshal([]byte(query), &spec)
+		if err == nil {
 			if Config.Verbose > 0 {
 				log.Printf("found bson spec %+v", spec)
 			}
-			return spec
+			// adjust query _id to object id type
+			if val, ok := spec["_id"]; ok {
+				spec["_id"] = bson.ObjectIdHex(val.(string))
+			}
+			return spec, nil
 		}
+		log.Printf("ERROR: unable to parse input query '%s' error %v", query, err)
+		return nil, err
 	}
 
 	// query as key:value
@@ -98,7 +106,7 @@ func ParseQuery(query string) bson.M {
 		// or, query as free text
 		spec["$text"] = bson.M{"$search": query}
 	}
-	return adjustQuery(spec)
+	return adjustQuery(spec), nil
 }
 
 // helper function to adjust query keys
@@ -107,6 +115,11 @@ func adjustQuery(spec bson.M) bson.M {
 	nspec := make(bson.M)
 	for kkk, val := range spec {
 		if strings.HasPrefix(kkk, "$") {
+			continue
+		}
+		// adjust query _id to object id type
+		if kkk == "_id" {
+			nspec["_id"] = bson.ObjectIdHex(val.(string))
 			continue
 		}
 		// look-up appropriate schema key
