@@ -491,7 +491,7 @@
             "Sn",            
             "blank2",
             "Yb",
-            "other"
+            "Other"
         ]
     },
     {
@@ -541,7 +541,8 @@
             "Scattering/Diffraction",
             "Imaging",
             "Spectroscopy",
-            "Crystallography"
+            "Crystallography",
+            "Other"
         ]
     },
     {
@@ -566,7 +567,8 @@
             "SAXS",
             "XRayFluorescence",
             "Tomography",
-            "EDD"
+            "EDD",
+            "Other"
         ]
     },
     {
