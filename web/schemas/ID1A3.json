@@ -520,12 +520,13 @@
             "GE2",
             "Manta",
             "Retiga",
-            "Eiger216M",
+            "Eiger16M",
             "Eiger1M",
             "Pilatus200K",
             "Pilatus300K",
             "CanberraSingleElement",
-            "CanberraMultielement"
+            "CanberraMultielement",
+            "Other"
         ]
     },    
     {
