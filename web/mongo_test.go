@@ -11,7 +11,7 @@ func TestMongoInsert(t *testing.T) {
 	// our db attributes
 	dbname := "chess"
 	collname := "test"
-	InitMongoDB("mongodb://localhost:8230")
+	InitMongoDB(Config.URI)
 
 	// remove all records in test collection
 	Remove(dbname, collname, bson.M{})

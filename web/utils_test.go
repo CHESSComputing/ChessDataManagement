@@ -16,7 +16,7 @@ func initMetaDataService() {
 	initSchemaManager()
 
 	// init MongoDB
-	InitMongoDB("mongodb://localhost:8230")
+	InitMongoDB(Config.URI)
 }
 
 // helper function to initialize SchemaManager
