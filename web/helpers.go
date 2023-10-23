@@ -230,7 +230,7 @@ func insertData(sname string, rec Record) error {
 	// dataset is a /cycle/beamline/BTR/sample
 	dataset := fmt.Sprintf("/%s/%s/%s/%s", cycle, beamline, btr, sample)
 	rec["dataset"] = dataset
-//     rec = preprocess(rec)
+	//     rec = preprocess(rec)
 	// check if given path exist on file system
 	_, err := os.Stat(path)
 	if err == nil {
@@ -245,7 +245,7 @@ func insertData(sname string, rec Record) error {
 		}
 		rec["did"] = did
 		records := []Record{rec}
-		err = MongoUpsert(Config.DBName, Config.DBColl, records)
+		err = MongoUpsert(Config.DBName, Config.DBColl, "dataset", records)
 		if err != nil {
 			log.Printf("ERROR: unable to MongoUpsert for did=%v dataset=%s path=%s, error=%v", did, dataset, path, err)
 		}

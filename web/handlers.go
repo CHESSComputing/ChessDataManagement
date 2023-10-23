@@ -25,8 +25,9 @@ import (
 	"github.com/shirou/gopsutil/load"
 	"github.com/shirou/gopsutil/mem"
 	"github.com/shirou/gopsutil/process"
+	primitive "go.mongodb.org/mongo-driver/bson/primitive" // for BSON ObjectID
+
 	"gopkg.in/jcmturner/gokrb5.v7/credentials"
-	"gopkg.in/mgo.v2/bson"
 )
 
 // TotalGetRequests counts total number of GET requests received by the server
@@ -220,9 +221,22 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	// we store all values as lower case and will use lower case in searches
+	// create search template form
+	var templates Templates
+	tmplData := makeTmplData()
+
+	// if we got GET request it is /search web form
+	if r.Method == "GET" {
+		tmplData["Query"] = ""
+		tmplData["User"] = user
+		page := templates.Tmpl(Config.Templates, "searchform.tmpl", tmplData)
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(_top + page + _bottom))
+		return
+	}
+
+	// if we get POST request we'll process user query
 	query := r.FormValue("query")
-	//     query = strings.ToLower(query)
 	spec, err := ParseQuery(query)
 	if Config.Verbose > 0 {
 		log.Printf("search query='%s' spec=%+v user=%v", query, spec, user)
@@ -258,9 +272,6 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 		idx = 0
 	}
 
-	// create search template form
-	var templates Templates
-	tmplData := makeTmplData()
 	tmplData["Query"] = query
 	tmplData["User"] = user
 	page := templates.Tmpl(Config.Templates, "searchform.tmpl", tmplData)
@@ -277,7 +288,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 			page = fmt.Sprintf("%s<br><br>No results found</br>", page)
 		}
 		for _, rec := range records {
-			oid := rec["_id"].(bson.ObjectId)
+			oid := rec["_id"].(primitive.ObjectID)
 			rec["_id"] = oid
 			tmplData["Id"] = oid.Hex()
 			tmplData["Did"] = rec["did"]
@@ -1207,7 +1218,7 @@ func UpdateRecordHandler(w http.ResponseWriter, r *http.Request) {
 			msg = fmt.Sprintf("record %v is successfully updated", rid)
 			log.Println("MongoUpsert", rec)
 			records := []Record{rec}
-			err = MongoUpsert(Config.DBName, Config.DBColl, records)
+			err = MongoUpsert(Config.DBName, Config.DBColl, "dataset", records)
 			if err != nil {
 				msg = fmt.Sprintf("record %v update is failed, reason: %v", rid, err)
 				cls = "is-error"

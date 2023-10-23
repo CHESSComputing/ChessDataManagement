@@ -430,10 +430,18 @@ func validDataValue(rec SchemaRecord, v any) bool {
 		if strings.HasPrefix(vtype, "[]") {
 			// our input value is a list data-type and we should check all its values
 			var matchArr []bool
-			rvalues := v.([]any)
+			var rvalues []string
+			switch rvals := v.(type) {
+			case []any:
+				for _, rv := range rvals {
+					vvv := fmt.Sprintf("%v", rv)
+					rvalues = append(rvalues, vvv)
+				}
+			case []string:
+				rvalues = rvals
+			}
 			for _, rv := range rvalues {
-				for _, val := range values {
-					vvv := fmt.Sprintf("%v", val)
+				for _, vvv := range values {
 					if rv == vvv {
 						matchArr = append(matchArr, true)
 					}

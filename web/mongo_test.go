@@ -3,26 +3,25 @@ package main
 import (
 	"testing"
 
-	"gopkg.in/mgo.v2/bson"
+	bson "go.mongodb.org/mongo-driver/bson"
 )
 
 // TestMongoInsert
 func TestMongoInsert(t *testing.T) {
-	initMetaDataService()
-
 	// our db attributes
 	dbname := "chess"
 	collname := "test"
+	InitMongoDB("mongodb://localhost:8230")
 
 	// remove all records in test collection
-	MongoRemove(dbname, collname, bson.M{})
+	Remove(dbname, collname, bson.M{})
 
 	// insert one record
 	var records []Record
 	dataset := "/a/b/c"
 	rec := Record{"dataset": dataset}
 	records = append(records, rec)
-	MongoInsert(dbname, collname, records)
+	Insert(dbname, collname, records)
 
 	// look-up one record
 	spec := bson.M{"dataset": dataset}
@@ -37,7 +36,7 @@ func TestMongoInsert(t *testing.T) {
 	rec = Record{"dataset": dataset, "test": 1}
 	records = []Record{}
 	records = append(records, rec)
-	err := MongoUpsert(dbname, collname, records)
+	err := MongoUpsert(dbname, collname, "dataset", records)
 	if err != nil {
 		t.Error(err)
 	}

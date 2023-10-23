@@ -8,14 +8,17 @@ package main
 //              https://gist.github.com/border/3489566
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"html"
 	"log"
 	"strings"
+	"time"
 
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
+	bson "go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // Record define Mongo record
@@ -154,53 +157,65 @@ func GetInt64Value(rec Record, key string) (int64, error) {
 	return 0, fmt.Errorf("Unable to cast value for key '%s'", key)
 }
 
-// MongoConnection defines connection to MongoDB
-type MongoConnection struct {
-	Session *mgo.Session
+// Connection defines connection to MongoDB
+type Connection struct {
+	Client *mongo.Client
+	URI    string
+}
+
+// InitMongoDB initializes MongoDB connection object
+func InitMongoDB(uri string) {
+	Mongo = Connection{URI: uri}
 }
 
 // Connect provides connection to MongoDB
-func (m *MongoConnection) Connect() *mgo.Session {
+func (m *Connection) Connect() *mongo.Client {
 	var err error
-	if m.Session == nil {
-		m.Session, err = mgo.Dial(Config.URI)
-		if err != nil {
-			panic(err)
-		}
-		//         m.Session.SetMode(mgo.Monotonic, true)
-		m.Session.SetMode(mgo.Strong, true)
+	if m.Client != nil {
+		return m.Client
 	}
-	return m.Session.Clone()
+	client, err := mongo.NewClient(options.Client().ApplyURI(m.URI))
+	if err != nil {
+		log.Fatal(err)
+	}
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	err = client.Connect(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	m.Client = client
+	return client
 }
 
-// global object which holds MongoDB connection
-var _Mongo MongoConnection
+// Mongo holds MongoDB connection
+var Mongo Connection
 
-// MongoInsert records into MongoDB
-func MongoInsert(dbname, collname string, records []Record) {
-	s := _Mongo.Connect()
-	defer s.Close()
-	c := s.DB(dbname).C(collname)
+// Insert records into MongoDB
+func Insert(dbname, collname string, records []Record) {
+	client := Mongo.Connect()
+	ctx := context.TODO()
+	c := client.Database(dbname).Collection(collname)
 	for _, rec := range records {
-		if err := c.Insert(&rec); err != nil {
+		if _, err := c.InsertOne(ctx, &rec); err != nil {
 			log.Printf("Fail to insert record %v, error %v\n", rec, err)
 		}
 	}
 }
 
 // MongoUpsert records into MongoDB
-func MongoUpsert(dbname, collname string, records []Record) error {
-	s := _Mongo.Connect()
-	defer s.Close()
-	c := s.DB(dbname).C(collname)
+func MongoUpsert(dbname, collname, attr string, records []Record) error {
+	client := Mongo.Connect()
+	ctx := context.TODO()
+	c := client.Database(dbname).Collection(collname)
 	for _, rec := range records {
-		dataset := rec["dataset"].(string)
-		if dataset == "" {
-			log.Printf("no dataset, record %v\n", rec)
+		value := rec[attr].(string)
+		if value == "" {
 			continue
 		}
-		spec := bson.M{"dataset": dataset}
-		if _, err := c.Upsert(spec, &rec); err != nil {
+		spec := bson.M{attr: value}
+		update := bson.D{{"$set", rec}}
+		opts := options.Update().SetUpsert(true)
+		if _, err := c.UpdateOne(ctx, spec, update, opts); err != nil {
 			log.Printf("Fail to insert record %v, error %v\n", rec, err)
 			return err
 		}
@@ -210,18 +225,25 @@ func MongoUpsert(dbname, collname string, records []Record) error {
 
 // MongoGet records from MongoDB
 func MongoGet(dbname, collname string, spec bson.M, idx, limit int) []Record {
-	if Config.Verbose > 1 {
-		log.Printf("MongoGet spec=%s idx=%d limit=%d", spec, idx, limit)
-	}
 	out := []Record{}
-	s := _Mongo.Connect()
-	defer s.Close()
-	c := s.DB(dbname).C(collname)
+	client := Mongo.Connect()
+	ctx := context.TODO()
+	c := client.Database(dbname).Collection(collname)
 	var err error
 	if limit > 0 {
-		err = c.Find(spec).Skip(idx).Limit(limit).All(&out)
+		opts := options.Find().SetSkip(int64(idx)).SetLimit(int64(limit))
+		cur, err := c.Find(ctx, spec, opts)
+		if err != nil {
+			log.Printf("ERROR: spec=%+v, error=%v", spec, err)
+		}
+		cur.All(ctx, &out)
 	} else {
-		err = c.Find(spec).Skip(idx).All(&out)
+		opts := options.Find().SetSkip(int64(idx))
+		cur, err := c.Find(ctx, spec, opts)
+		if err != nil {
+			log.Printf("ERROR: spec=%+v, error=%v", spec, err)
+		}
+		cur.All(ctx, &out)
 	}
 	if err != nil {
 		log.Printf("Unable to get records, error %v\n", err)
@@ -229,21 +251,29 @@ func MongoGet(dbname, collname string, spec bson.M, idx, limit int) []Record {
 	return out
 }
 
-// MongoGetSorted records from MongoDB sorted by given key
-func MongoGetSorted(dbname, collname string, spec bson.M, skeys []string) []Record {
+// GetSorted records from MongoDB sorted by given key
+func GetSorted(dbname, collname string, spec bson.M, skeys []string) []Record {
 	out := []Record{}
-	s := _Mongo.Connect()
-	defer s.Close()
-	c := s.DB(dbname).C(collname)
-	err := c.Find(spec).Sort(skeys...).All(&out)
+	client := Mongo.Connect()
+	ctx := context.TODO()
+	c := client.Database(dbname).Collection(collname)
+	var sortSpec bson.M
+	for _, s := range skeys {
+		sortSpec[s] = 1
+	}
+	opts := options.Find().SetSort(sortSpec)
+	cur, err := c.Find(ctx, spec, opts)
+	cur.All(ctx, &out)
 	if err != nil {
 		log.Printf("Unable to sort records, error %v\n", err)
 		// try to fetch all unsorted data
-		err = c.Find(spec).All(&out)
+		cur, err := c.Find(ctx, spec)
 		if err != nil {
 			log.Printf("Unable to find records, error %v\n", err)
 			out = append(out, ErrorRecord(fmt.Sprintf("%v", err), MongoDBErrorName, MongoDBError))
+			return out
 		}
+		cur.All(ctx, &out)
 	}
 	return out
 }
@@ -257,12 +287,12 @@ func sel(q ...string) (r bson.M) {
 	return
 }
 
-// MongoUpdate inplace for given spec
-func MongoUpdate(dbname, collname string, spec, newdata bson.M) {
-	s := _Mongo.Connect()
-	defer s.Close()
-	c := s.DB(dbname).C(collname)
-	err := c.Update(spec, newdata)
+// Update inplace for given spec
+func Update(dbname, collname string, spec, newdata bson.M) {
+	client := Mongo.Connect()
+	ctx := context.TODO()
+	c := client.Database(dbname).Collection(collname)
+	_, err := c.UpdateOne(ctx, spec, newdata)
 	if err != nil {
 		log.Printf("Unable to update record, spec %v, data %v, error %v\n", spec, newdata, err)
 	}
@@ -270,26 +300,23 @@ func MongoUpdate(dbname, collname string, spec, newdata bson.M) {
 
 // MongoCount gets number records from MongoDB
 func MongoCount(dbname, collname string, spec bson.M) int {
-	if Config.Verbose > 1 {
-		log.Printf("MongoCount spec=%s", spec)
-	}
-	s := _Mongo.Connect()
-	defer s.Close()
-	c := s.DB(dbname).C(collname)
-	nrec, err := c.Find(spec).Count()
+	client := Mongo.Connect()
+	ctx := context.TODO()
+	c := client.Database(dbname).Collection(collname)
+	nrec, err := c.CountDocuments(ctx, spec)
 	if err != nil {
 		log.Printf("Unable to count records, spec %v, error %v\n", spec, err)
 	}
-	return nrec
+	return int(nrec)
 }
 
-// MongoRemove records from MongoDB
-func MongoRemove(dbname, collname string, spec bson.M) {
-	s := _Mongo.Connect()
-	defer s.Close()
-	c := s.DB(dbname).C(collname)
-	_, err := c.RemoveAll(spec)
-	if err != nil && err != mgo.ErrNotFound {
+// Remove records from MongoDB
+func Remove(dbname, collname string, spec bson.M) {
+	client := Mongo.Connect()
+	ctx := context.TODO()
+	c := client.Database(dbname).Collection(collname)
+	_, err := c.DeleteMany(ctx, spec)
+	if err != nil {
 		log.Printf("Unable to remove records, spec %v, error %v\n", spec, err)
 	}
 }

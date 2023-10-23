@@ -149,6 +149,9 @@ func Server(configFile string) {
 	// dump server configuration
 	log.Printf("Configuration:\n%s", Config.String())
 
+	// initialize MongoDB
+	InitMongoDB(Config.URI)
+
 	// initialize FilesDB connection
 	FilesDB, err = InitFilesDB()
 	defer FilesDB.Close()
