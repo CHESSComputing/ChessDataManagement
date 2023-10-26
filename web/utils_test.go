@@ -14,6 +14,9 @@ func initMetaDataService() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	// initialize schema manager
 	initSchemaManager()
+
+	// init MongoDB
+	InitMongoDB(Config.URI)
 }
 
 // helper function to initialize SchemaManager

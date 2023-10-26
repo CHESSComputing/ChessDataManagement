@@ -420,7 +420,7 @@ func validDataValue(rec SchemaRecord, v any) bool {
 			return true
 		}
 		for _, v := range rec.Value.([]any) {
-			values = append(values, fmt.Sprintf("%v", v))
+			values = append(values, strings.Trim(fmt.Sprintf("%v", v), " "))
 		}
 		matched := false
 		if Config.Verbose > 0 {
@@ -430,14 +430,32 @@ func validDataValue(rec SchemaRecord, v any) bool {
 		if strings.HasPrefix(vtype, "[]") {
 			// our input value is a list data-type and we should check all its values
 			var matchArr []bool
-			rvalues := v.([]any)
+			var rvalues []string
+			switch rvals := v.(type) {
+			case []string:
+				for _, rv := range rvals {
+					for _, vvv := range strings.Split(rv, " ") {
+						rvalues = append(rvalues, vvv)
+					}
+				}
+			case []any:
+				for _, rv := range rvals {
+					vvv := fmt.Sprintf("%v", rv)
+					rvalues = append(rvalues, vvv)
+				}
+			}
 			for _, rv := range rvalues {
-				for _, val := range values {
-					vvv := fmt.Sprintf("%v", val)
+				for _, vvv := range values {
+					//                     if rv == vvv || (vvv != "" && strings.Contains(rv, vvv)) {
 					if rv == vvv {
 						matchArr = append(matchArr, true)
 					}
 				}
+			}
+			if Config.Verbose > 0 {
+				log.Println("values list", values, len(values))
+				log.Println("matched list", matchArr, len(matchArr))
+				log.Println("expected list", rvalues, len(rvalues))
 			}
 			// all matched values
 			if len(matchArr) == len(rvalues) {
@@ -513,6 +531,10 @@ func validSchemaType(stype string, v interface{}) bool {
 		return true
 	}
 	if stype == "list_float" && vtype == "[]interface {}" {
+		return true
+	}
+	// empty list of floats
+	if stype == "list_float" && vtype == "[]string" && sv == "[]" {
 		return true
 	}
 	// check if we can reduce data-type

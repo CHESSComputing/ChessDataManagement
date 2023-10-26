@@ -13,7 +13,8 @@ import (
 	"strconv"
 	"strings"
 
-	"gopkg.in/mgo.v2/bson"
+	bson "go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive" // for BSON ObjectID
 )
 
 // separator defines our query separator
@@ -66,7 +67,9 @@ func ParseQuery(query string) (bson.M, error) {
 			}
 			// adjust query _id to object id type
 			if val, ok := spec["_id"]; ok {
-				spec["_id"] = bson.ObjectIdHex(val.(string))
+				if oid, err := primitive.ObjectIDFromHex(val.(string)); err == nil {
+					spec["_id"] = oid
+				}
 			}
 			return spec, nil
 		}
@@ -119,7 +122,9 @@ func adjustQuery(spec bson.M) bson.M {
 		}
 		// adjust query _id to object id type
 		if kkk == "_id" {
-			nspec["_id"] = bson.ObjectIdHex(val.(string))
+			if oid, err := primitive.ObjectIDFromHex(val.(string)); err == nil {
+				nspec["_id"] = oid
+			}
 			continue
 		}
 		// look-up appropriate schema key
