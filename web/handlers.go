@@ -1016,25 +1016,29 @@ func APIHandler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			user = creds.UserName()
-			config := r.FormValue("config")
-			var data = Record{}
-			data["User"] = user
-			err = json.Unmarshal([]byte(config), &data)
-			if err != nil {
-				msg := "unable to unmarshal configuration data"
-				handleError(w, r, msg, err)
+			userAgent := r.Header.Get("User-Agent")
+			// check if we got request from CLI, we proceed here only for web clients
+			if !strings.Contains(userAgent, "Go-http-client") {
+				config := r.FormValue("config")
+				var data = Record{}
+				data["User"] = user
+				err = json.Unmarshal([]byte(config), &data)
+				if err != nil {
+					msg := "unable to unmarshal configuration data"
+					handleError(w, r, msg, err)
+					return
+				}
+				err = insertData(schema, data)
+				if err != nil {
+					msg := "unable to insert data"
+					handleError(w, r, msg, err)
+					return
+				}
+				msg := fmt.Sprintf("Successfully inserted:\n%v", data.ToString())
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(msg))
 				return
 			}
-			err = insertData(schema, data)
-			if err != nil {
-				msg := "unable to insert data"
-				handleError(w, r, msg, err)
-				return
-			}
-			msg := fmt.Sprintf("Successfully inserted:\n%v", data.ToString())
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte(msg))
-			return
 		}
 	}
 
