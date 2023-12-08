@@ -15,6 +15,7 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
+	"runtime"
 	"strings"
 	"syscall"
 	"time"
@@ -314,6 +315,12 @@ func findFiles(uri string, did int64, krbFile string, verbose int) {
 	fmt.Println(string(data))
 }
 
+func info() string {
+	goVersion := runtime.Version()
+	tstamp := time.Now()
+	return fmt.Sprintf("git={{VERSION}} go=%s date=%s", goVersion, tstamp)
+}
+
 func main() {
 	var schema string
 	flag.StringVar(&schema, "schema", "", "schema name for your data")
@@ -330,6 +337,8 @@ func main() {
 	flag.StringVar(&uri, "uri", "https://chessdata.classe.cornell.edu:8243", "CHESS Data Management System URI")
 	var verbose int
 	flag.IntVar(&verbose, "verbose", 0, "verbosity level")
+	var version bool
+	flag.BoolVar(&version, "version", false, "Show version")
 	flag.Usage = func() {
 		client := "chess_client"
 		msg := fmt.Sprintf("\nCommand line interface to CHESS Data Management System\n")
@@ -347,6 +356,10 @@ func main() {
 		fmt.Fprintf(os.Stderr, "\n%s -krbFile krb5cc_ccache -did=1570563920579312510\n", client)
 	}
 	flag.Parse()
+	if version {
+		fmt.Println("chess_client version:", info())
+		return
+	}
 	// we only allow devMode for localhost testing
 	if devMode {
 		if !strings.HasPrefix(uri, "http://localhost") {
