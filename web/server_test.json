@@ -29,5 +29,6 @@
     },
     "realm": "CERN.CH",
     "testMode": true,
+    "logFile": "/tmp/meta-data.log",
     "verbose": 2
 }
