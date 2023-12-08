@@ -85,7 +85,7 @@ func exportData(client *mongo.Client, dbname, collname, fname string) {
 	}
 	cur.All(ctx, &records)
 	log.Printf("found %d records\n", len(records))
-	data, err := json.Marshal(records)
+	data, err := json.MarshalIndent(records, "", "   ")
 	if err != nil {
 		log.Fatal(err)
 	}
