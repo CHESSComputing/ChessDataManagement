@@ -176,25 +176,25 @@ func InsertFiles(did int64, dataset, path string) error {
 	// insert main attributes
 	stmt = "INSERT INTO cycles (name) VALUES (?)"
 	_, err = tx.Exec(stmt, cycle)
-	if err != nil {
+	if err != nil && !strings.Contains(err.Error(), "UNIQUE") {
 		log.Printf("ERROR: unable to execute %s with %v, error=%v", stmt, cycle, err)
 		return tx.Rollback()
 	}
 	stmt = "INSERT INTO beamlines (name) VALUES (?)"
 	_, err = tx.Exec(stmt, beamline)
-	if err != nil {
+	if err != nil && !strings.Contains(err.Error(), "UNIQUE") {
 		log.Printf("ERROR: unable to execute %s with %v, error=%v", stmt, beamline, err)
 		return tx.Rollback()
 	}
 	stmt = "INSERT INTO btrs (name) VALUES (?)"
 	_, err = tx.Exec(stmt, btr)
-	if err != nil {
+	if err != nil && !strings.Contains(err.Error(), "UNIQUE") {
 		log.Printf("ERROR: unable to execute %s with %v, error=%v", stmt, btr, err)
 		return tx.Rollback()
 	}
 	stmt = "INSERT INTO samples (name) VALUES (?)"
 	_, err = tx.Exec(stmt, sample)
-	if err != nil {
+	if err != nil && !strings.Contains(err.Error(), "UNIQUE") {
 		log.Printf("ERROR: unable to execute %s with %v, error=%v", stmt, sample, err)
 		return tx.Rollback()
 	}
@@ -251,7 +251,7 @@ func InsertFiles(did int64, dataset, path string) error {
 	for _, name := range files {
 		stmt = "INSERT INTO files (dataset_id,name) VALUES (?,?)"
 		_, err = tx.Exec(stmt, did, name)
-		if err != nil {
+		if err != nil && !strings.Contains(err.Error(), "UNIQUE") {
 			log.Printf("ERROR: unable to execute %s with did=%v name=%s error=%v", stmt, did, name, err)
 			return tx.Rollback()
 		}
