@@ -202,6 +202,8 @@ func insertData(sname string, rec Record) error {
 			path = "/tmp"
 		}
 	}
+	// log record just in case we need to debug it
+	log.Printf("cycle=%v beamline=%v btr=%v sample=%v", rec["Cycle"], rec["Beamline"], rec["BTR"], rec["SampleName"])
 	if v, ok := rec["Cycle"]; ok {
 		cycle = v.(string)
 	} else {
@@ -213,6 +215,12 @@ func insertData(sname string, rec Record) error {
 			beamline = b
 		case []string:
 			beamline = strings.Join(b, "-")
+		case []any:
+			var values []string
+			for _, v := range b {
+				values = append(values, fmt.Sprintf("%v", v))
+			}
+			beamline = strings.Join(values, "-")
 		}
 	} else {
 		beamline = fmt.Sprintf("beamline-%s", randomString())
