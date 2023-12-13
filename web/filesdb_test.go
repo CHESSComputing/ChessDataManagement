@@ -46,4 +46,47 @@ func TestFilesDB(t *testing.T) {
 	if len(files) == 0 {
 		t.Errorf("No files found in database for did=%v", did)
 	}
+
+	// insert another dataset with different cycle
+	did = int64(456)
+	cycle = "cycle-2"
+	dataset = fmt.Sprintf("/%s/%s/%s/%s", cycle, beamline, btr, sample)
+	path = filepath.Join("/tmp", os.Getenv("USER")) // for testing purposes
+	err = InsertFiles(did, dataset, path)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// check if btr/beamline/sample tables do not expand
+	samples, err := getSamples()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(samples) != 1 {
+		t.Fatal("wrong number of samples")
+	}
+	btrs, err := getBtrs()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(btrs) != 1 {
+		t.Fatal("wrong number of btrs")
+	}
+	beamlines, err := getBeamlines()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(beamlines) != 1 {
+		t.Fatal("wrong number of beamlines")
+	}
+
+	// get list of datasets
+	dsets, err := getDatasets()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(dsets) != 2 {
+		t.Fatal("wrong number of datasets")
+	}
+
 }
