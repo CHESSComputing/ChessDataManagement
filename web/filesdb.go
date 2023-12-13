@@ -239,7 +239,7 @@ func InsertFiles(did int64, dataset, path string) error {
 	sampleId := rec["sample_id"].(int64)
 
 	// insert data into datasets table
-	tstamp := time.Now().Unix()
+	tstamp := time.Now().UnixNano()
 	stmt = "INSERT INTO datasets (dataset_id,cycle_id,beamline_id,btr_id,sample_id,tstamp) VALUES (?, ?, ?, ?, ?, ?)"
 	_, err = tx.Exec(stmt, did, cycleId, beamlineId, btrId, sampleId, tstamp)
 	if err != nil {
@@ -292,4 +292,82 @@ func getFiles(did int64) ([]string, error) {
 		files = append(files, name)
 	}
 	return files, nil
+}
+
+// helper function to get list of names from a give table
+func getTableNames(tname string) ([]string, error) {
+	var out []string
+	// proceed with transaction operation
+	tx, err := FilesDB.Begin()
+	if err != nil {
+		log.Printf("ERROR: DB error %v\n", err)
+		return out, err
+	}
+	defer tx.Rollback()
+	stmt := "SELECT name FROM " + tname
+	res, err := tx.Query(stmt)
+	if err != nil {
+		log.Printf("ERROR: unable to execute %s, error=%v", stmt, err)
+		return out, tx.Rollback()
+	}
+	for res.Next() {
+		var name string
+		err = res.Scan(&name)
+		if err != nil {
+			log.Printf("ERROR: unable to scan error=%v", err)
+			return out, tx.Rollback()
+		}
+		out = append(out, name)
+	}
+	return out, nil
+}
+
+// helper function to get list of cycles
+func getCycles() ([]string, error) {
+	return getTableNames("CYCLES")
+}
+
+// helper function to get list of beamlines
+func getBeamlines() ([]string, error) {
+	return getTableNames("BEAMLINES")
+}
+
+// helper function to get list of btrs
+func getBtrs() ([]string, error) {
+	return getTableNames("BTRS")
+}
+
+// helper function to get list of samples
+func getSamples() ([]string, error) {
+	return getTableNames("SAMPLES")
+}
+
+// helper function to get list of datasets
+func getDatasets() ([]string, error) {
+	var out []string
+	// proceed with transaction operation
+	tx, err := FilesDB.Begin()
+	if err != nil {
+		log.Printf("ERROR: DB error %v\n", err)
+		return out, err
+	}
+	defer tx.Rollback()
+	// dataset is a /cycle/beamline/BTR/sample
+	stmt := "SELECT C.name, B.name, BT.name, S.name FROM DATASETS D JOIN CYCLES C ON C.cycle_id=D.cycle_id JOIN BEAMLINES B ON B.beamline_id=D.beamline_id JOIN BTRS BT ON BT.btr_id=D.btr_id JOIN SAMPLES S ON S.sample_id=D.sample_id"
+	res, err := tx.Query(stmt)
+	if err != nil {
+		log.Printf("ERROR: unable to execute %s, error=%v", stmt, err)
+		return out, tx.Rollback()
+	}
+	for res.Next() {
+		var cname, bname, btname, sname string
+		err = res.Scan(&cname, &bname, &btname, &sname)
+		if err != nil {
+			log.Printf("ERROR: unable to scan error=%v", err)
+			return out, tx.Rollback()
+		}
+		d := fmt.Sprintf("/%s/%s/%s/%s", cname, bname, btname, sname)
+		out = append(out, d)
+	}
+	return out, nil
 }
