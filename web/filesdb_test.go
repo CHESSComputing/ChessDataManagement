@@ -22,7 +22,7 @@ func TestFilesDB(t *testing.T) {
 	}
 
 	// prepare our data for insertion
-	did := int64(123)
+	did := "123"
 	cycle := "cycle"
 	beamline := "beamline"
 	btr := "btr"
@@ -48,7 +48,7 @@ func TestFilesDB(t *testing.T) {
 	}
 
 	// insert another dataset with different cycle
-	did = int64(456)
+	did = "456"
 	cycle = "cycle-2"
 	dataset = fmt.Sprintf("/%s/%s/%s/%s", cycle, beamline, btr, sample)
 	path = filepath.Join("/tmp", os.Getenv("USER")) // for testing purposes

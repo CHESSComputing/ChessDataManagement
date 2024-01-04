@@ -1252,10 +1252,10 @@ func FilesHandler(w http.ResponseWriter, r *http.Request) {
 			handleError(w, r, msg, err)
 			return
 		}
-		did, err := strconv.ParseInt(r.FormValue("did"), 10, 64)
-		if err != nil {
-			msg := fmt.Sprintf("Unable to parse did\nError: %v", err)
-			w.WriteHeader(http.StatusOK)
+		did := r.FormValue("did")
+		if did == "" {
+			msg := fmt.Sprintf("No did found in http request")
+			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte(msg))
 			return
 		}
@@ -1272,9 +1272,9 @@ func FilesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	var templates Templates
 	tmplData := makeTmplData()
-	did, err := strconv.ParseInt(r.FormValue("did"), 10, 64)
-	if err != nil {
-		tmplData["Message"] = fmt.Sprintf("Unable to parse did\nError: %v", err)
+	did := r.FormValue("did")
+	if did == "" {
+		tmplData["Message"] = fmt.Sprintf("No did found in HTTP request")
 		tmplData["Class"] = "alert is-error is-large is-text-center"
 		page := templates.Tmpl(Config.Templates, "confirm.tmpl", tmplData)
 		w.WriteHeader(http.StatusOK)

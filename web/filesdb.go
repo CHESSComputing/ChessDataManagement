@@ -129,18 +129,28 @@ func execute(tx *sql.Tx, stm string, args ...interface{}) ([]Record, error) {
 	return records, nil
 }
 
+// FindMetaID finds dataset attributes
+func FindMetaID(stmt string, args ...interface{}) (string, error) {
+	var did string
+	err := FilesDB.QueryRow(stmt, args...).Scan(&did)
+	if err == nil {
+		return did, nil
+	}
+	return did, errors.New("Unable to find id")
+}
+
 // FindID finds dataset attributes
 func FindID(stmt string, args ...interface{}) (int64, error) {
-	var rid int64
-	err := FilesDB.QueryRow(stmt, args...).Scan(&rid)
+	var did int64
+	err := FilesDB.QueryRow(stmt, args...).Scan(&did)
 	if err == nil {
-		return rid, nil
+		return did, nil
 	}
-	return -1, errors.New("Unable to find id")
+	return did, errors.New("Unable to find id")
 }
 
 // InsertFiles insert given files into FilesDB
-func InsertFiles(did int64, dataset, path string) error {
+func InsertFiles(did, dataset, path string) error {
 	// look-up files for given path
 	files := FindFiles(path)
 
@@ -154,11 +164,12 @@ func InsertFiles(did int64, dataset, path string) error {
 	btr := arr[3]
 	sample := arr[4]
 	log.Printf("InsertFiles: parse dataset=%s to cycle=%s beamline=%s btr=%s sample=%s", dataset, cycle, beamline, btr, sample)
+	log.Printf("did=%s type=%T", did, did)
 
 	// check if we have already our dataset in DB
-	dstmt := "SELECT dataset_id FROM datasets JOIN cules ON datasets.cycle_id=cycles.cycle_id JOIN btrs ON datasets.btr_id=btrs.btr_id JOIN beamlines ON datasets.beamline_id=beamlines.beamline_id JOIN samples ON dataset.sample_id=samples.sample_id WHERE beamlines.name=? and btrs.name=? and cycles.name=? and samaples.name=?"
-	datasetID, e := FindID(dstmt, cycle, beamline, btr, sample)
-	if e == nil && datasetID == did {
+	dstmt := "SELECT meta_id FROM datasets JOIN cycles ON datasets.cycle_id=cycles.cycle_id JOIN btrs ON datasets.btr_id=btrs.btr_id JOIN beamlines ON datasets.beamline_id=beamlines.beamline_id JOIN samples ON dataset.sample_id=samples.sample_id WHERE beamlines.name=? and btrs.name=? and cycles.name=? and samaples.name=?"
+	metaID, e := FindMetaID(dstmt, cycle, beamline, btr, sample)
+	if e == nil && metaID == did {
 		return nil
 	}
 	log.Println("proceed with insert")
@@ -240,17 +251,27 @@ func InsertFiles(did int64, dataset, path string) error {
 
 	// insert data into datasets table
 	tstamp := time.Now().UnixNano()
-	stmt = "INSERT INTO datasets (dataset_id,cycle_id,beamline_id,btr_id,sample_id,tstamp) VALUES (?, ?, ?, ?, ?, ?)"
+	stmt = "INSERT INTO datasets (meta_id,cycle_id,beamline_id,btr_id,sample_id,tstamp) VALUES (?, ?, ?, ?, ?, ?)"
 	_, err = tx.Exec(stmt, did, cycleId, beamlineId, btrId, sampleId, tstamp)
-	if err != nil {
-		log.Printf("ERROR: unable to execute %s, datasetId=%v, cycleId=%v, beamlineId=%v, btrId=%v, sampleId=%v, tstamp=%v, error=%v", stmt, did, cycleId, beamlineId, btrId, sampleId, tstamp, err)
+	if err != nil && !strings.Contains(err.Error(), "UNIQUE") {
+		log.Printf("ERROR: unable to execute %s, metaId=%v, cycleId=%v, beamlineId=%v, btrId=%v, sampleId=%v, tstamp=%v, error=%v", stmt, did, cycleId, beamlineId, btrId, sampleId, tstamp, err)
 		return tx.Rollback()
 	}
+
+	// get back dataset id
+	stmt = "SELECT dataset_id FROM datasets WHERE meta_id=?"
+	res, err = execute(tx, stmt, did)
+	if err != nil {
+		log.Printf("ERROR: unable to execute %s with %v, error=%v", stmt, did, err)
+		return tx.Rollback()
+	}
+	rec = res[0]
+	datasetID := rec["dataset_id"].(int64)
 
 	// insert files info
 	for _, name := range files {
 		stmt = "INSERT INTO files (dataset_id,name) VALUES (?,?)"
-		_, err = tx.Exec(stmt, did, name)
+		_, err = tx.Exec(stmt, datasetID, name)
 		if err != nil && !strings.Contains(err.Error(), "UNIQUE") {
 			log.Printf("ERROR: unable to execute %s with did=%v name=%s error=%v", stmt, did, name, err)
 			return tx.Rollback()
@@ -266,7 +287,7 @@ func InsertFiles(did int64, dataset, path string) error {
 }
 
 // helper function to get list of files
-func getFiles(did int64) ([]string, error) {
+func getFiles(did string) ([]string, error) {
 	var files []string
 	// proceed with transaction operation
 	tx, err := FilesDB.Begin()
@@ -276,7 +297,8 @@ func getFiles(did int64) ([]string, error) {
 	}
 	defer tx.Rollback()
 	// look-up files info
-	stmt := "SELECT name FROM files WHERE dataset_id=?"
+	//     stmt := "SELECT name FROM files WHERE meta_id=?"
+	stmt := "SELECT F.name FROM DATASETS D JOIN files F ON D.dataset_id=F.dataset_id WHERE D.meta_id=?"
 	res, err := tx.Query(stmt, did)
 	if err != nil {
 		log.Printf("ERROR: unable to execute %s, error=%v", stmt, err)

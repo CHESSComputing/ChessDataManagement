@@ -21,7 +21,8 @@ CREATE TABLE samples (
 );
 
 CREATE TABLE datasets (
- dataset_id INTEGER PRIMARY KEY,
+ dataset_id INTEGER PRIMARY KEY AUTOINCREMENT,
+ meta_id TEXT NOT NULL UNIQUE,
  cycle_id integer REFERENCES cycles(cycle_id) ON UPDATE CASCADE,
  beamline_id integer REFERENCES beamlines(beamline_id) ON UPDATE CASCADE,
  btr_id integer REFERENCES btrs(btr_id) ON UPDATE CASCADE,

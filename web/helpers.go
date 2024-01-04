@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -11,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/uuid"
 	"gopkg.in/jcmturner/gokrb5.v7/client"
 	"gopkg.in/jcmturner/gokrb5.v7/config"
 	"gopkg.in/jcmturner/gokrb5.v7/credentials"
@@ -244,9 +246,17 @@ func insertData(sname string, rec Record) error {
 	if err == nil {
 		log.Printf("input data, record %v, path %v\n", rec, path)
 		rec["path"] = path
-		// we generate unique id by using time stamp
-		// use UnixMilli as UnixNano is truncated in MongoDB
-		did := time.Now().UnixMilli()
+		// generate unique id
+		var did string
+		if v, ok := rec["did"]; !ok {
+			if uuid, err := uuid.NewRandom(); err == nil {
+				did = hex.EncodeToString(uuid[:])
+			} else {
+				did = fmt.Sprintf("%v", time.Now().UnixMilli())
+			}
+		} else {
+			did = v.(string)
+		}
 		err = InsertFiles(did, dataset, path)
 		if err != nil {
 			log.Printf("ERROR: unable to InsertFiles for did=%v dataset=%s path=%s, error=%v", did, dataset, path, err)
