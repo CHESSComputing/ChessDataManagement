@@ -177,7 +177,6 @@ func InsertFiles(did, dataset, path string) error {
 		log.Printf("ERROR: unable to execute %s with %v, error=%v", stmt, did, err)
 		return tx.Rollback()
 	}
-	log.Println("### inserted into METADATA")
 
 	stmt = "SELECT META_ID FROM METADATA WHERE DID=?"
 	res, err = execute(tx, stmt, did)
