@@ -27,7 +27,7 @@ create TABLE sites (
 create TABLE buckets (
     bucket_id INTEGER PRIMARY KEY AUTOINCREMENT,
     bucket VARCHAR(255) NOT NULL UNIQUE,
-    meta_id VARCHAR(255),
+    meta_id BIGINT REFERENCES metadata(meta_id) ON UPDATE CASCADE,
     dataset_id INTEGER REFERENCES datasets(dataset_id) ON UPDATE CASCADE,
     create_at INTEGER,
     create_by VARCHAR(255),
