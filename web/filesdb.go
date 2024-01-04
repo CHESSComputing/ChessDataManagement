@@ -146,7 +146,7 @@ func InsertFiles(did, dataset, path string) error {
 	log.Printf("InsertFiles: dataset=%s did=%s", dataset, did)
 
 	// check if we have already our dataset in DB
-	dstmt := "SELECT did FROM metadata M JOIN datasets D ON M.meta_id=D.meta_id WHERE D.dataset=? AND M.did=?"
+	dstmt := "SELECT DID FROM METADATA M JOIN DATASETS D ON M.META_ID=D.META_ID WHERE D.DATASET=? AND M.DID=?"
 	DID, e := findDID(dstmt, dataset, did)
 	if e == nil && DID == did {
 		return nil
@@ -171,15 +171,15 @@ func InsertFiles(did, dataset, path string) error {
 	modify_by := "MetaData server"
 
 	// insert main attributes
-	stmt = "INSERT INTO metadata (did,create_at,create_by,modify_at,modify_by) VALUES (?,?,?,?,?)"
+	stmt = "INSERT INTO METADATA (DID,CREATE_AT,CREATE_BY,MODIFY_AT,MODIFY_BY) VALUES (?,?,?,?,?)"
 	_, err = tx.Exec(stmt, did, create_at, create_by, modify_at, modify_by)
 	if err != nil && !strings.Contains(err.Error(), "UNIQUE") {
 		log.Printf("ERROR: unable to execute %s with %v, error=%v", stmt, did, err)
 		return tx.Rollback()
 	}
-	log.Println("### inserted into metadata")
+	log.Println("### inserted into METADATA")
 
-	stmt = "SELECT meta_id FROM metadata WHERE did=?"
+	stmt = "SELECT META_ID FROM METADATA WHERE DID=?"
 	res, err = execute(tx, stmt, did)
 	if err != nil {
 		log.Printf("ERROR: unable to execute %s with %v, error=%v", stmt, did, err)
@@ -189,7 +189,7 @@ func InsertFiles(did, dataset, path string) error {
 	metaId := rec["meta_id"].(int64)
 
 	// insert main attributes
-	stmt = "INSERT INTO datasets (dataset,meta_id,create_at,create_by,modify_at,modify_by) VALUES (?,?,?,?,?,?)"
+	stmt = "INSERT INTO DATASETS (DATASET,META_ID,CREATE_AT,CREATE_BY,MODIFY_AT,MODIFY_BY) VALUES (?,?,?,?,?,?)"
 	_, err = tx.Exec(stmt, dataset, metaId, create_at, create_by, modify_at, modify_by)
 	if err != nil && !strings.Contains(err.Error(), "UNIQUE") {
 		log.Printf("ERROR: unable to execute %s with %v, error=%v", stmt, dataset, err)
@@ -197,7 +197,7 @@ func InsertFiles(did, dataset, path string) error {
 	}
 
 	// select main attributes ids
-	stmt = "SELECT dataset_id FROM datasets WHERE dataset=?"
+	stmt = "SELECT DATASET_ID FROM DATASETS WHERE DATASET=?"
 	res, err = execute(tx, stmt, dataset)
 	if err != nil {
 		log.Printf("ERROR: unable to execute %s with %v, error=%v", stmt, dataset, err)
@@ -208,7 +208,7 @@ func InsertFiles(did, dataset, path string) error {
 
 	// insert files info
 	for _, fname := range files {
-		stmt = "INSERT INTO files (file,meta_id,dataset_id,create_at,create_by,modify_at,modify_by) VALUES (?,?,?,?,?,?,?)"
+		stmt = "INSERT INTO FILES (FILE,META_ID,DATASET_ID,CREATE_AT,CREATE_BY,MODIFY_AT,MODIFY_BY) VALUES (?,?,?,?,?,?,?)"
 		_, err = tx.Exec(stmt, fname, metaId, datasetId, create_at, create_by, modify_at, modify_by)
 		if err != nil && !strings.Contains(err.Error(), "UNIQUE") {
 			log.Printf("ERROR: unable to execute %s with did=%v name=%s error=%v", stmt, did, fname, err)
@@ -236,7 +236,7 @@ func getFiles(did string) ([]string, error) {
 	defer tx.Rollback()
 	// look-up files info
 	//     stmt := "SELECT name FROM files WHERE meta_id=?"
-	stmt := "SELECT F.file FROM files F JOIN metadata M ON M.meta_id=F.meta_id WHERE M.did=?"
+	stmt := "SELECT F.FILE FROM FILES F JOIN METADATA M ON M.META_ID=F.META_ID WHERE M.DID=?"
 	res, err := tx.Query(stmt, did)
 	if err != nil {
 		log.Printf("ERROR: unable to execute %s, error=%v", stmt, err)
@@ -293,7 +293,7 @@ func getDatasets() ([]string, error) {
 	}
 	defer tx.Rollback()
 	// dataset is a /cycle/beamline/BTR/sample
-	stmt := "SELECT D.dataset FROM DATASETS D"
+	stmt := "SELECT D.DATASET FROM DATASETS D"
 	res, err := tx.Query(stmt)
 	if err != nil {
 		log.Printf("ERROR: unable to execute %s, error=%v", stmt, err)
